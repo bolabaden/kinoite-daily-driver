@@ -1,7 +1,8 @@
 #Requires -Version 5.1
 <#
-  Fails (exit 1) if any frontmatter `id` from the KotOR plan is not mentioned in
-  docs/plan-frontmatter-coverage.md (or optional Appendix C block in that file).
+  Fails (exit 1) if: (1) duplicate `id` keys in the plan YAML, or (2) any
+  frontmatter `id` from the KotOR plan is not mentioned in
+  docs/plan-frontmatter-coverage.md (backticked or plain text).
 
   Default plan path: sibling KotOR.js checkout, or $env:KOTOR_PLAN_PATH
 #>
