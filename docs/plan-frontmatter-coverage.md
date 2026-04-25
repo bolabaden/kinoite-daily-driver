@@ -23,7 +23,7 @@
 | `doc-wsl-atomic-parity` | completed | `docs/wsl-atomic-parity.md` |
 | `doc-app-mapping` | completed | `docs/app-mapping.md` |
 | `doc-kde-daily-driver` / `kde-plasma6-widgets` | completed | `docs/kde-daily-driver-recommendations.md` (Plasma 6) |
-| `doc-fonts-theming` … `doc-migration-baremetal` | completed | `docs/<topic>.md` per plan ids (see `provisional-configuration-index.md`) |
+| `doc-fonts-theming` … `doc-migration-baremetal` | completed | See **Appendix A** (one row per `id`); [provisional-configuration-index.md](provisional-configuration-index.md) |
 | `doc-research-workflow` | completed | `docs/research-workflow-tavily-firecrawl.md` + `research/tavily-best-practices-agents-2026-04-25.md` |
 | `config-wsl-conf` / `config-flatpak-lists` / `config-shell-skel` | completed | `config/wsl.conf.example`, `config/.wslconfig.example`, `config/flatpak/*.list`, `config/shell/README.md` |
 | `script-*` (bootstrap, kde, appimage, distrobox, flathub, first-week) | completed | `scripts/*.sh` / `*.ps1` named in plan (see `README.md` Scripts) |
@@ -38,3 +38,53 @@
 | *Added by execution (not separate YAML ids):* | — | `docs/plan-alignment.md`, `phases-definition-of-done.md`, `windows11-daily-driver-baseline.md`, `plan-frontmatter-coverage.md` (this file) |
 
 **Exhaustive definition:** if it appears in the plan’s **todos** table above, there is a **concrete** script, `docs/*.md`, `config/`, or **notes in `WORKSPACE_STATUS.md`** (for host-only state). If an `id` is **`cancelled`**, the replacement artifact is named.
+
+---
+
+## Appendix A — every `doc-*` and related `kde-` / `pre-commit` id → file
+
+| `id` | `docs/…` or note |
+|------|------------------|
+| `doc-kinoite-wsl2-authoritative` | [kinoite-wsl2.md](kinoite-wsl2.md) |
+| `doc-readme-main` | [README.md](../README.md) |
+| `doc-strategy-phaseA-kinoite-wsl2` | [strategy-phaseA-kinoite-wsl2.md](strategy-phaseA-kinoite-wsl2.md) |
+| `doc-virtualbox-kinoite` | [virtualbox-kinoite-fallback.md](virtualbox-kinoite-fallback.md) |
+| `doc-fallback-classic-fedora-optional` | [fedora-dnf-fallback-optional.md](fedora-dnf-fallback-optional.md) |
+| `doc-pc-inventory-snapshot` | [this-pc-inventory-template.md](this-pc-inventory-template.md) |
+| `doc-kinoite-vs-silverblue` | [kinoite-vs-atomic-desktops.md](kinoite-vs-atomic-desktops.md) |
+| `doc-wsl-atomic-parity` | [wsl-atomic-parity.md](wsl-atomic-parity.md) |
+| `doc-app-mapping` | [app-mapping.md](app-mapping.md) |
+| `doc-kde-daily-driver` | [kde-daily-driver-recommendations.md](kde-daily-driver-recommendations.md) |
+| `doc-fonts-theming` | [fonts-and-theming.md](fonts-and-theming.md) |
+| `doc-audio-display` | [audio-and-display.md](audio-and-display.md) |
+| `doc-input-accessibility` | [input-and-ime.md](input-and-ime.md) |
+| `doc-printing-scanning` | [printing-and-scanning.md](printing-and-scanning.md) |
+| `doc-filesystems` | [filesystems-and-external.md](filesystems-and-external.md) |
+| `doc-backup-sync` | [backup-and-sync.md](backup-and-sync.md) |
+| `doc-appimage-fuse` | [appimage-on-atomic.md](appimage-on-atomic.md) |
+| `doc-gear-lever` | [gear-lever.md](gear-lever.md) |
+| `doc-podman-docker` | [podman-and-toolbox.md](podman-and-toolbox.md) |
+| `doc-secrets-ssh` | [secrets-ssh-gpg.md](secrets-ssh-gpg.md) |
+| `doc-3d-autodesk` | [3d-and-autodesk.md](3d-and-autodesk.md) |
+| `doc-gaming` | [gaming-steam-epic.md](gaming-steam-epic.md) |
+| `doc-network-vpn` | [networking.md](networking.md) |
+| `doc-media-homelab` | [media-and-homelab.md](media-and-homelab.md) |
+| `doc-llm-local` | [llm-and-dev-ai.md](llm-and-dev-ai.md) |
+| `doc-ides` | [ides-and-terminals.md](ides-and-terminals.md) |
+| `doc-m365` | [microsoft-365-on-linux.md](microsoft-365-on-linux.md) |
+| `doc-optional-kde-wsl` | [optional-kde-wsl.md](optional-kde-wsl.md) |
+| `doc-migration-baremetal` | [migration-baremetal-checklist.md](migration-baremetal-checklist.md) |
+| `doc-research-workflow` | [research-workflow-tavily-firecrawl.md](research-workflow-tavily-firecrawl.md) + [../research/tavily-best-practices-agents-2026-04-25.md](../research/tavily-best-practices-agents-2026-04-25.md) |
+| `doc-ostree-rollback` | [atomic-updates-rollback.md](atomic-updates-rollback.md) |
+| `doc-fwupd-secureboot` | [firmware-and-secure-boot.md](firmware-and-secure-boot.md) |
+| `doc-flatpak-overrides` | [flatpak-overrides.md](flatpak-overrides.md) |
+| `doc-power-battery` | [power-and-battery.md](power-and-battery.md) |
+| `doc-virtualization-windows-vm` | [virtualization-windows-vm.md](virtualization-windows-vm.md) |
+| `doc-swap-zram` | [swap-and-zram.md](swap-and-zram.md) |
+| `doc-clipboard-wslg` | [wslg-clipboard-gui.md](wslg-clipboard-gui.md) |
+| `doc-bluetooth-audio` | [bluetooth-pipewire.md](bluetooth-pipewire.md) |
+| `kde-plasma6-widgets` | [kde-daily-driver-recommendations.md](kde-daily-driver-recommendations.md) (Plasma 6) |
+| `pre-commit-secrets` | [gitleaks-optional.md](gitleaks-optional.md) |
+| `script-virtualbox-snapshots` | [virtualbox-snapshots-workflow.md](virtualbox-snapshots-workflow.md) (pairs with VBox Kinoite doc) |
+
+**Plan § workspace tree (verbatim names):** [plan-stipulated-file-tree.md](plan-stipulated-file-tree.md).
