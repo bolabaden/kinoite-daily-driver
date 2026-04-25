@@ -74,6 +74,7 @@
 | `doc-m365` | [microsoft-365-on-linux.md](microsoft-365-on-linux.md) |
 | `doc-optional-kde-wsl` | [optional-kde-wsl.md](optional-kde-wsl.md) |
 | `doc-migration-baremetal` | [migration-baremetal-checklist.md](migration-baremetal-checklist.md) |
+| *Plan **Workspace** tree* — `keep-windows` *(no separate YAML `doc-` `id`)* | [keep-windows.md](keep-windows.md) |
 | `doc-research-workflow` | [research-workflow-tavily-firecrawl.md](research-workflow-tavily-firecrawl.md) + [../research/tavily-best-practices-agents-2026-04-25.md](../research/tavily-best-practices-agents-2026-04-25.md) |
 | `doc-ostree-rollback` | [atomic-updates-rollback.md](atomic-updates-rollback.md) |
 | `doc-fwupd-secureboot` | [firmware-and-secure-boot.md](firmware-and-secure-boot.md) |
@@ -87,4 +88,36 @@
 | `pre-commit-secrets` | [gitleaks-optional.md](gitleaks-optional.md) |
 | `script-virtualbox-snapshots` | [virtualbox-snapshots-workflow.md](virtualbox-snapshots-workflow.md) (pairs with VBox Kinoite doc) |
 
-**Plan § workspace tree (verbatim names):** [plan-stipulated-file-tree.md](plan-stipulated-file-tree.md).
+**See also (plan file names):** [plan-stipulated-file-tree.md](plan-stipulated-file-tree.md) (verbatim **Workspace path** tree).
+
+---
+
+## Appendix B — `config-*`, `script-*`, and `inv-*` / `phaseA-*` (exact paths)
+
+| Plan `id` | Artifact |
+|-----------|----------|
+| `config-wsl-conf` | [../config/wsl.conf.example](../config/wsl.conf.example) |
+| *Host* `%UserProfile%\.wslconfig` | [../config/.wslconfig.example](../config/.wslconfig.example) |
+| `config-flatpak-lists` | [../config/flatpak/desktop-core.list](../config/flatpak/desktop-core.list), [../config/flatpak/dev.list](../config/flatpak/dev.list), [../config/flatpak/gaming.list](../config/flatpak/gaming.list) |
+| `config-shell-skel` | [../config/shell/README.md](../config/shell/README.md) |
+| `path-resolve-g` / `create-tree` | [../kinoite-workspace-root.env.example](../kinoite-workspace-root.env.example) (repo path convention) |
+| `script-bootstrap-kinoite-wsl2` | [../scripts/bootstrap-kinoite-wsl2.sh](../scripts/bootstrap-kinoite-wsl2.sh) |
+| `script-bootstrap-fedoraclassic-NOT-PHASE-A` | [../scripts/fedora-dnf-fallback.sh](../scripts/fedora-dnf-fallback.sh) |
+| `script-bootstrap-kde` | [../scripts/bootstrap-kde-wsl.sh](../scripts/bootstrap-kde-wsl.sh) |
+| `script-appimage-deps` | [../scripts/appimage-fuse-atomic.sh](../scripts/appimage-fuse-atomic.sh) |
+| `script-distrobox-dev` | [../scripts/distrobox-optional.sh](../scripts/distrobox-optional.sh) |
+| `script-flathub-verify` | [../scripts/verify-flathub.sh](../scripts/verify-flathub.sh) |
+| `script-kinoite-first-week` | [../scripts/kinoite-first-week.sh](../scripts/kinoite-first-week.sh) |
+| `script-virtualbox-snapshots` | [virtualbox-snapshots-workflow.md](virtualbox-snapshots-workflow.md) (doc; with [virtualbox-kinoite-fallback.md](virtualbox-kinoite-fallback.md)) |
+| `phaseA-kinoite-wsl2-import` + import pipeline | [../scripts/import-kinoite-rootfs-to-wsl.ps1](../scripts/import-kinoite-rootfs-to-wsl.ps1) |
+| `inv-refresh-date` + `inv-os-cim` + CIM (merge Machine/User PATH) | [../scripts/run-windows-inventory.ps1](../scripts/run-windows-inventory.ps1) |
+| `inv-winget-json` + `export-winget` | [../scripts/export-winget.ps1](../scripts/export-winget.ps1) |
+| `inv-scoop-list` | [../scripts/inv-scoop-list.ps1](../scripts/inv-scoop-list.ps1) |
+| `inv-wsl-snapshot` (embedded) | `wsl -l -v` in `run-windows-inventory.ps1` output |
+| `inv-startapps-sample` | [../scripts/inv-startapps-sample.ps1](../scripts/inv-startapps-sample.ps1) |
+| `inv-reliability-optional` | [../scripts/inv-reliability-sample.ps1](../scripts/inv-reliability-sample.ps1) |
+| `inv-event-logs-optional` | [../scripts/sample-event-logs.ps1](../scripts/sample-event-logs.ps1) |
+| `inv-hardware-outline` | [../scripts/inv-hardware-outline.ps1](../scripts/inv-hardware-outline.ps1) |
+| *(Start Menu — plan §, KotOR `list-windows` parity)* | [../scripts/list-windows-shortcuts.ps1](../scripts/list-windows-shortcuts.ps1) |
+| `security-sanitize` | [../.gitignore](../.gitignore) (`imports/` patterns) |
+| `git-init-optional` | `G:\workspaces\Kinoite\.git` (repository) |
