@@ -6,7 +6,7 @@ This file maps **phases** from `.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.
 |---------------|------------|----------------|
 | **Primary path** | `G:\workspaces\Kinoite` + optional `KINOITE_WORKSPACE_ROOT` | `README.md`, [kinoite-workspace-root.env.example](../kinoite-workspace-root.env.example) |
 | **Win11 map ↔ plan** | same host, inventory scripts | [windows11-daily-driver-baseline.md](windows11-daily-driver-baseline.md) |
-| **Phase A — Kinoite in WSL2** | `podman` pull/export → `wsl --import`; systemd, Plasma, Flathub, **declarative** layers | `docs/kinoite-wsl2.md`, `scripts/import-kinoite-rootfs-to-wsl.ps1`, `scripts/bootstrap-kinoite-wsl2.sh`, `config/rpm-ostree/layers.list`, `scripts/apply-atomic-provision.sh`, `PROVISION` |
+| **Phase A — Kinoite in WSL2** | `podman` pull/export → `wsl --import`; systemd, Plasma, Flathub, **declarative** layers; KotOR plan+AGENTS in **sibling** clone | `docs/kinoite-wsl2.md` (incl. **## Spec and the KotOR.js repository**), [plan-stipulated-file-tree.md](plan-stipulated-file-tree.md), `scripts/import-kinoite-rootfs-to-wsl.ps1`, `scripts/bootstrap-kinoite-wsl2.sh`, `config/rpm-ostree/layers.list`, `scripts/apply-atomic-provision.sh`, `PROVISION` |
 | **OSTree / rpm-ostree honesty** | No false claims for container import | `docs/systemd-rpm-ostree-wsl2-claims.md` |
 | **Win11 → Kinoite app map** | TSV + winget; named apps (ShareX, Steam, …) | `docs/app-mapping.md` + `imports/winget-export-*.json` (**gitignored**; re-run `scripts/run-full-plan-capture.ps1` or `export-winget.ps1`) |
 | **Keep Windows** | 3ds, anti-cheat, Voicemod-grade, ShareX automation | `docs/keep-windows.md` |
