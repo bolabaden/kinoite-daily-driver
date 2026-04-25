@@ -5,8 +5,12 @@ The plan **“Workspace path”** block in `silverblue_wsl_workspace_ec9c3c8b.pl
 | Plan line / intent | In `G:\workspaces\Kinoite` |
 |--------------------|----------------------------|
 | `Kinoite/README.md` | [README.md](../README.md) |
+| `WORKSPACE_STATUS.md` (plan’s execution log) | [../WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) |
 | `.gitignore` | [../.gitignore](../.gitignore) |
 | `docs/kinoite-wsl2.md` | [kinoite-wsl2.md](kinoite-wsl2.md) (authoritative Phase A) |
+| `docs/plan-frontmatter-coverage.md` / `phases-definition-of-done.md` / `windows11-daily-driver-baseline.md` | [plan-frontmatter-coverage.md](plan-frontmatter-coverage.md), [phases-definition-of-done.md](phases-definition-of-done.md), [windows11-daily-driver-baseline.md](windows11-daily-driver-baseline.md) |
+| `scripts/run-full-plan-capture.ps1` | [../scripts/run-full-plan-capture.ps1](../scripts/run-full-plan-capture.ps1) (full Win11+WSL evidence + `CAPTURE-MANIFEST`) |
+| `scripts/import-kinoite-rootfs-to-wsl.ps1` | [../scripts/import-kinoite-rootfs-to-wsl.ps1](../scripts/import-kinoite-rootfs-to-wsl.ps1) (Phase A import) |
 | `docs/kinoite-vs-atomic-desktops.md` | [kinoite-vs-atomic-desktops.md](kinoite-vs-atomic-desktops.md) (Kinoite vs **Silverblue**) |
 | `docs/strategy-phaseA-kinoite-wsl2.md` | [strategy-phaseA-kinoite-wsl2.md](strategy-phaseA-kinoite-wsl2.md) |
 | `docs/app-mapping.md` + winget TSV | [app-mapping.md](app-mapping.md) + `imports/winget-export-*.json` (gitignored) |
