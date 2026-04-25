@@ -1,0 +1,23 @@
+Plan capture (silverblue WSL + Win11 inventory). All paths under this repo: imports/
+Entry point: scripts/run-full-plan-capture.ps1 (PowerShell 5+, merge Machine+User PATH)
+Stamp: 20260425T172206
+
+File                                          Bytes   Description
+----                                          -----   -----------
+winget-export-20260425T172206.json              8186  winget export
+windows-inventory-20260425T172214.txt           5175  CIM + wsl -l -v + podman
+winget-list-20260425T172206.txt                37261  winget list (plan Windows C)
+start-menu-shortcuts-20260425T172206.txt     1485827  Start Menu + Desktop lnk/url
+scoop-list-20260425T172225.txt                 248  scoop list
+startapps-sample-20260425T172228.txt          46974  Get-StartApps
+reliability-events-sample-20260425T172206.txt    *  reliability log (may be empty if access denied)
+application-error-sample-20260425T172206.txt  13563  Application log level 2/3 sample 24h
+hardware-outline-20260425T172230.txt          3101  CIM hardware outline
+wsl-Kinoite-WS2-verify-20260425T172206.txt       347  in-distro whoami, /etc/wsl.conf, rpm-ostree
+host-tools-20260425T172206.txt                  128  VBoxManage on PATH check
+
+wsl -l -v (excerpt; default distro may show Stopped/Running)
+  NAME                    STATE      VERSION
+  * Ubuntu                 Stopped    2
+    Kinoite-WS2            Running    2
+    podman-current-machine Running    2

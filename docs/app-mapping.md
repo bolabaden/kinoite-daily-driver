@@ -2,8 +2,9 @@
 
 This file tracks **this daily-driver** machine: expand from **`winget export`** in `imports/` (see `../scripts/export-winget.ps1`). Exports are **gitignored** — commit only **this** doc, not raw JSON.
 
-**Latest local export (this refresh):** `imports/winget-export-20260425T171938.json` (run `export-winget.ps1` to supersede)  
-**Latest full inventory (CIM / WSL / podman):** `imports/windows-inventory-20260425T171943.txt` (run `run-windows-inventory.ps1` to supersede)  
+**One-shot full capture:** [`../scripts/run-full-plan-capture.ps1`](../scripts/run-full-plan-capture.ps1) → `imports/CAPTURE-MANIFEST-<timestamp>.txt` (all winget, CIM, Start Menu in `imports/`, WSL verify, optional logs).
+
+**This host (full capture 2026-04-25, `T172206` index):** `winget-export-20260425T172206.json`, `windows-inventory-20260425T172214.txt`, `winget-list-20260425T172206.txt`, `start-menu-shortcuts-20260425T172206.txt`, `wsl-Kinoite-WS2-verify-20260425T172206.txt` — all under `imports/`. Rerun the full-capture script after **bulk** app changes.  
 **Rule:** prefer **Flathub**; **toolbox**/**distrobox** for heavy `dnf`; **`rpm-ostree install`** only on a **true** atomic **boot** (see `systemd-rpm-ostree-wsl2-claims.md`).
 
 ## Named quick ref (from plan)

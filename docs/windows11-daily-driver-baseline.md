@@ -4,15 +4,17 @@ The **Cursor plan** in KotOR (`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.p
 
 **This** workspace is the **executable** mirror of that spec.
 
-**Latest run on this host (2026-04-25, ISO-like stamps):** `imports/winget-export-20260425T171938.json`, `imports/windows-inventory-20260425T171943.txt` (gitignored). Supersede by re-running `export-winget.ps1` and `run-windows-inventory.ps1` after large install/uninstall batches.
+**Authoritative run index:** `imports/CAPTURE-MANIFEST-20260425T172206.txt` (from `scripts/run-full-plan-capture.ps1`, 2026-04-25). That one script produced `winget-export-*.json`, `winget-list-*.txt`, `windows-inventory-*.txt`, `start-menu-shortcuts-*.txt` in `imports/`, Scoop, StartApps, event samples, hardware outline, `wsl-Kinoite-WS2-verify-*.txt`, and `host-tools-*.txt`. Rerun it after **bulk** app changes.
 
 | Evidence type | How to (re)generate | Where it lands |
 |---------------|---------------------|----------------|
-| Installed packages (winget) | `scripts/export-winget.ps1` | `imports/winget-export-*.json` (gitignored) |
-| CIM + WSL + podman | `scripts/run-windows-inventory.ps1` | `imports/windows-inventory-*.txt` (gitignored) |
-| Start Menu + Desktop | `scripts/list-windows-shortcuts.ps1` | default `%TEMP%\start-menu-shortcuts-*.txt` (local only) |
-| Scoop, StartApps, events (optional) | `inv-scoop-list.ps1`, `inv-startapps-sample.ps1`, `inv-reliability-sample.ps1`, `sample-event-logs.ps1` | per-script output paths |
+| **All of the below in one go** | `scripts/run-full-plan-capture.ps1` | `imports/CAPTURE-MANIFEST-<timestamp>.txt` (index) |
+| Installed packages (winget) | `export-winget.ps1` (also in full capture) | `imports/winget-export-*.json` (gitignored) |
+| `winget list` (plan “Windows C”) | full capture | `imports/winget-list-*.txt` |
+| CIM + WSL + podman | `run-windows-inventory.ps1` | `imports/windows-inventory-*.txt` (gitignored) |
+| Start Menu + Desktop | `list-windows-shortcuts.ps1` with `-OutFile` (full capture) | `imports/start-menu-shortcuts-*.txt` (gitignored) — may also exist under `%TEMP%` from a manual run |
+| Scoop, StartApps, events | `inv-*.ps1` (also in full capture) | `imports/*` per manifest |
 
-**Machine-specific rows** are **not** listed in committed markdown: use the **TSV** in `app-mapping.md` and your **local** `imports/` for diffs. **PUP/junk ARP** names are not copied into git; **audit the host** per plan and `docs/keep-windows.md`.
+**Machine-specific** table rows are in `app-mapping.md` TSV + `imports/`; **PUP/junk ARP** strings stay out of committed **prose** per plan — evidence is in local `winget` output files.
 
 **Parity** for migration: `docs/keep-windows.md` + the full TSV in `app-mapping.md`.

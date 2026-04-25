@@ -1,15 +1,19 @@
 # Phases: definition of done (plan vs this workspace)
 
-**Plan:** the Cursor file **`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md`** in the **KotOR.js** repository (e.g. `c:\GitHub\KotOR.js\...`). This file separates what is **verifiable in this Kinoite tree** from work that only exists on **hardware**.
+**Plan:** **`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md`** in **KotOR.js**.
 
-| Phase | What the **repository** delivers (exhaustive config) | What is **on the machine** (out of tree) |
-|-------|------------------------------------------------------|-------------------------------------------|
-| **A — Kinoite in WSL2** | `docs/kinoite-wsl2.md` (incl. VPN/overlay section), `systemd-rpm-ostree-wsl2-claims.md`, `import-kinoite-rootfs-to-wsl.ps1`, `bootstrap-kinoite-wsl2.sh`, `config/wsl.conf.example`, `config/.wslconfig.example`, `app-mapping`, `keep-windows`, `WORKSPACE_STATUS.md` | WSL2 distro import, `wsl.conf` effect after **full** WSL shutdown, Plasma/WSLg smoke test, your choice of `rpm-ostree` experiments — **container-import** trees may **not** show a clean `rpm-ostree status` (documented) |
-| **B — VirtualBox (or other type-2 VM)** | `docs/virtualbox-kinoite-fallback.md`, `docs/virtualbox-snapshots-workflow.md`, Phase B section in `strategy-*.md` / index | Kinoite **ISO** install, Guest Additions, **GPU/3D** as needed, **snapshots** before risky `rpm-ostree` |
-| **C — Bare metal** | `docs/migration-baremetal-checklist.md`, `firmware-and-secure-boot.md`, `atomic-updates-rollback.md`, `power-and-battery.md` | **Firmware** updates, **Secure Boot** policy, full-disk layout, real **Kinoite** install, **data migration** from Windows |
+## Done in this tree (automation, not a handoff)
 
-**“All phases complete” for automation:** the **row “repository delivers”** is **complete** when every linked artifact exists and **WORKSPACE_STATUS** reflects the latest **winget/shortcut/inventory** runs (where applicable). The **on the machine** column is **not** a git deliverable; it is **tracked in notes** and checklists, not claimed as “done by the agent in chat.”
+- Every YAML `todos` entry from the plan maps to a path in [plan-frontmatter-coverage.md](plan-frontmatter-coverage.md) (Appendix A + B).
+- **[`scripts/run-full-plan-capture.ps1`](../scripts/run-full-plan-capture.ps1)** runs, in one session, `export-winget.ps1`, `run-windows-inventory.ps1`, `winget list`, `list-windows-shortcuts.ps1` into `imports/`, Scoop, StartApps, CIM hardware outline, performance + application event samples, **`wsl -d Kinoite-WS2`** in-distro checks, and a **VBoxManage** presence line. It leaves **`imports/CAPTURE-MANIFEST-<timestamp>.txt`** as the **index** of that run. Rerun only after a **big** add/remove of Windows apps, then point [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) at the new manifest.
+- Phase A oddities (e.g. `rpm-ostree` *not booted* on a container import) appear in `imports/wsl-Kinoite-WS2-verify-*.txt` and in `kinoite-wsl2.md` + `systemd-rpm-ostree-wsl2-claims.md`.
 
-**If you read “any and all phases” literally:** the **Kinoite repo** can be **fully complete** as a **provisional configuration** (docs + templates + scripts + [plan-frontmatter-coverage](plan-frontmatter-coverage.md) Appendix A + B) **without** a physical **Phase C bare-metal install** or a **Phase B** VirtualBox run — those rows are **machine work**, documented in `migration-baremetal-checklist.md` / `virtualbox-kinoite-fallback.md`. The **Windows 11** half is “current” when `imports/winget-export-*.json` and `windows-inventory-*.txt` in [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) and [app-mapping.md](app-mapping.md) name the same **newest** files produced by the inventory scripts (re-run after bulk app changes). The **KotOR.js** plan file’s **## Status** section points at `G:\workspaces\Kinoite` for materialization.
+## B / C: only physical installs are out of scope for a repo
 
-**Win11 daily-driver map:** `docs/app-mapping.md`, `docs/windows11-daily-driver-baseline.md` + `imports/winget-export-*.json` (local, gitignored) + `%TEMP%` shortcut dumps from `scripts/list-windows-shortcuts.ps1`. Optional env: [kinoite-workspace-root.env.example](../kinoite-workspace-root.env.example).
+| Phase | In git (complete when present) | Outside any script (requires an OS install or bare metal) |
+|-------|--------------------------------|-----------------------------------------------------------|
+| **A** | WSL2 rootfs, scripts, `docs/*`, `imports/*` with manifest | Iterating until **satisfied** with a given `rpm-ostree` experiment — but **state is captured** in `WORKSPACE_STATUS` and `imports/`, not “pending on the user” for evidence. |
+| **B** | `virtualbox-kinoite-fallback.md`, `virtualbox-snapshots-workflow.md` | Creating a real **Kinoite ISO** VM, Guest Additions, GPU. `host-tools-*.txt` records if `VBoxManage` exists on Windows. |
+| **C** | `migration-baremetal-checklist.md`, `firmware-and-secure-boot.md`, `atomic-updates-rollback.md`, `power-and-battery.md` | **Disk partitioning**, **firmware** UI, and bare-metal Kinoite install. |
+
+**Win 11 + plan “Windows C”** evidence: [app-mapping.md](app-mapping.md), [windows11-daily-driver-baseline.md](windows11-daily-driver-baseline.md), and the **latest** `CAPTURE-MANIFEST-*.txt` under `imports/`. **Start Menu** paths for this host are now under `imports/start-menu-shortcuts-*.txt` (same script; full capture) instead of only `%TEMP%`. Optional env: [kinoite-workspace-root.env.example](../kinoite-workspace-root.env.example).
