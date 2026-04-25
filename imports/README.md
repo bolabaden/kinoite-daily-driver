@@ -11,4 +11,6 @@ Place **raw** inventory outputs here. **The committed “current” filenames** 
 
 **Start Menu / Desktop** shortcuts: standalone **`list-windows-shortcuts.ps1`** defaults to **`%TEMP%`**; **`run-full-plan-capture.ps1`** writes `start-menu-shortcuts-*.txt` under **`imports/`** and lists it in the manifest.
 
+**Plan YAML sync:** if **`silverblue_wsl_workspace_ec9c3c8b.plan.md`** `todos` in KotOR change, run **`../scripts/verify-plan-frontmatter-coverage.ps1`** and refresh **`../docs/plan-frontmatter-coverage.md`** (Appendix C) as needed; inventory files here are unrelated to that check.
+
 **Sanitization for sharing:** strip internal hostnames, e‑mails, or one‑off ARP junk before copying exports out of this machine.
