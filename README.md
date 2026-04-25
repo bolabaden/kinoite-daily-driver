@@ -28,7 +28,7 @@
 - [WORKSPACE_STATUS.md](WORKSPACE_STATUS.md) — live execution checklist.  
 - [docs/provisional-configuration-index.md](docs/provisional-configuration-index.md) — **plan → repo** phase mapping (A/B/C + daily-driver docs).  
 - [docs/phases-definition-of-done.md](docs/phases-definition-of-done.md) — repository vs on-machine “phase complete” criteria.  
-- [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) — every plan YAML `todos` `id` → file; **Appendix A** = each `doc-*` row; **Appendix B** = `config-*` / `script-*` / `inv-*` / import paths.  
+- [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) — every plan YAML `todos` `id` → file; **Appendix A** = each `doc-*` row; **Appendix B** = `config-*` / `script-*` / `inv-*` / import paths; **Appendix C** = ordered list of all **75** `id`s. After plan edits, run [scripts/verify-plan-frontmatter-coverage.ps1](scripts/verify-plan-frontmatter-coverage.ps1) and refresh **C** if `todos` change.  
 - [docs/plan-stipulated-file-tree.md](docs/plan-stipulated-file-tree.md) — matches the plan’s **Workspace path** file list + env.
 - **Exhaustive (repo):** all **completed** frontmatter items in the KotOR plan are mapped here; **Win11** “current” = latest `CAPTURE-MANIFEST-*.txt` plus the files it lists, or the latest `imports/winget-export-*.json` and `windows-inventory-*.txt` named in [WORKSPACE_STATUS](WORKSPACE_STATUS.md) and [app-mapping](docs/app-mapping.md). Re-run **`run-full-plan-capture.ps1`** (or the individual inventory scripts) after bulk app changes. **Phase B/C installs** (VBox / bare metal) remain **on machine** (see [phases-definition-of-done](docs/phases-definition-of-done.md)).
 
