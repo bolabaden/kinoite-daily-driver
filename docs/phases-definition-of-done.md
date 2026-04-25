@@ -13,7 +13,7 @@
 | Phase | In git (complete when present) | Outside any script (requires an OS install or bare metal) |
 |-------|--------------------------------|-----------------------------------------------------------|
 | **A** | WSL2 rootfs, scripts, `docs/*`, `imports/*` with manifest | Iterating until **satisfied** with a given `rpm-ostree` experiment — but **state is captured** in `WORKSPACE_STATUS` and `imports/`, not “pending on the user” for evidence. |
-| **B** | `virtualbox-kinoite-fallback.md`, `virtualbox-snapshots-workflow.md` | Creating a real **Kinoite ISO** VM, Guest Additions, GPU. `host-tools-*.txt` records if `VBoxManage` exists on Windows. |
-| **C** | `migration-baremetal-checklist.md`, `firmware-and-secure-boot.md`, `atomic-updates-rollback.md`, `power-and-battery.md` | **Disk partitioning**, **firmware** UI, and bare-metal Kinoite install. |
+| **B** | `virtualbox-kinoite-fallback.md`, `virtualbox-snapshots-workflow.md` — **repo deliverable: complete** (procedures, ISO link, snapshot strategy). Machine: create VM, install guest additions, validate GPU. Evidence on Windows: `imports/host-tools-*.txt` (VBoxManage on `PATH` or not). |
+| **C** | `migration-baremetal-checklist.md`, `firmware-and-secure-boot.md`, `atomic-updates-rollback.md`, `power-and-battery.md` — **repo deliverable: complete** (firmware, ostree rollback, zram/swap, migration steps). Machine: real disk layout, `fwupd`, bare-metal install. |
 
 **Win 11 + plan “Windows C”** evidence: [app-mapping.md](app-mapping.md), [windows11-daily-driver-baseline.md](windows11-daily-driver-baseline.md), and the **latest** `CAPTURE-MANIFEST-*.txt` under `imports/`. **Start Menu** paths for this host are now under `imports/start-menu-shortcuts-*.txt` (same script; full capture) instead of only `%TEMP%`. Optional env: [kinoite-workspace-root.env.example](../kinoite-workspace-root.env.example).

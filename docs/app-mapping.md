@@ -4,7 +4,7 @@ This file tracks **this daily-driver** machine: expand from **`winget export`** 
 
 **One-shot full capture:** [`../scripts/run-full-plan-capture.ps1`](../scripts/run-full-plan-capture.ps1) → `imports/CAPTURE-MANIFEST-<timestamp>.txt` (all winget, CIM, Start Menu in `imports/`, WSL verify, optional logs).
 
-**This host (full capture 2026-04-25, `T172206` index):** `winget-export-20260425T172206.json`, `windows-inventory-20260425T172214.txt`, `winget-list-20260425T172206.txt`, `start-menu-shortcuts-20260425T172206.txt`, `wsl-Kinoite-WS2-verify-20260425T172206.txt` — all under `imports/`. Rerun the full-capture script after **bulk** app changes.  
+**This host (full capture 2026-04-25, `T173027` index = current):** `winget-export-20260425T173027.json`, `windows-inventory-20260425T173031.txt`, `winget-list-20260425T173027.txt` (**310** lines), `start-menu-shortcuts-20260425T173027.txt` (**17,908** lines), `wsl-Kinoite-WS2-verify-20260425T173027.txt` — all under `imports/`. Rerun the full-capture script after **bulk** app changes.  
 **Rule:** prefer **Flathub**; **toolbox**/**distrobox** for heavy `dnf`; **`rpm-ostree install`** only on a **true** atomic **boot** (see `systemd-rpm-ostree-wsl2-claims.md`).
 
 ## Named quick ref (from plan)

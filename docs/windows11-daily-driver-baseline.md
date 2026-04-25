@@ -4,7 +4,7 @@ The **Cursor plan** in KotOR (`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.p
 
 **This** workspace is the **executable** mirror of that spec.
 
-**Authoritative run index:** `imports/CAPTURE-MANIFEST-20260425T172206.txt` (from `scripts/run-full-plan-capture.ps1`, 2026-04-25). That one script produced `winget-export-*.json`, `winget-list-*.txt`, `windows-inventory-*.txt`, `start-menu-shortcuts-*.txt` in `imports/`, Scoop, StartApps, event samples, hardware outline, `wsl-Kinoite-WS2-verify-*.txt`, and `host-tools-*.txt`. Rerun it after **bulk** app changes.
+**Authoritative run index:** `imports/CAPTURE-MANIFEST-20260425T173027.txt` (from `scripts/run-full-plan-capture.ps1`, 2026-04-25). That run: **`winget list` = 310 lines** (plan “Windows C”); **Start Menu+Desktop = 17,908 lines**; plus `winget-export-*.json`, `windows-inventory-*.txt`, Scoop, StartApps, event samples, hardware outline, `wsl-Kinoite-WS2-verify-*.txt`, `host-tools-*.txt`. Rerun after **bulk** app changes; older `CAPTURE-MANIFEST-*.txt` in git are **archive** only.
 
 | Evidence type | How to (re)generate | Where it lands |
 |---------------|---------------------|----------------|
