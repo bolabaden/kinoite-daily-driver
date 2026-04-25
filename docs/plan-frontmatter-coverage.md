@@ -34,8 +34,8 @@
 | `handoff-user-test` | completed | `WORKSPACE_STATUS.md` + `phases-definition-of-done.md` (Phase A real-world caveats) |
 | `doc-ostree-rollback` … `doc-bluetooth-audio` | completed | `atomic-updates-rollback.md` … `bluetooth-pipewire.md` |
 | `pre-commit-secrets` | completed | `docs/gitleaks-optional.md` |
-| `post-exec-mark-plan` | **cancelled** in plan | Superseded by `WORKSPACE_STATUS.md` (no plan edit) |
-| *Added by execution (not separate YAML ids):* | — | `docs/plan-alignment.md`, `phases-definition-of-done.md`, `windows11-daily-driver-baseline.md`, `plan-frontmatter-coverage.md` (this file) |
+| `post-exec-mark-plan` | completed in plan (KotOR) | `WORKSPACE_STATUS.md` + KotOR plan **Status** (`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md`) + `AGENTS.md` (full-capture pointer) |
+| *Added by execution (not separate YAML ids):* | — | `scripts/run-full-plan-capture.ps1` (orchestrates all host imports), committed `imports/CAPTURE-MANIFEST-*.txt`, `docs/plan-alignment.md`, `phases-definition-of-done.md`, `windows11-daily-driver-baseline.md`, `plan-frontmatter-coverage.md` (this file) |
 
 **Exhaustive definition:** if it appears in the plan’s **todos** table above, there is a **concrete** script, `docs/*.md`, `config/`, or **notes in `WORKSPACE_STATUS.md`** (for host-only state). If an `id` is **`cancelled`**, the replacement artifact is named.
 
@@ -112,6 +112,7 @@
 | `script-virtualbox-snapshots` | [virtualbox-snapshots-workflow.md](virtualbox-snapshots-workflow.md) (doc; with [virtualbox-kinoite-fallback.md](virtualbox-kinoite-fallback.md)) |
 | `phaseA-kinoite-wsl2-import` + import pipeline | [../scripts/import-kinoite-rootfs-to-wsl.ps1](../scripts/import-kinoite-rootfs-to-wsl.ps1) |
 | `inv-refresh-date` + `inv-os-cim` + CIM (merge Machine/User PATH) | [../scripts/run-windows-inventory.ps1](../scripts/run-windows-inventory.ps1) |
+| **Full re-capture (all inv-* in one run + manifest)** | [../scripts/run-full-plan-capture.ps1](../scripts/run-full-plan-capture.ps1) |
 | `inv-winget-json` + `export-winget` | [../scripts/export-winget.ps1](../scripts/export-winget.ps1) |
 | `inv-scoop-list` | [../scripts/inv-scoop-list.ps1](../scripts/inv-scoop-list.ps1) |
 | `inv-wsl-snapshot` (embedded) | `wsl -l -v` in `run-windows-inventory.ps1` output |
