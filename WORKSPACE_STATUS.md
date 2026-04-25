@@ -6,7 +6,7 @@ This file is the **authoritative** execution log. The spec lives in **KotOR.js**
 |-------|--------|-------|
 | Workspace at `G:\workspaces\Kinoite` | **Done** | `docs/provisional-configuration-index.md` = phase→artifact map |
 | `KINOITE_WORKSPACE_ROOT` (optional) | **Doc-only** | In profile or [kinoite-workspace-root.env.example](kinoite-workspace-root.env.example) |
-| **Full plan capture (all Win11 + WSL evidence)** | **Done 2026-04-25** (current index [`CAPTURE-MANIFEST-20260425T173027.txt`](imports/CAPTURE-MANIFEST-20260425T173027.txt)) | [`scripts/run-full-plan-capture.ps1`](scripts/run-full-plan-capture.ps1) — committed **`imports/CAPTURE-MANIFEST-*.txt`** only; bulk outputs gitignored. Latest run: winget export + `winget list` (**310** data rows, plan “Windows C”), CIM inventory, **Start Menu in `imports/`** (**17,908** lines), Scoop, StartApps, hardware, reliability + app log samples, **`wsl-Kinoite-WS2-verify-*.txt`**, `host-tools-*.txt` |
+| **Full plan capture (all Win11 + WSL evidence)** | **Done 2026-04-25** (index [`CAPTURE-MANIFEST-20260425T173027.txt`](imports/CAPTURE-MANIFEST-20260425T173027.txt)) | [`scripts/run-full-plan-capture.ps1`](scripts/run-full-plan-capture.ps1) — committed **`imports/CAPTURE-MANIFEST-*.txt`** only; bulk outputs gitignored. Latest run: winget export + `winget list` (**310** **lines**, plan “Windows C”), CIM inventory, **Start Menu in `imports/`** (**17,908** lines), Scoop, StartApps, hardware, reliability + app log samples, **`wsl-Kinoite-WS2-verify-*.txt`**, `host-tools-*.txt` |
 | Kinoite OCI + `wsl --import` | **Done** | `Kinoite-WS2` on `G:\WSL\Kinoite-WS2`; image `quay.io/.../kinoite:43` |
 | `/etc/wsl.conf` `[boot] systemd=true` | **Present** | Confirmed in `imports/wsl-Kinoite-WS2-verify-20260425T173027.txt` (same content as prior verify runs) |
 | `rpm-ostree status` in WSL | **Documented** | *Not booted via libostree* in same verify file — expected for container import; see `docs/systemd-rpm-ostree-wsl2-claims.md` |
@@ -22,4 +22,4 @@ This file is the **authoritative** execution log. The spec lives in **KotOR.js**
 | KotOR `AGENTS.md` | **Done** | Kinoite block + plan path |
 | **Every plan YAML `id`** | **Done** | [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) |
 
-**Last update:** 2026-04-25 — full **[`run-full-plan-capture.ps1`](scripts/run-full-plan-capture.ps1)** run; manifest **`CAPTURE-MANIFEST-20260425T173027`** (supersedes T172206 for “current host” pointers).
+**Last update:** 2026-04-25 — full **[`run-full-plan-capture.ps1`](scripts/run-full-plan-capture.ps1)**; manifest **`CAPTURE-MANIFEST-20260425T173027`** = current **Windows 11 + WSL** evidence index in git.

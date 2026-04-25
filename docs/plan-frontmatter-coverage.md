@@ -10,7 +10,7 @@
 | `phaseA-plasma-wslg` | completed | `kinoite-wsl2.md` § Plasma/WSLg, `optional-kde-wsl.md`, `bootstrap-kde-wsl.sh` |
 | `research-kinoite-rootfs-sources` | completed | `kinoite-wsl2.md` (Quay pin) + `research/*` |
 | `doc-kinoite-wsl2-authoritative` | completed | `docs/kinoite-wsl2.md` |
-| `inv-refresh-date` / `inv-os-cim` / `inv-winget-json` | completed | `run-windows-inventory.ps1`, `export-winget.ps1` → `imports/*` (gitignored) |
+| `inv-refresh-date` / `inv-os-cim` / `inv-winget-json` | completed | `run-windows-inventory.ps1` + `export-winget.ps1` → `imports/*` (gitignored); or **`run-full-plan-capture.ps1`** (all of the above + `winget list`, Start Menu, optional logs; **`CAPTURE-MANIFEST-*.txt`** unignored) |
 | `win-c-drive-app-snapshot-2026-04` | completed | `app-mapping.md`, `windows11-daily-driver-baseline.md`, local exports |
 | `inv-scoop-list` / `inv-wsl-snapshot` / `inv-startapps-sample` / `inv-reliability-optional` / `inv-event-logs-optional` / `inv-hardware-outline` | completed | `inv-scoop-list.ps1`, `inv-*.ps1`, `sample-event-logs.ps1` |
 | `path-resolve-g` / `create-tree` | completed | `G:\workspaces\Kinoite`, `kinoite-workspace-root.env.example` |
