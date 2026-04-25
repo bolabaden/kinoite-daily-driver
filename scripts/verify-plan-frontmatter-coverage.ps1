@@ -25,6 +25,12 @@ $ids = [regex]::Matches(
   '(?m)^[ \t]*-[ \t]*id:[ \t]*([^\r\n]+)'
 ) | ForEach-Object { $_.Groups[1].Value.Trim() }
 if (-not $ids -or $ids.Count -lt 1) { Write-Error "No id: lines found in $planPath"; exit 1 }
+$grouped = $ids | Group-Object
+$dups = $grouped | Where-Object { $_.Count -gt 1 }
+if ($dups) {
+  Write-Error "Duplicate id: in plan (fix YAML): $(($dups | ForEach-Object { $_.Name + ' x' + $_.Count }) -join '; ')"
+  exit 1
+}
 
 $cov = Get-Content -LiteralPath $coveragePath -Raw
 $missing = @()
