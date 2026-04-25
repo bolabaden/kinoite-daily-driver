@@ -1,12 +1,15 @@
 # Fedora Kinoite in WSL2 — authoritative Phase A guide
 
-This document is the **single source of truth** for importing and running **Fedora Kinoite** (atomic desktop, KDE-oriented) inside **WSL2** with **systemd** and **`rpm-ostree`**.
+This document is the **single source of truth** for importing and running **Fedora Kinoite** (atomic desktop, KDE-oriented) inside **WSL2** with **systemd** where supported, and **honest** limits for **`rpm-ostree`**.
+
+> **Hard reality (read first):** **`systemd` and full `rpm-ostree` are not the same ask in WSL2.** See [**`systemd-rpm-ostree-wsl2-claims.md`**](systemd-rpm-ostree-wsl2-claims.md) for what can be *fully* true vs what requires a **VM/bare metal** OSTree boot.
 
 ## Goals
 
 - A WSL2 distro whose root filesystem comes from the **same OCI lineage** as [Fedora Atomic Desktops / Kinoite](https://fedoraproject.org/atomic-desktops/kinoite/), not “Fedora for WSL” classic **dnf** images as a Phase A substitute.
-- **`rpm-ostree status`** shows a coherent deployment after first boot (or you document the exact failure for escalation).
-- **Flatpak** + **Flathub** for most GUI apps; **`rpm-ostree install`** only when necessary (drivers, WARP repo, etc.).
+- **systemd** enabled and verified after `wsl --shutdown` (see [Microsoft: systemd in WSL](https://learn.microsoft.com/en-us/windows/wsl/systemd)) — *this is achievable* on current WSL2.
+- **`rpm-ostree`**: on a **container `podman export` → `wsl --import`** tree, expect **`rpm-ostree` to refuse** a full status — that is a **structural** limitation, not something this workspace can “patch” without a different boot path. Use **Kinoite in a VM/ISO** for *no-caveat* `rpm-ostree`.
+- **Flatpak** + **Flathub** for most GUI apps; **`toolbox`/`distrobox`** for mutable `dnf` in WSL when `rpm-ostree` is not the driver.
 - **Plasma** usable under **WSLg** (often **`plasmashell`** or a partial session — **SDDM** in WSL is usually skipped).
 
 ## Verified import (this workspace, 2026-04-25)
@@ -72,7 +75,7 @@ Verify:
 
 ```bash
 systemctl is-system-running
-rpm-ostree status
+# On container-import WSL, expect: rpm-ostree status → "not booted via libostree" — see systemd-rpm-ostree-wsl2-claims.md
 ```
 
 ## First steps inside the distro

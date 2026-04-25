@@ -8,7 +8,7 @@ systemd=true
 # Linux account that should be default on wsl.exe launch
 default=CHANGE_ME
 
-# Optional:interop defaults are usually fine
+# Optional: set appendWindowsPath=false to reduce "Failed to translate" spam from a long Windows PATH
 # [interop]
 # enabled=true
-# appendWindowsPath=true
+# appendWindowsPath=false

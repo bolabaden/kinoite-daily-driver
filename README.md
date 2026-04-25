@@ -9,7 +9,8 @@
 
 | Doc | Purpose |
 |-----|---------|
-| [docs/kinoite-wsl2.md](docs/kinoite-wsl2.md) | **Authoritative** import, `wsl.conf`, first boot, `rpm-ostree`, Plasma, rollback, known WSL fragility |
+| [docs/kinoite-wsl2.md](docs/kinoite-wsl2.md) | **Authoritative** import, `wsl.conf`, first boot, Plasma, rollback |
+| [docs/systemd-rpm-ostree-wsl2-claims.md](docs/systemd-rpm-ostree-wsl2-claims.md) | **systemd vs `rpm-ostree`** — what WSL2 can and cannot guarantee |
 | [docs/strategy-phaseA-kinoite-wsl2.md](docs/strategy-phaseA-kinoite-wsl2.md) | Why Phase A is Kinoite-in-WSL2 only |
 | [docs/app-mapping.md](docs/app-mapping.md) | Windows → Kinoite app parity (expand from your `winget export`) |
 | [config/wsl.conf.example](config/wsl.conf.example) | Copy into WSL as `/etc/wsl.conf` after import |
