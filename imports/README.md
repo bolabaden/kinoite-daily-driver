@@ -1,6 +1,6 @@
 # imports/
 
-Place **raw** inventory outputs here. **`.gitignore` excludes the usual filename patterns** so a normal `git add` will not pick them up—verify with `git status` before a push if you add new name patterns.
+Place **raw** inventory outputs here. **The committed “current” filenames** for this host (when an agent has just refreshed) live in **`../WORKSPACE_STATUS.md`** and **`../docs/app-mapping.md`**; this folder holds timestamped `winget-export-*.json` and `windows-inventory-*.txt` files. **`.gitignore` excludes the usual filename patterns** so a normal `git add` will not pick them up—verify with `git status` before a push if you add new name patterns.
 
 | File pattern | Source script | Notes |
 |--------------|---------------|--------|
