@@ -2,6 +2,8 @@
 
 The plan **“Workspace path”** block in `silverblue_wsl_workspace_ec9c3c8b.plan.md` shows an example tree. This repository **includes** that tree **and** the **“(… other topic docs from prior plans …)”** expansion (atomic rollback, M365, games, 3D, swap, WSLg clipboard, etc. — all under `docs/`).
 
+**Not in this path:** the **KotOR.js** game-engine repository (where the plan file and [AGENTS.md](https://github.com/KobaltBlu/KotOR.js/blob/master/AGENTS.md) live) is a **sibling** checkout, e.g. `c:\GitHub\KotOR.js` — it is **not** a subfolder of `G:\workspaces\Kinoite\`.
+
 | Plan line / intent | In `G:\workspaces\Kinoite` |
 |--------------------|----------------------------|
 | `Kinoite/README.md` | [README.md](../README.md) |
