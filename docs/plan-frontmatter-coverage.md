@@ -75,6 +75,7 @@
 | `doc-optional-kde-wsl` | [optional-kde-wsl.md](optional-kde-wsl.md) |
 | `doc-migration-baremetal` | [migration-baremetal-checklist.md](migration-baremetal-checklist.md) |
 | *Plan **Workspace** tree* — `keep-windows` *(no separate YAML `doc-` `id`)* | [keep-windows.md](keep-windows.md) |
+| *`win-c-drive-app-snapshot-2026-04` + Win11 host mirror* | [app-mapping.md](app-mapping.md) + [windows11-daily-driver-baseline.md](windows11-daily-driver-baseline.md) + `imports/*` (see [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md)) |
 | `doc-research-workflow` | [research-workflow-tavily-firecrawl.md](research-workflow-tavily-firecrawl.md) + [../research/tavily-best-practices-agents-2026-04-25.md](../research/tavily-best-practices-agents-2026-04-25.md) |
 | `doc-ostree-rollback` | [atomic-updates-rollback.md](atomic-updates-rollback.md) |
 | `doc-fwupd-secureboot` | [firmware-and-secure-boot.md](firmware-and-secure-boot.md) |

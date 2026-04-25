@@ -2,7 +2,9 @@
 
 The **Cursor plan** in KotOR (`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md`, section **“Windows C: software inventory (this host, 2026-04-25)”** and **“Fedora Kinoite mapping”**) is the **narrative** inventory: app categories, honest parity gaps, and named apps (**ShareX, Steam, Discord, Cloudflare WARP**, plus VPN/DCC/launchers, etc.).
 
-**This** workspace is the **executable** mirror of that spec:
+**This** workspace is the **executable** mirror of that spec.
+
+**Latest run on this host (2026-04-25, ISO-like stamps):** `imports/winget-export-20260425T171450.json`, `imports/windows-inventory-20260425T171455.txt` (gitignored). Supersede by re-running `export-winget.ps1` and `run-windows-inventory.ps1` after large install/uninstall batches.
 
 | Evidence type | How to (re)generate | Where it lands |
 |---------------|---------------------|----------------|
