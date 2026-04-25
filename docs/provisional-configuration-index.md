@@ -18,7 +18,7 @@ This file maps **phases** from `.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.
 | **Inventory** | winget, shortcuts, optional events | `scripts/run-full-plan-capture.ps1` (one-shot + **CAPTURE-MANIFEST**), or `run-windows-inventory.ps1` + `export-winget.ps1` + `list-windows-shortcuts.ps1` (last may use `%TEMP%` unless orchestrated), `docs/this-pc-inventory-template.md` |
 | **Plan ↔ files** | Crosswalk | `docs/plan-alignment.md` |
 | **A/B/C “done”** | What repo vs machine means | `docs/phases-definition-of-done.md` |
-| **All plan YAML ids** | `todos` + **Appendix A** (`doc-*`) + **Appendix B** (scripts/config/inv) | `docs/plan-frontmatter-coverage.md` |
+| **All plan YAML ids (75)** | `todos` + **A** / **B** / **C** (ordered `id` list) | `docs/plan-frontmatter-coverage.md` |
 | **Plan § file tree** | `Kinoite/ README, docs/…, config/, …` | `docs/plan-stipulated-file-tree.md` |
 | **Tavily (agents)** | RAG / research params | `research/tavily-best-practices-agents-2026-04-25.md` |
 
