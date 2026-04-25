@@ -15,11 +15,12 @@
 | [docs/app-mapping.md](docs/app-mapping.md) | Windows → Kinoite app parity (expand from your `winget export`) |
 | [docs/windows11-daily-driver-baseline.md](docs/windows11-daily-driver-baseline.md) | How this repo mirrors the plan’s **this host** inventory (scripts + `imports/`) |
 | [config/wsl.conf.example](config/wsl.conf.example) | Copy into WSL as `/etc/wsl.conf` after import |
+| [PROVISION](PROVISION) (repo root) | **Executable** path: `config/rpm-ostree/layers.list` + `config/flatpak/*.list` → `scripts/apply-atomic-provision.sh` and optional boot-time `kinoite-atomic-ostree.service` |
 
 ## Scripts (order of operations)
 
 1. **Windows (PowerShell, elevated if needed):** [scripts/import-kinoite-rootfs-to-wsl.ps1](scripts/import-kinoite-rootfs-to-wsl.ps1) — `podman pull` → `podman create` → `podman export` → `wsl --import`.
-2. **Inside WSL distro:** [scripts/bootstrap-kinoite-wsl2.sh](scripts/bootstrap-kinoite-wsl2.sh) — Flathub, first `rpm-ostree` checks, user hints.
+2. **Inside WSL distro:** [scripts/bootstrap-kinoite-wsl2.sh](scripts/bootstrap-kinoite-wsl2.sh) — first `rpm-ostree` / Flathub hints, then [scripts/apply-atomic-provision.sh](scripts/apply-atomic-provision.sh) to apply **declarative** [config/rpm-ostree/layers.list](config/rpm-ostree/layers.list) + [config/flatpak](config/flatpak/) (edit lists first; see [PROVISION](PROVISION)). Optional: [scripts/install-atomic-provision-service.sh](scripts/install-atomic-provision-service.sh) to enable [config/systemd/kinoite-atomic-ostree.service](config/systemd/kinoite-atomic-ostree.service) (rpm-ostree **layers** on boot; reboot after layering).
 3. **Inventory (Windows):** [scripts/run-full-plan-capture.ps1](scripts/run-full-plan-capture.ps1) runs the winget + inventory + optional exports in order and writes **`imports/CAPTURE-MANIFEST-<stamp>.txt`**. Or run individually: [scripts/export-winget.ps1](scripts/export-winget.ps1), [scripts/run-windows-inventory.ps1](scripts/run-windows-inventory.ps1) → `imports/` (sanitize before git push). **Shortcuts:** [scripts/list-windows-shortcuts.ps1](scripts/list-windows-shortcuts.ps1) (the full-capture script writes under `imports/` with `-OutFile`, not only `%TEMP%`).
 
 ## Status

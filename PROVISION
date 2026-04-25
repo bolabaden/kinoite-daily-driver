@@ -1,0 +1,12 @@
+Declarative (rpm-ostree) + Flatpak — executable setup (not narrative docs only)
+
+1) Edit:  config/rpm-ostree/layers.list  (uncomment package names) and  config/flatpak/*.list  (app IDs)
+2) Inside the Kinoite system (WSL2 or metal), from a clone of this repo:
+   cd /path/to/Kinoite
+   sudo ./scripts/apply-atomic-provision.sh
+   (re-run after you edit the lists; reboot or wsl --shutdown after new rpm-ostree layers)
+3) Boot-time rpm-ostree from systemd (staged layers, no Flatpaks in that pass):
+   sudo ./scripts/install-atomic-provision-service.sh YOUR_LINUX_USER
+   (copies to /etc/kinoite-provision, enables kinoite-atomic-ostree.service)
+
+Immutability:  rpm-ostree  stages changes into the next deployment; layers in layers.list are the editable source of truth until you  rpm-ostree rebase/reset. User Flatpaks go under  ~/.var/app/  and are not the base image.

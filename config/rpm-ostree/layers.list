@@ -1,0 +1,12 @@
+# One package (or @group) per line. Lines starting with # are ignored.
+# Apply with: ./scripts/apply-atomic-provision.sh (or systemd first-boot, see config/systemd/)
+# After layering: reboot (bare metal) or wsl --shutdown and relaunch WSL2.
+#
+# Common examples (uncomment for your next ostree rebase/upgrade):
+# fish
+# zsh
+# helix
+# neovim
+# distrobox
+# cracklib-dicts
+# google-noto-emoji-color-fonts

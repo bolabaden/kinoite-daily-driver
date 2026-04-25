@@ -97,6 +97,14 @@ flatpak update -y
 
 Use **`../scripts/bootstrap-kinoite-wsl2.sh`** for a guided sequence.
 
+## Declarative `rpm-ostree` + Flatpak (provisional config, this repo)
+
+Edit **`config/rpm-ostree/layers.list`** (package names, one per line) and **`config/flatpak/*.list`** (Flathub app IDs), then from the repo root on the **Linux** side run:
+
+`sudo ./scripts/apply-atomic-provision.sh`
+
+**`rpm-ostree`** layers are staged to the next boot; **Flatpaks** install to the user’s `~/.var/app/`. For **systemd** to apply only **layers** at boot (no Flatpaks; those need a user D-Bus session), run **`sudo ./scripts/install-atomic-provision-service.sh`**. See **`../PROVISION`**.
+
 ## Plasma / WSLg
 
 There is no single guaranteed recipe; common patterns:

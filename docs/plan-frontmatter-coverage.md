@@ -35,7 +35,7 @@
 | `doc-ostree-rollback` … `doc-bluetooth-audio` | completed | `atomic-updates-rollback.md` … `bluetooth-pipewire.md` |
 | `pre-commit-secrets` | completed | `docs/gitleaks-optional.md` |
 | `post-exec-mark-plan` | completed in plan (KotOR) | `WORKSPACE_STATUS.md` + KotOR plan **Status** (`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md`) + `AGENTS.md` (full-capture pointer) |
-| *Added by execution (not separate YAML ids):* | — | `scripts/run-full-plan-capture.ps1` (orchestrates all host imports), committed `imports/CAPTURE-MANIFEST-*.txt`, `docs/plan-alignment.md`, `phases-definition-of-done.md`, `windows11-daily-driver-baseline.md`, `plan-frontmatter-coverage.md` (this file) |
+| *Added by execution (not separate YAML ids):* | — | `scripts/run-full-plan-capture.ps1`, `scripts/apply-atomic-provision.sh`, `config/rpm-ostree/`, `config/systemd/kinoite-atomic-ostree.service`, `PROVISION`, committed `imports/CAPTURE-MANIFEST-*.txt`, `docs/plan-alignment.md`, `phases-definition-of-done.md`, `windows11-daily-driver-baseline.md`, `plan-frontmatter-coverage.md` (this file) |
 
 **Exhaustive definition:** if it appears in the plan’s **todos** table above, there is a **concrete** script, `docs/*.md`, `config/`, or **notes in `WORKSPACE_STATUS.md`** (for host-only state). If an `id` is **`cancelled`**, the replacement artifact is named.
 
@@ -100,6 +100,7 @@
 | `config-wsl-conf` | [../config/wsl.conf.example](../config/wsl.conf.example) |
 | *Host* `%UserProfile%\.wslconfig` | [../config/.wslconfig.example](../config/.wslconfig.example) |
 | `config-flatpak-lists` | [../config/flatpak/desktop-core.list](../config/flatpak/desktop-core.list), [../config/flatpak/dev.list](../config/flatpak/dev.list), [../config/flatpak/gaming.list](../config/flatpak/gaming.list) |
+| *Declarative rpm-ostree layers* (post-`config-*` execution) | [../config/rpm-ostree/layers.list](../config/rpm-ostree/layers.list) + [../scripts/apply-atomic-provision.sh](../scripts/apply-atomic-provision.sh) + [../config/systemd/kinoite-atomic-ostree.service](../config/systemd/kinoite-atomic-ostree.service) + [../scripts/install-atomic-provision-service.sh](../scripts/install-atomic-provision-service.sh) + [../PROVISION](../PROVISION) |
 | `config-shell-skel` | [../config/shell/README.md](../config/shell/README.md) |
 | `path-resolve-g` / `create-tree` | [../kinoite-workspace-root.env.example](../kinoite-workspace-root.env.example) (repo path convention) |
 | `script-bootstrap-kinoite-wsl2` | [../scripts/bootstrap-kinoite-wsl2.sh](../scripts/bootstrap-kinoite-wsl2.sh) |

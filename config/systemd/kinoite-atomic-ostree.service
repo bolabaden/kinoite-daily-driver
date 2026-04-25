@@ -1,0 +1,16 @@
+[Unit]
+Description=Kinoite declarative rpm-ostree layers (see scripts/install-atomic-provision-service.sh)
+Documentation=file:///etc/kinoite-provision/
+After=network-online.target local-fs.target
+Wants=network-online.target
+ConditionPathExists=/etc/kinoite-provision/apply-atomic-provision.sh
+
+[Service]
+Type=oneshot
+Environment=KINOITE_OSTREE_ONLY=1
+ExecStart=/etc/kinoite-provision/apply-atomic-provision.sh
+RemainAfterExit=yes
+StandardOutput=journal
+
+[Install]
+WantedBy=multi-user.target

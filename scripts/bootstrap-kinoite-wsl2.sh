@@ -17,8 +17,9 @@ fi
 echo "==> flatpak update (user)"
 flatpak update -y || true
 
-echo "==> Done. Suggested next installs (user chooses):"
-echo "    flatpak install -y com.valvesoftware.Steam"
-echo "    flatpak install -y org.mozilla.firefox"
-echo "    flatpak install -y org.flameshot.Flameshot"
-echo "See ../config/flatpak/*.list and ../docs/*.md"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+echo "==> Declarative provision (edit lists, then run):"
+echo "    sudo $REPO_ROOT/scripts/apply-atomic-provision.sh"
+echo "    (config: $REPO_ROOT/config/rpm-ostree/layers.list  and  $REPO_ROOT/config/flatpak/*.list )"
+echo "    See $REPO_ROOT/PROVISION"
+echo "==> Or one-off: flatpak install -y com.valvesoftware.Steam  (see config/flatpak/*.list)"
