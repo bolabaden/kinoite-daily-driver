@@ -12,6 +12,13 @@ This document is the **single source of truth** for importing and running **Fedo
 - **Flatpak** + **Flathub** for most GUI apps; **`toolbox`/`distrobox`** for mutable `dnf` in WSL when `rpm-ostree` is not the driver.
 - **Plasma** usable under **WSLg** (often **`plasmashell`** or a partial session — **SDDM** in WSL is usually skipped).
 
+## VPN and overlay network stack (plan note)
+
+A **Windows 11** daily driver often has **Cloudflare WARP**, **Tailscale**, **PIA**, **OpenVPN**, and other clients **active together**. That stack is a **troubleshooting risk** (MTU, routing loops, **DNS** surprises). On **Fedora Kinoite**—whether in **WSL2** (mostly **development/experiment**) or **bare metal** (your eventual target)—prefer **one primary tunnel** for “general” connectivity and add **split routing** or **per-app** policy when a tool supports it. Re-implementing **four simultaneous full-tunnel** clients the way they often sit on Windows is rarely desirable.
+
+- **WARP (Linux / atomic):** [Get started (Linux)](https://developers.cloudflare.com/warp-client/get-started/linux/), [packages](https://pkg.cloudflareclient.com/) — on **rpm-ostree** hosts, install the system package, **reboot**, then **`systemctl enable --now warp-svc`** and `warp-cli …`.  
+- **Tailscale / PIA / OpenVPN:** see [`networking.md`](networking.md) for **NetworkManager**, vendor UIs, and “pick one **primary** VPN” guidance.
+
 ## Verified import (this workspace, 2026-04-25)
 
 | Step | Result |

@@ -19,5 +19,8 @@ This file is the **authoritative** execution log (the Cursor plan is **read-only
 | External research (Tavily) | **Fallback** | `tvly` not on PATH; `research/tavily-best-practices-agents-2026-04-25.md` (official `docs.tavily.com` links + agent patterns) + `kinoite-wsl-systemd-sources-2026-04-25.md` + `docs/research-workflow-tavily-firecrawl.md` |
 | Primary URL digest | **Done** | `research/docs-researcher-wsl-kinoite-primary-sources-2026-04-25.md` |
 | Plan crosswalk | **Done** | `docs/plan-alignment.md` |
+| `kinoite-wsl2.md` VPN overlay | **Done 2026-04-25** | Plan **§ Rules** requires WARP+multi-VPN **risk** and **Kinoite** strategy — now under **## VPN and overlay network stack** |
+| A/B/C phase gates (doc) | **Done** | `docs/phases-definition-of-done.md` |
+| KotOR.js `AGENTS.md` pointer | **Done** | Optional `KINOITE_WORKSPACE_ROOT` + path to this workspace in main repo (cross-link only) |
 
 **Last update:** 2026-04-25 (exhaustive configuration pass, git commit in this repo).

@@ -16,6 +16,7 @@ This file maps **phases** from `.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.
 | **Research** | Tavily / Firecrawl / external | `docs/research-workflow-tavily-firecrawl.md`, `../research/`, `../.firecrawl/README` |
 | **Inventory** | winget, shortcuts, optional events | `scripts/run-windows-inventory.ps1`, `scripts/export-winget.ps1`, `scripts/list-windows-shortcuts.ps1` (output under `%TEMP%`), `docs/this-pc-inventory-template.md` |
 | **Plan ↔ files** | Crosswalk | `docs/plan-alignment.md` |
+| **A/B/C “done”** | What repo vs machine means | `docs/phases-definition-of-done.md` |
 | **Tavily (agents)** | RAG / research params | `research/tavily-best-practices-agents-2026-04-25.md` |
 
 **“All phases complete” in documentation terms:** every **plan** deliverable that can be represented as **markdown + scripts + config templates** exists in-tree. **Phases that require real hardware/ISO installs** (bare metal, full VBox run) are **checklisted**, not **machine-completed** from automation alone.
