@@ -17,6 +17,7 @@
 | `keep-windows.md` | `docs/keep-windows.md` | |
 | Daily driver topics (audio, print, games, …) | `docs/*.md` (see `provisional-configuration-index.md`) | |
 | Research: Tavily / Firecrawl | `docs/research-workflow-tavily-firecrawl.md`, `research/`, `.firecrawl/README` | |
-| post-exec-mark-plan | N/A (cancelled in plan) | State → `WORKSPACE_STATUS.md` |
+| post-exec-mark-plan | completed | `WORKSPACE_STATUS.md`, KotOR plan **Status** + `AGENTS.md` |
+| provision-atomic-declarative | `config/rpm-ostree/`, `apply-atomic-provision.sh`, `install-atomic-provision-service.sh`, systemd unit, `PROVISION` | Immutable provision (not docs-only) |
 
-**Frontmatter `todos`:** all **completed** or **cancelled** in plan; this workspace is the **materialized** deliverable, not a second edit to plan frontmatter.
+**Frontmatter `todos`:** all **completed** or **cancelled** in plan; this workspace is the **materialized** deliverable; new ids in KotOR (e.g. `provision-atomic-declarative`) are mirrored in `plan-frontmatter-coverage.md`.

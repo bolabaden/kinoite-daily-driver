@@ -28,8 +28,7 @@ if command -v systemctl &>/dev/null; then
   systemctl daemon-reload
   systemctl enable kinoite-atomic-ostree.service
   echo "==> Enabled: kinoite-atomic-ostree.service (rpm-ostree layers on boot; reboot to apply if packages were added)."
-  echo "==> Flatpaks: after login, run:  sudo -u YOURUSER env -i HOME=\$(getent passwd YOURUSER | cut -d: -f6) $REPO_ROOT/scripts/apply-atomic-provision.sh"
-  echo "    (or)  sudo $REPO_ROOT/scripts/apply-atomic-provision.sh  # with SUDO_USER from sudo"
+  echo "==> Flatpaks: after login, or: sudo -u YOURUSER $REPO_ROOT/scripts/apply-atomic-provision.sh  (or sudo from your account so SUDO_USER is set)"
 else
   echo "==> No systemctl; copied files to /etc/kinoite-provision only."
 fi
