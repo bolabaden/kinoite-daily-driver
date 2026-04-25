@@ -12,7 +12,7 @@ This file maps **phases** from `.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.
 | **Keep Windows** | 3ds, anti-cheat, Voicemod-grade, ShareX automation | `docs/keep-windows.md` |
 | **Host tuning** | `.wslconfig` memory/swap, PATH noise | `config/.wslconfig.example`, `config/wsl.conf.example` (in-distro) |
 | **Phase B / VirtualBox** | Kinoite ISO, snapshots | `docs/virtualbox-kinoite-fallback.md`, `docs/virtualbox-snapshots-workflow.md` |
-| **Phase C / bare metal** | Migration, firmware, rebase | `docs/migration-baremetal-checklist.md`, `docs/firmware-and-secure-boot.md`, `docs/atomic-updates-rollback.md` |
+| **Phase C / bare metal** | Migration, firmware, rebase, power | `docs/migration-baremetal-checklist.md`, `docs/firmware-and-secure-boot.md`, `docs/atomic-updates-rollback.md`, `docs/power-and-battery.md` |
 | **Daily driver KDE** | Plasma, fonts, input, audio, print | `docs/kde-daily-driver-recommendations.md` + `docs/*` topical files (audio, print, network, games, 3D, M365, …) |
 | **Research** | Tavily / Firecrawl / external | `docs/research-workflow-tavily-firecrawl.md`, `../research/`, `../.firecrawl/README` |
 | **Inventory** | winget, shortcuts, optional events | `scripts/run-full-plan-capture.ps1` (one-shot + **CAPTURE-MANIFEST**), or `run-windows-inventory.ps1` + `export-winget.ps1` + `list-windows-shortcuts.ps1` (last may use `%TEMP%` unless orchestrated), `docs/this-pc-inventory-template.md` |
