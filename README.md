@@ -17,6 +17,7 @@
 | [config/wsl.conf.example](config/wsl.conf.example) | Copy into WSL as `/etc/wsl.conf` after import |
 | [PROVISION](PROVISION) (repo root) | **Executable** path: `config/rpm-ostree/layers.list` + `config/flatpak/*.list` → `scripts/apply-atomic-provision.sh` and optional boot-time `kinoite-atomic-ostree.service` |
 | [docs/plan-stipulated-file-tree.md](docs/plan-stipulated-file-tree.md) | Plan **Workspace path** ↔ on-disk files (KotOR.js plan file is a **sibling** checkout) |
+| [docs/plan-alignment.md](docs/plan-alignment.md) | Phases **A** / **B** / **C** vs docs (KotOR plan ↔ this tree) |
 | [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) | All **75** `todos` `id` → files (Appendix **C**); re-run [scripts/verify-plan-frontmatter-coverage.ps1](scripts/verify-plan-frontmatter-coverage.ps1) after plan YAML changes |
 
 ## Scripts (order of operations)
