@@ -8,6 +8,7 @@ This document is the **single source of truth** for importing and running **Fedo
 
 - **Cursor plan** (in a **KotOR.js** checkout, not in this path): **`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md`**. It points at **`G:\workspaces\Kinoite`** in **## Status**; a **line-by-line plan vs files** table for this tree is [plan-stipulated-file-tree.md](plan-stipulated-file-tree.md).
 - **Agent / IDE** notes: [KotOR.js `AGENTS.md` (upstream)](https://github.com/KobaltBlu/KotOR.js/blob/master/AGENTS.md).
+- **“Done in this tree” vs the plan (Phase A):** [phases-definition-of-done.md](phases-definition-of-done.md) — and **KotOR ↔ on-disk** rows in [plan-alignment.md](plan-alignment.md) (Phase **A**) and [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md).
 
 ## Goals
 
