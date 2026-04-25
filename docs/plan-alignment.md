@@ -19,5 +19,6 @@
 | Research: Tavily / Firecrawl | `docs/research-workflow-tavily-firecrawl.md`, `research/`, `.firecrawl/README` | |
 | post-exec-mark-plan | completed | `WORKSPACE_STATUS.md`, KotOR plan **Status** + `AGENTS.md` |
 | provision-atomic-declarative | `config/rpm-ostree/`, `apply-atomic-provision.sh`, `install-atomic-provision-service.sh`, systemd unit, `PROVISION` | Immutable provision (not docs-only) |
+| 75 `id`s vs plan YAML + drift check | `docs/plan-frontmatter-coverage.md` Appendix C; `scripts/verify-plan-frontmatter-coverage.ps1` (exit 0 = all `id`s listed in coverage doc) | Re-run when KotOR `silverblue_wsl_workspace_ec9c3c8b.plan.md` `todos` change |
 
-**Frontmatter `todos`:** all **completed** or **cancelled** in plan; this workspace is the **materialized** deliverable; new ids in KotOR (e.g. `provision-atomic-declarative`) are mirrored in `plan-frontmatter-coverage.md`.
+**Frontmatter `todos`:** all **completed** or **cancelled** in plan; this workspace is the **materialized** deliverable; new or renamed `id`s in KotOR must be mirrored in `plan-frontmatter-coverage.md` (main table + **Appendix C**) and pass **`verify-plan-frontmatter-coverage.ps1`**.
