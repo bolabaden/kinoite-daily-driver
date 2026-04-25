@@ -3,7 +3,7 @@
 **Phase A:** Kinoite / OSTree userland in **WSL2** with **systemd**, **`rpm-ostree`**, **Flatpak (Flathub)**, and **KDE Plasma** under **WSLg** — not classic Fedora (dnf) as a substitute.
 
 **Workspace root:** `G:\workspaces\Kinoite`  
-**Optional env (Windows):** `KINOITE_WORKSPACE_ROOT=G:\workspaces\Kinoite`
+**Optional env (Windows):** `KINOITE_WORKSPACE_ROOT=G:\workspaces\Kinoite` (see [kinoite-workspace-root.env.example](kinoite-workspace-root.env.example) for a one-line template).
 
 ## Quick links
 
@@ -13,6 +13,7 @@
 | [docs/systemd-rpm-ostree-wsl2-claims.md](docs/systemd-rpm-ostree-wsl2-claims.md) | **systemd vs `rpm-ostree`** — what WSL2 can and cannot guarantee |
 | [docs/strategy-phaseA-kinoite-wsl2.md](docs/strategy-phaseA-kinoite-wsl2.md) | Why Phase A is Kinoite-in-WSL2 only |
 | [docs/app-mapping.md](docs/app-mapping.md) | Windows → Kinoite app parity (expand from your `winget export`) |
+| [docs/windows11-daily-driver-baseline.md](docs/windows11-daily-driver-baseline.md) | How this repo mirrors the plan’s **this host** inventory (scripts + `imports/`) |
 | [config/wsl.conf.example](config/wsl.conf.example) | Copy into WSL as `/etc/wsl.conf` after import |
 
 ## Scripts (order of operations)

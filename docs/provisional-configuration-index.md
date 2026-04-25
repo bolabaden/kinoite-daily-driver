@@ -4,7 +4,8 @@ This file maps **phases** from `.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.
 
 | Phase / topic | Plan intent | This workspace |
 |---------------|------------|----------------|
-| **Primary path** | `G:\workspaces\Kinoite` + optional `KINOITE_WORKSPACE_ROOT` | `README.md`, env documented at repo root |
+| **Primary path** | `G:\workspaces\Kinoite` + optional `KINOITE_WORKSPACE_ROOT` | `README.md`, [kinoite-workspace-root.env.example](../kinoite-workspace-root.env.example) |
+| **Win11 map ↔ plan** | same host, inventory scripts | [windows11-daily-driver-baseline.md](windows11-daily-driver-baseline.md) |
 | **Phase A — Kinoite in WSL2** | `podman` pull/export → `wsl --import`; systemd, Plasma, Flathub | `docs/kinoite-wsl2.md`, `scripts/import-kinoite-rootfs-to-wsl.ps1`, `scripts/bootstrap-kinoite-wsl2.sh` |
 | **OSTree / rpm-ostree honesty** | No false claims for container import | `docs/systemd-rpm-ostree-wsl2-claims.md` |
 | **Win11 → Kinoite app map** | TSV + winget; named apps (ShareX, Steam, …) | `docs/app-mapping.md` + `imports/winget-export-*.json` (**gitignored**; re-run `scripts/export-winget.ps1`) |

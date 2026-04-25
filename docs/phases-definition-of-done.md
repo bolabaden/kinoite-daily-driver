@@ -10,4 +10,4 @@
 
 **“All phases complete” for automation:** the **row “repository delivers”** is **complete** when every linked artifact exists and **WORKSPACE_STATUS** reflects the latest **winget/shortcut/inventory** runs (where applicable). The **on the machine** column is **not** a git deliverable; it is **tracked in notes** and checklists, not claimed as “done by the agent in chat.”
 
-**Win11 daily-driver map:** `docs/app-mapping.md` + `imports/winget-export-*.json` (local, gitignored) + `%TEMP%` shortcut dumps from `scripts/list-windows-shortcuts.ps1`.
+**Win11 daily-driver map:** `docs/app-mapping.md`, `docs/windows11-daily-driver-baseline.md` + `imports/winget-export-*.json` (local, gitignored) + `%TEMP%` shortcut dumps from `scripts/list-windows-shortcuts.ps1`. Optional env: [kinoite-workspace-root.env.example](../kinoite-workspace-root.env.example).

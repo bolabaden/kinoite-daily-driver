@@ -1,8 +1,13 @@
 # imports/
 
-Place **sanitized** outputs here:
+Place **raw** inventory outputs here. **`.gitignore` excludes the usual filename patterns** so a normal `git add` will not pick them up—verify with `git status` before a push if you add new name patterns.
 
-- `winget-export.json` from `..\scripts\export-winget.ps1` (remove emails, internal hostnames if any).
-- Optional: redacted `wsl-dump.txt`, hardware CIM excerpts.
+| File pattern | Source script | Notes |
+|--------------|---------------|--------|
+| `winget-export-*.json` | `../scripts/export-winget.ps1` | Many `not available from any source` / Steam / MSIX lines are **normal** |
+| `windows-inventory-*.txt` | `../scripts/run-windows-inventory.ps1` | CIM OS, `wsl -l -v`, `wsl --version`, **podman** (stderr if VM not up) |
+| (optional) hardware / scoop / events | `inv-*.ps1`, `sample-event-logs.ps1` | as documented in `../docs/this-pc-inventory-template.md` |
 
-**Do not commit** unsanitized JSON if it contains paths or account identifiers you consider private. `.gitignore` ignores common export names.
+**Start Menu / Desktop** shortcuts are **not** stored here by default: `../scripts/list-windows-shortcuts.ps1` writes **`%TEMP%\start-menu-shortcuts-YYYYMMDD.txt`** to avoid multi‑MB files in the tree.
+
+**Sanitization for sharing:** strip internal hostnames, e‑mails, or one‑off ARP junk before copying exports out of this machine.

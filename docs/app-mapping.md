@@ -2,7 +2,7 @@
 
 This file tracks **this daily-driver** machine: expand from **`winget export`** in `imports/` (see `../scripts/export-winget.ps1`). Exports are **gitignored** — commit only **this** doc, not raw JSON.
 
-**Latest local export (this refresh):** `imports/winget-export-20260425T170347.json` (run `export-winget.ps1` to supersede)  
+**Latest local export (this refresh):** `imports/winget-export-20260425T170847.json` (run `export-winget.ps1` to supersede)  
 **Rule:** prefer **Flathub**; **toolbox**/**distrobox** for heavy `dnf`; **`rpm-ostree install`** only on a **true** atomic **boot** (see `systemd-rpm-ostree-wsl2-claims.md`).
 
 ## Named quick ref (from plan)

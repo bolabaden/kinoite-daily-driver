@@ -10,9 +10,9 @@ This file is the **authoritative** execution log (the Cursor plan is **read-only
 | `/etc/wsl.conf` `[boot] systemd=true` | **Present** | Minimal file in distro; **host** `wsl --shutdown` then restart **required** for a clean systemd bring-up (see [systemd in WSL](https://learn.microsoft.com/en-us/windows/wsl/systemd)) |
 | systemd health inside distro | **Observed 2026-04-25** | Long-running `wsl` check: `systemctl is-system-running` → `starting` + “failed to start user session for root” / earlier minimal-PATH check: no `/run/systemd` — **treat as “needs full shutdown or non-root user”**; re-run after `wsl --shutdown` |
 | `rpm-ostree status` | **Expected fail** in Phase A | Container import → *not booted via libostree* — not a WSL “bug,” see `docs/systemd-rpm-ostree-wsl2-claims.md` |
-| `winget export` refresh | **Done 2026-04-25** | `imports/winget-export-20260425T170347.json` (gitignored) — `export-winget.ps1` now resolves `winget.exe` under `WindowsApps` and merges `Machine`/`User` `PATH` when the host uses a **minimal** shell. Many `not available from any source` / Steam rows = **expected** |
+| `winget export` refresh | **Done 2026-04-25** | `imports/winget-export-20260425T170847.json` (gitignored) — `export-winget.ps1` resolves `winget.exe` under `WindowsApps` and merges `Machine`/`User` `PATH` for **minimal** shells. Many `not available from any source` / Steam rows = **expected** |
 | `list-windows-shortcuts.ps1` | **Done 2026-04-25** | `%TEMP%\start-menu-shortcuts-20260425.txt` (local only; line count is large by design) — script lives in this repo (`scripts/list-windows-shortcuts.ps1`) and mirrors **KotOR.js** `scripts\list-windows-shortcuts.ps1` |
-| `run-windows-inventory.ps1` | **Done 2026-04-25** | `imports/windows-inventory-20260425T170424.txt` — includes `wsl` + best-effort **podman** (stderr captured if the machine/connection is not up) |
+| `run-windows-inventory.ps1` | **Done 2026-04-25** | `imports/windows-inventory-20260425T170854.txt` — CIM, `wsl` + best-effort **podman** (stderr if VM/connection is not up) |
 | TSV + daily-driver table in `docs/app-mapping.md` | **Done** | Plan table merged; re-export winget to diff |
 | `docs/keep-windows.md` | **Expanded** | Parity gaps, VM note, PUP/ARP hygiene |
 | Host `~/.wslconfig` | **Template** | `config/.wslconfig.example` |
@@ -21,6 +21,8 @@ This file is the **authoritative** execution log (the Cursor plan is **read-only
 | Plan crosswalk | **Done** | `docs/plan-alignment.md` |
 | `kinoite-wsl2.md` VPN overlay | **Done 2026-04-25** | Plan **§ Rules** requires WARP+multi-VPN **risk** and **Kinoite** strategy — now under **## VPN and overlay network stack** |
 | A/B/C phase gates (doc) | **Done** | `docs/phases-definition-of-done.md` |
-| KotOR.js `AGENTS.md` pointer | **Done** | Optional `KINOITE_WORKSPACE_ROOT` + path to this workspace in main repo (cross-link only) |
+| KotOR.js `AGENTS.md` pointer | **Done** | Optional `KINOITE_WORKSPACE_ROOT` + plan path; see [kinoite-workspace-root.env.example](../kinoite-workspace-root.env.example) |
+| **Win11 ↔ plan** mapping doc | **Done** | [docs/windows11-daily-driver-baseline.md](docs/windows11-daily-driver-baseline.md) — how scripts and `app-mapping` mirror plan inventory § |
+| `imports/README.md` | **Done** | All export patterns, `%TEMP%` shortcuts, sanitization note |
 
-**Last update:** 2026-04-25 (exhaustive configuration pass, git commit in this repo).
+**Last update:** 2026-04-25 (exhaustive configuration: env template, daily-driver baseline, refreshed `imports/`, this status).
