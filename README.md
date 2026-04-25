@@ -23,7 +23,10 @@
 
 ## Status
 
-See [WORKSPACE_STATUS.md](WORKSPACE_STATUS.md) for execution checklist (plan frontmatter is **not** edited from here).
+- [WORKSPACE_STATUS.md](WORKSPACE_STATUS.md) — live execution checklist.  
+- [docs/provisional-configuration-index.md](docs/provisional-configuration-index.md) — **plan → repo** phase mapping (A/B/C + daily-driver docs).
+
+(The Cursor plan file in **KotOR.js** is **read-only** for the same spec; this workspace holds **what was done**.)
 
 ## Legal
 
