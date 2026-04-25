@@ -20,7 +20,7 @@
 
 1. **Windows (PowerShell, elevated if needed):** [scripts/import-kinoite-rootfs-to-wsl.ps1](scripts/import-kinoite-rootfs-to-wsl.ps1) — `podman pull` → `podman create` → `podman export` → `wsl --import`.
 2. **Inside WSL distro:** [scripts/bootstrap-kinoite-wsl2.sh](scripts/bootstrap-kinoite-wsl2.sh) — Flathub, first `rpm-ostree` checks, user hints.
-3. **Inventory (Windows):** [scripts/export-winget.ps1](scripts/export-winget.ps1), [scripts/run-windows-inventory.ps1](scripts/run-windows-inventory.ps1) → `imports/` (sanitize before git push). **Shortcuts:** [scripts/list-windows-shortcuts.ps1](scripts/list-windows-shortcuts.ps1) → default `%TEMP%\…` (same pattern as the KotOR.js `scripts\list-windows-shortcuts.ps1`).
+3. **Inventory (Windows):** [scripts/run-full-plan-capture.ps1](scripts/run-full-plan-capture.ps1) runs the winget + inventory + optional exports in order and writes **`imports/CAPTURE-MANIFEST-<stamp>.txt`**. Or run individually: [scripts/export-winget.ps1](scripts/export-winget.ps1), [scripts/run-windows-inventory.ps1](scripts/run-windows-inventory.ps1) → `imports/` (sanitize before git push). **Shortcuts:** [scripts/list-windows-shortcuts.ps1](scripts/list-windows-shortcuts.ps1) (the full-capture script writes under `imports/` with `-OutFile`, not only `%TEMP%`).
 
 ## Status
 
@@ -29,7 +29,7 @@
 - [docs/phases-definition-of-done.md](docs/phases-definition-of-done.md) — repository vs on-machine “phase complete” criteria.  
 - [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) — every plan YAML `todos` `id` → file; **Appendix A** = each `doc-*` row; **Appendix B** = `config-*` / `script-*` / `inv-*` / import paths.  
 - [docs/plan-stipulated-file-tree.md](docs/plan-stipulated-file-tree.md) — matches the plan’s **Workspace path** file list + env.
-- **Exhaustive (repo):** all **completed** frontmatter items in the KotOR plan are mapped here; **Win11** “current” = latest `imports/winget-export-*.json` and `windows-inventory-*.txt` named in [WORKSPACE_STATUS](WORKSPACE_STATUS.md) and [app-mapping](docs/app-mapping.md). Re-run the two inventory scripts after bulk app changes. **Phase B/C installs** (VBox / bare metal) remain **on machine** (see [phases-definition-of-done](docs/phases-definition-of-done.md)).
+- **Exhaustive (repo):** all **completed** frontmatter items in the KotOR plan are mapped here; **Win11** “current” = latest `CAPTURE-MANIFEST-*.txt` plus the files it lists, or the latest `imports/winget-export-*.json` and `windows-inventory-*.txt` named in [WORKSPACE_STATUS](WORKSPACE_STATUS.md) and [app-mapping](docs/app-mapping.md). Re-run **`run-full-plan-capture.ps1`** (or the individual inventory scripts) after bulk app changes. **Phase B/C installs** (VBox / bare metal) remain **on machine** (see [phases-definition-of-done](docs/phases-definition-of-done.md)).
 
 The spec file `silverblue_wsl_workspace_ec9c3c8b.plan.md` in **KotOR.js** now **references this workspace** in its **## Status** section; the **execution log** is still this repo, not a duplicate inside KotOR.
 

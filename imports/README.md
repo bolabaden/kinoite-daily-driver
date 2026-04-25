@@ -1,13 +1,14 @@
 # imports/
 
-Place **raw** inventory outputs here. **The committed “current” filenames** for this host (when an agent has just refreshed) live in **`../WORKSPACE_STATUS.md`** and **`../docs/app-mapping.md`**; this folder holds timestamped `winget-export-*.json` and `windows-inventory-*.txt` files. **`.gitignore` excludes the usual filename patterns** so a normal `git add` will not pick them up—verify with `git status` before a push if you add new name patterns.
+Place **raw** inventory outputs here. **The committed “current” filenames** for this host (when an agent has just refreshed) live in **`../WORKSPACE_STATUS.md`**, **`../docs/app-mapping.md`**, and a small run index: **`CAPTURE-MANIFEST-<stamp>.txt`** (produced by **`../scripts/run-full-plan-capture.ps1`**; **unignored** in `.gitignore` so the index can be committed). This folder also holds timestamped `winget-export-*.json`, `windows-inventory-*.txt`, and other large `*.txt` files. **`.gitignore` excludes the usual filename patterns** so a normal `git add` will not pick up bulk exports—verify with `git status` before a push if you add new name patterns.
 
 | File pattern | Source script | Notes |
 |--------------|---------------|--------|
-| `winget-export-*.json` | `../scripts/export-winget.ps1` | Many `not available from any source` / Steam / MSIX lines are **normal** |
-| `windows-inventory-*.txt` | `../scripts/run-windows-inventory.ps1` | CIM OS, `wsl -l -v`, `wsl --version`, **podman** (stderr if VM not up) |
-| (optional) hardware / scoop / events | `inv-*.ps1`, `sample-event-logs.ps1` | as documented in `../docs/this-pc-inventory-template.md` |
+| `CAPTURE-MANIFEST-*.txt` | `../scripts/run-full-plan-capture.ps1` | **Committed** list of the run’s `imports/*` files and short notes |
+| `winget-export-*.json` | `../scripts/export-winget.ps1` (or full-capture) | Many `not available from any source` / Steam / MSIX lines are **normal** |
+| `windows-inventory-*.txt` | `../scripts/run-windows-inventory.ps1` (or full-capture) | CIM OS, `wsl -l -v`, `wsl --version`, **podman** (stderr if VM not up) |
+| (optional) hardware / scoop / events / shortcuts | `inv-*.ps1`, `sample-event-logs.ps1`, `list-windows-shortcuts.ps1` | Full-capture writes shortcuts under `imports/` with **`-OutFile`**, not only `%TEMP%` |
 
-**Start Menu / Desktop** shortcuts are **not** stored here by default: `../scripts/list-windows-shortcuts.ps1` writes **`%TEMP%\start-menu-shortcuts-YYYYMMDD.txt`** to avoid multi‑MB files in the tree.
+**Start Menu / Desktop** shortcuts: standalone **`list-windows-shortcuts.ps1`** defaults to **`%TEMP%`**; **`run-full-plan-capture.ps1`** writes `start-menu-shortcuts-*.txt` under **`imports/`** and lists it in the manifest.
 
 **Sanitization for sharing:** strip internal hostnames, e‑mails, or one‑off ARP junk before copying exports out of this machine.
