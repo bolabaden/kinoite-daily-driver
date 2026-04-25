@@ -18,6 +18,7 @@ This file is the **authoritative** execution log. The spec lives in **KotOR.js**
 | Research (Tavily / URLs) | **In tree** | `research/*`, `docs/research-workflow-tavily-firecrawl.md` |
 | Plan crosswalk | **Done** | `docs/plan-alignment.md` |
 | `kinoite-wsl2.md` VPN overlay | **Done** | **## VPN and overlay network stack** |
+| **KotOR spec ↔ this tree (Phase A)** | **Done** | [docs/kinoite-wsl2.md](docs/kinoite-wsl2.md) **## Spec and the KotOR.js repository**; [docs/plan-stipulated-file-tree.md](docs/plan-stipulated-file-tree.md); [docs/plan-alignment.md](docs/plan-alignment.md) (Phase A row) |
 | Phases A/B/C (definition) | **Done** | [docs/phases-definition-of-done.md](docs/phases-definition-of-done.md) — **A** evidence in `imports/`; **B/C** repo docs + checklists **complete**; real VM/ISO and bare metal remain **on hardware** (e.g. `host-tools-20260425T175108.txt`: VBoxManage **not on `PATH`**) |
 | KotOR `AGENTS.md` | **Done** | Kinoite block + plan path |
 | **Every plan YAML `id` (75)** | **Done** | [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) (Appendix **C**); after KotOR `todos` edits run [scripts/verify-plan-frontmatter-coverage.ps1](scripts/verify-plan-frontmatter-coverage.ps1) |
