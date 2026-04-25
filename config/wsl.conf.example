@@ -1,0 +1,14 @@
+# Copy to /etc/wsl.conf inside the Kinoite WSL distro.
+# Then: exit ; wsl --shutdown (from Windows) ; wsl -d Kinoite-WS2
+
+[boot]
+systemd=true
+
+[user]
+# Linux account that should be default on wsl.exe launch
+default=CHANGE_ME
+
+# Optional:interop defaults are usually fine
+# [interop]
+# enabled=true
+# appendWindowsPath=true

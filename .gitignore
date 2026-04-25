@@ -1,0 +1,22 @@
+# Never commit raw exports with machine-specific paths or secrets
+imports/*.json
+imports/*.yaml
+imports/*winget*
+imports/*.txt
+!imports/README.md
+!imports/.gitkeep
+
+# Local scratch
+*.tar
+*.tar.gz
+*.tmp
+.env
+.env.*
+!.env.example
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Optional gitleaks / tooling
+.gitleaks-cache/
