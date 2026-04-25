@@ -4,6 +4,11 @@ This document is the **single source of truth** for importing and running **Fedo
 
 > **Hard reality (read first):** **`systemd` and full `rpm-ostree` are not the same ask in WSL2.** See [**`systemd-rpm-ostree-wsl2-claims.md`**](systemd-rpm-ostree-wsl2-claims.md) for what can be *fully* true vs what requires a **VM/bare metal** OSTree boot.
 
+## Spec and the KotOR.js repository
+
+- **Cursor plan** (in a **KotOR.js** checkout, not in this path): **`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md`**. It points at **`G:\workspaces\Kinoite`** in **## Status**; a **line-by-line plan vs files** table for this tree is [plan-stipulated-file-tree.md](plan-stipulated-file-tree.md).
+- **Agent / IDE** notes: [KotOR.js `AGENTS.md` (upstream)](https://github.com/KobaltBlu/KotOR.js/blob/master/AGENTS.md).
+
 ## Goals
 
 - A WSL2 distro whose root filesystem comes from the **same OCI lineage** as [Fedora Atomic Desktops / Kinoite](https://fedoraproject.org/atomic-desktops/kinoite/), not “Fedora for WSL” classic **dnf** images as a Phase A substitute.
