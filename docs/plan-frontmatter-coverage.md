@@ -131,7 +131,7 @@
 
 ## Appendix C — Canonical plan `todos` `id` list (75)
 
-**Source of truth (YAML order):** KotOR.js `.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md` frontmatter. This appendix is a **1:1 checklist**; mapping to files is in the **main table** and **Appendix A** / **B** above, plus [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) for on-host execution. **Regenerate** this list (or run [`../scripts/verify-plan-frontmatter-coverage.ps1`](../scripts/verify-plan-frontmatter-coverage.ps1)) when the plan’s `todos` change.
+**Source of truth (YAML order):** KotOR.js `.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md` frontmatter. This appendix is a **1:1 ordered list** of all `id` values; **row-by-row** mapping to files is in the **main table** and in **Appendix A** and **B** above, plus [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) for on-host execution. **Regenerate** this list (or run [`../scripts/verify-plan-frontmatter-coverage.ps1`](../scripts/verify-plan-frontmatter-coverage.ps1)) when the plan’s `todos` change.
 
 1. `phaseA-kinoite-wsl2-import`  
 2. `phaseA-wsl-conf-systemd`  
