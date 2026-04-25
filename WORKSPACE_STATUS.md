@@ -21,5 +21,6 @@ This file is the **authoritative** execution log. The spec lives in **KotOR.js**
 | Phases A/B/C (definition) | **Done** | [docs/phases-definition-of-done.md](docs/phases-definition-of-done.md) — **A** evidence in `imports/`; **B/C** repo docs + checklists **complete**; real VM/ISO and bare metal remain **on hardware** (latest `host-tools-*.txt`: VBoxManage **not on `PATH`** on 2026-04-25 capture) |
 | KotOR `AGENTS.md` | **Done** | Kinoite block + plan path |
 | **Every plan YAML `id`** | **Done** | [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) |
+| **Linux: declarative `rpm-ostree` + Flathub** (immutable OS provision) | **In tree** | [`PROVISION`](PROVISION), [`config/rpm-ostree/layers.list`](config/rpm-ostree/layers.list), [`scripts/apply-atomic-provision.sh`](scripts/apply-atomic-provision.sh), optional boot [`config/systemd/kinoite-atomic-ostree.service`](config/systemd/kinoite-atomic-ostree.service) via [`scripts/install-atomic-provision-service.sh`](scripts/install-atomic-provision-service.sh) — run **inside** the distro; layers need **reboot** to finalize |
 
 **Last update:** 2026-04-25 — full **[`run-full-plan-capture.ps1`](scripts/run-full-plan-capture.ps1)**; manifest **`CAPTURE-MANIFEST-20260425T173027`** = current **Windows 11 + WSL** evidence index in git.
