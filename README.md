@@ -29,8 +29,9 @@
 - [docs/phases-definition-of-done.md](docs/phases-definition-of-done.md) — repository vs on-machine “phase complete” criteria.  
 - [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) — every plan YAML `todos` `id` → file; **Appendix A** = each `doc-*` row; **Appendix B** = `config-*` / `script-*` / `inv-*` / import paths.  
 - [docs/plan-stipulated-file-tree.md](docs/plan-stipulated-file-tree.md) — matches the plan’s **Workspace path** file list + env.
+- **Exhaustive (repo):** all **completed** frontmatter items in the KotOR plan are mapped here; **Win11** “current” = latest `imports/winget-export-*.json` and `windows-inventory-*.txt` named in [WORKSPACE_STATUS](WORKSPACE_STATUS.md) and [app-mapping](docs/app-mapping.md). Re-run the two inventory scripts after bulk app changes. **Phase B/C installs** (VBox / bare metal) remain **on machine** (see [phases-definition-of-done](docs/phases-definition-of-done.md)).
 
-(The Cursor plan file in **KotOR.js** is **read-only** for the same spec; this workspace holds **what was done**.)
+The spec file `silverblue_wsl_workspace_ec9c3c8b.plan.md` in **KotOR.js** now **references this workspace** in its **## Status** section; the **execution log** is still this repo, not a duplicate inside KotOR.
 
 ## Legal
 
