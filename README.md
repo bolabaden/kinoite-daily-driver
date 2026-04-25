@@ -19,7 +19,7 @@
 
 1. **Windows (PowerShell, elevated if needed):** [scripts/import-kinoite-rootfs-to-wsl.ps1](scripts/import-kinoite-rootfs-to-wsl.ps1) — `podman pull` → `podman create` → `podman export` → `wsl --import`.
 2. **Inside WSL distro:** [scripts/bootstrap-kinoite-wsl2.sh](scripts/bootstrap-kinoite-wsl2.sh) — Flathub, first `rpm-ostree` checks, user hints.
-3. **Inventory (Windows):** [scripts/export-winget.ps1](scripts/export-winget.ps1), [scripts/run-windows-inventory.ps1](scripts/run-windows-inventory.ps1) → `imports/` (sanitize before git push).
+3. **Inventory (Windows):** [scripts/export-winget.ps1](scripts/export-winget.ps1), [scripts/run-windows-inventory.ps1](scripts/run-windows-inventory.ps1) → `imports/` (sanitize before git push). **Shortcuts:** [scripts/list-windows-shortcuts.ps1](scripts/list-windows-shortcuts.ps1) → default `%TEMP%\…` (same pattern as the KotOR.js `scripts\list-windows-shortcuts.ps1`).
 
 ## Status
 
