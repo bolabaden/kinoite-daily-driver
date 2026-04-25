@@ -4,7 +4,7 @@ The **Cursor plan** in KotOR (`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.p
 
 **This** workspace is the **executable** mirror of that spec.
 
-**Latest run on this host (2026-04-25, ISO-like stamps):** `imports/winget-export-20260425T171647.json`, `imports/windows-inventory-20260425T171655.txt` (gitignored). Supersede by re-running `export-winget.ps1` and `run-windows-inventory.ps1` after large install/uninstall batches.
+**Latest run on this host (2026-04-25, ISO-like stamps):** `imports/winget-export-20260425T171838.json`, `imports/windows-inventory-20260425T171842.txt` (gitignored). Supersede by re-running `export-winget.ps1` and `run-windows-inventory.ps1` after large install/uninstall batches.
 
 | Evidence type | How to (re)generate | Where it lands |
 |---------------|---------------------|----------------|
