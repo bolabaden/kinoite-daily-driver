@@ -21,7 +21,7 @@ This file is the **authoritative** execution log (the Cursor plan is **read-only
 | Plan crosswalk | **Done** | `docs/plan-alignment.md` |
 | `kinoite-wsl2.md` VPN overlay | **Done 2026-04-25** | Plan **§ Rules** requires WARP+multi-VPN **risk** and **Kinoite** strategy — now under **## VPN and overlay network stack** |
 | A/B/C phase gates (doc) | **Done** | `docs/phases-definition-of-done.md` |
-| KotOR.js `AGENTS.md` pointer | **Done** | Optional `KINOITE_WORKSPACE_ROOT` + plan path; see [kinoite-workspace-root.env.example](../kinoite-workspace-root.env.example) |
+| KotOR.js `AGENTS.md` pointer | **Done** | Optional `KINOITE_WORKSPACE_ROOT` + plan path; see [kinoite-workspace-root.env.example](kinoite-workspace-root.env.example) |
 | **Win11 ↔ plan** mapping doc | **Done** | [docs/windows11-daily-driver-baseline.md](docs/windows11-daily-driver-baseline.md) — how scripts and `app-mapping` mirror plan inventory § |
 | `imports/README.md` | **Done** | All export patterns, `%TEMP%` shortcuts, sanitization note |
 
