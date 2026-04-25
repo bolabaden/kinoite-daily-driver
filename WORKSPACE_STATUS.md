@@ -24,5 +24,6 @@ This file is the **authoritative** execution log (the Cursor plan is **read-only
 | KotOR.js `AGENTS.md` pointer | **Done** | Optional `KINOITE_WORKSPACE_ROOT` + plan path; see [kinoite-workspace-root.env.example](kinoite-workspace-root.env.example) |
 | **Win11 ↔ plan** mapping doc | **Done** | [docs/windows11-daily-driver-baseline.md](docs/windows11-daily-driver-baseline.md) — how scripts and `app-mapping` mirror plan inventory § |
 | `imports/README.md` | **Done** | All export patterns, `%TEMP%` shortcuts, sanitization note |
+| **Every plan `todos` id** | **Done** | [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) maps each YAML `id` → script/doc/config |
 
-**Last update:** 2026-04-25 (exhaustive configuration: env template, daily-driver baseline, refreshed `imports/`, this status).
+**Last update:** 2026-04-25 (exhaustive: `plan-frontmatter-coverage` manifest, this status, prior imports refresh).

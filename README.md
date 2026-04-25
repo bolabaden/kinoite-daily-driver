@@ -26,7 +26,8 @@
 
 - [WORKSPACE_STATUS.md](WORKSPACE_STATUS.md) — live execution checklist.  
 - [docs/provisional-configuration-index.md](docs/provisional-configuration-index.md) — **plan → repo** phase mapping (A/B/C + daily-driver docs).  
-- [docs/phases-definition-of-done.md](docs/phases-definition-of-done.md) — repository vs on-machine “phase complete” criteria.
+- [docs/phases-definition-of-done.md](docs/phases-definition-of-done.md) — repository vs on-machine “phase complete” criteria.  
+- [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) — every plan YAML `todos` `id` → file in this tree.
 
 (The Cursor plan file in **KotOR.js** is **read-only** for the same spec; this workspace holds **what was done**.)
 
