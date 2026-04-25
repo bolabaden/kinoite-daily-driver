@@ -4,7 +4,7 @@ The **Cursor plan** in KotOR (`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.p
 
 **This** workspace is the **executable** mirror of that spec.
 
-**Authoritative run index:** `imports/CAPTURE-MANIFEST-20260425T173027.txt` (from `scripts/run-full-plan-capture.ps1`, 2026-04-25). That run: **`winget list` = 310 lines** (plan “Windows C”); **Start Menu+Desktop = 17,908 lines**; plus `winget-export-*.json`, `windows-inventory-*.txt`, Scoop, StartApps, event samples, hardware outline, `wsl-Kinoite-WS2-verify-*.txt`, `host-tools-*.txt`. Rerun after **bulk** app changes; if multiple **`CAPTURE-MANIFEST-*.txt`** are committed, the **highest / latest stamp** in **`WORKSPACE_STATUS.md`** is authoritative for “this host, now.”
+**Authoritative run index:** `imports/CAPTURE-MANIFEST-20260425T175108.txt` (from `scripts/run-full-plan-capture.ps1`, 2026-04-25). That run: **`winget list` = 318 lines** (plan “Windows C”); **Start Menu+Desktop** (`start-menu-shortcuts-*.txt`) = **838 lines**; plus `winget-export-*.json`, `windows-inventory-*.txt`, Scoop, StartApps, event samples, hardware outline, `wsl-Kinoite-WS2-verify-*.txt`, `host-tools-*.txt`. Rerun after **bulk** app changes; if multiple **`CAPTURE-MANIFEST-*.txt`** are committed, the **highest / latest stamp** in **`WORKSPACE_STATUS.md`** is authoritative for “this host, now.”
 
 | Evidence type | How to (re)generate | Where it lands |
 |---------------|---------------------|----------------|

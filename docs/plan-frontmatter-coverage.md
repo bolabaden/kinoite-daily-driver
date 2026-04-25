@@ -126,3 +126,85 @@
 | *(Start Menu — plan §, KotOR `list-windows` parity)* | [../scripts/list-windows-shortcuts.ps1](../scripts/list-windows-shortcuts.ps1) |
 | `security-sanitize` | [../.gitignore](../.gitignore) (`imports/` patterns) |
 | `git-init-optional` | `G:\workspaces\Kinoite\.git` (repository) |
+
+---
+
+## Appendix C — Canonical plan `todos` `id` list (75)
+
+**Source of truth (YAML order):** KotOR.js `.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md` frontmatter. This appendix is a **1:1 checklist**; mapping to files is in the **main table** and **Appendix A** / **B** above, plus [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) for on-host execution. **Regenerate** this list (or run [`../scripts/verify-plan-frontmatter-coverage.ps1`](../scripts/verify-plan-frontmatter-coverage.ps1)) when the plan’s `todos` change.
+
+1. `phaseA-kinoite-wsl2-import`  
+2. `phaseA-wsl-conf-systemd`  
+3. `phaseA-rpm-ostree-verify`  
+4. `phaseA-plasma-wslg`  
+5. `research-kinoite-rootfs-sources`  
+6. `doc-kinoite-wsl2-authoritative`  
+7. `inv-refresh-date`  
+8. `inv-os-cim`  
+9. `inv-winget-json`  
+10. `win-c-drive-app-snapshot-2026-04`  
+11. `inv-scoop-list`  
+12. `inv-wsl-snapshot`  
+13. `inv-startapps-sample`  
+14. `inv-reliability-optional`  
+15. `inv-event-logs-optional`  
+16. `path-resolve-g`  
+17. `create-tree`  
+18. `doc-readme-main`  
+19. `doc-strategy-phaseA-kinoite-wsl2`  
+20. `doc-virtualbox-kinoite`  
+21. `doc-fallback-classic-fedora-optional`  
+22. `doc-pc-inventory-snapshot`  
+23. `doc-kinoite-vs-silverblue`  
+24. `doc-wsl-atomic-parity`  
+25. `doc-app-mapping`  
+26. `doc-kde-daily-driver`  
+27. `doc-fonts-theming`  
+28. `doc-audio-display`  
+29. `doc-input-accessibility`  
+30. `doc-printing-scanning`  
+31. `doc-filesystems`  
+32. `doc-backup-sync`  
+33. `doc-appimage-fuse`  
+34. `doc-gear-lever`  
+35. `doc-podman-docker`  
+36. `doc-secrets-ssh`  
+37. `doc-3d-autodesk`  
+38. `doc-gaming`  
+39. `doc-network-vpn`  
+40. `doc-media-homelab`  
+41. `doc-llm-local`  
+42. `doc-ides`  
+43. `doc-m365`  
+44. `doc-optional-kde-wsl`  
+45. `doc-migration-baremetal`  
+46. `doc-research-workflow`  
+47. `config-wsl-conf`  
+48. `config-flatpak-lists`  
+49. `config-shell-skel`  
+50. `script-bootstrap-kinoite-wsl2`  
+51. `script-bootstrap-fedoraclassic-NOT-PHASE-A`  
+52. `script-bootstrap-kde`  
+53. `script-appimage-deps`  
+54. `script-distrobox-dev`  
+55. `script-flathub-verify`  
+56. `script-kinoite-first-week`  
+57. `script-virtualbox-snapshots`  
+58. `security-sanitize`  
+59. `git-init-optional`  
+60. `research-pass-external`  
+61. `research-firecrawl-pass`  
+62. `handoff-user-test`  
+63. `inv-hardware-outline`  
+64. `doc-ostree-rollback`  
+65. `doc-fwupd-secureboot`  
+66. `doc-flatpak-overrides`  
+67. `doc-power-battery`  
+68. `doc-virtualization-windows-vm`  
+69. `doc-swap-zram`  
+70. `doc-clipboard-wslg`  
+71. `doc-bluetooth-audio`  
+72. `kde-plasma6-widgets`  
+73. `pre-commit-secrets`  
+74. `post-exec-mark-plan`  
+75. `provision-atomic-declarative`  

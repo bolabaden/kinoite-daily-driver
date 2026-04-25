@@ -1,0 +1,20 @@
+Plan capture (silverblue WSL + Win11 inventory). All paths relative to this repo: imports/
+Run: G:\workspaces\Kinoite\scripts\run-full-plan-capture.ps1 from PowerShell 5+ with full PATH merge.
+
+OK  winget export                                              8186 winget-export-20260425T175108.json
+OK  CIM+WSL+podman                                             5175 windows-inventory-20260425T175121.txt
+OK  winget list                                               37275 winget-list-20260425T175108.txt
+OK  Start Menu+Desktop lnk                                    76642 start-menu-shortcuts-20260425T175108.txt
+OK  scoop list                                                  248 scoop-list-20260425T175129.txt
+OK  Get-StartApps                                             46974 startapps-sample-20260425T175130.txt
+OK  reliability perf (sample)                                    71 reliability-events-sample-20260425T175108.txt
+OK  App log errors 24h                                        13563 application-error-sample-20260425T175108.txt
+OK  CIM hardware outline                                       3101 hardware-outline-20260425T175132.txt
+OK  WSL Kinoite verify                                          256 wsl-Kinoite-WS2-verify-20260425T175108.txt
+OK  host tools hint                                             128 host-tools-20260425T175108.txt
+
+=== wsl -l -v (quick) ===
+  NAME                      STATE           VERSION
+* Ubuntu                    Stopped         2
+  Kinoite-WS2               Running         2
+  podman-current-machine    Stopped         2
