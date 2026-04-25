@@ -9,13 +9,15 @@
 
 | Doc | Purpose |
 |-----|---------|
-| [docs/kinoite-wsl2.md](docs/kinoite-wsl2.md) | **Authoritative** import, `wsl.conf`, first boot, Plasma, rollback |
+| [docs/kinoite-wsl2.md](docs/kinoite-wsl2.md) | **Authoritative** import, `wsl.conf`, first boot, Plasma, rollback; **## Spec and the KotOR.js repository** |
 | [docs/systemd-rpm-ostree-wsl2-claims.md](docs/systemd-rpm-ostree-wsl2-claims.md) | **systemd vs `rpm-ostree`** — what WSL2 can and cannot guarantee |
 | [docs/strategy-phaseA-kinoite-wsl2.md](docs/strategy-phaseA-kinoite-wsl2.md) | Why Phase A is Kinoite-in-WSL2 only |
 | [docs/app-mapping.md](docs/app-mapping.md) | Windows → Kinoite app parity (expand from your `winget export`) |
 | [docs/windows11-daily-driver-baseline.md](docs/windows11-daily-driver-baseline.md) | How this repo mirrors the plan’s **this host** inventory (scripts + `imports/`) |
 | [config/wsl.conf.example](config/wsl.conf.example) | Copy into WSL as `/etc/wsl.conf` after import |
 | [PROVISION](PROVISION) (repo root) | **Executable** path: `config/rpm-ostree/layers.list` + `config/flatpak/*.list` → `scripts/apply-atomic-provision.sh` and optional boot-time `kinoite-atomic-ostree.service` |
+| [docs/plan-stipulated-file-tree.md](docs/plan-stipulated-file-tree.md) | Plan **Workspace path** ↔ on-disk files (KotOR.js plan file is a **sibling** checkout) |
+| [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) | All **75** `todos` `id` → files (Appendix **C**); re-run [scripts/verify-plan-frontmatter-coverage.ps1](scripts/verify-plan-frontmatter-coverage.ps1) after plan YAML changes |
 
 ## Scripts (order of operations)
 
