@@ -117,7 +117,18 @@ $hdr = @"
 Plan capture (silverblue WSL + Win11 inventory). All paths relative to this repo: imports/
 Run: $(Join-Path (Split-Path -Parent $PSCommandPath) 'run-full-plan-capture.ps1') from PowerShell 5+ with full PATH merge.
 "@
-$manBody = @($hdr, "" , ($manifest -join "`n"), "", "=== wsl -l -v (quick) ===", (wsl -l -v 2>&1 | Out-String)) -join "`n"
+# wsl -l -v writes UTF-16; pipe/capture mojibakes in UTF-8 manifest without byte decode
+$wslLvQuick = ""
+$tmpWsl = [System.IO.Path]::GetTempFileName()
+try {
+  cmd /c "wsl -l -v >`"$tmpWsl`" 2>&1" | Out-Null
+  if (Test-Path -LiteralPath $tmpWsl) {
+    [byte[]]$wslBytes = [System.IO.File]::ReadAllBytes($tmpWsl)
+    if ($wslBytes.Length -ge 2 -and $wslBytes[0] -eq 0xFF -and $wslBytes[1] -eq 0xFE) { $wslBytes = $wslBytes[2..($wslBytes.Length - 1)] }
+    if ($wslBytes.Length) { $wslLvQuick = [System.Text.Encoding]::Unicode.GetString($wslBytes) } else { $wslLvQuick = "(no output)" }
+  }
+} catch { $wslLvQuick = "wsl -l -v: $($_.Exception.Message)" } finally { Remove-Item -LiteralPath $tmpWsl -ErrorAction SilentlyContinue }
+$manBody = @($hdr, "" , ($manifest -join "`n"), "", "=== wsl -l -v (quick) ===", $wslLvQuick) -join "`n"
 [System.IO.File]::WriteAllText($manPath, $manBody, [System.Text.UTF8Encoding]::new($false))
 Write-Host "Wrote $manPath"
 Get-Content -Path $manPath
