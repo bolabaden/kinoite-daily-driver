@@ -2,8 +2,7 @@
 
 **Phase A:** Kinoite / OSTree userland in **WSL2** with **systemd**, **`rpm-ostree`**, **Flatpak (Flathub)**, and **KDE Plasma** under **WSLg** — not classic Fedora (dnf) as a substitute.
 
-**Workspace root:** `G:\workspaces\Kinoite`  
-**Optional env (Windows):** `KINOITE_WORKSPACE_ROOT=G:\workspaces\Kinoite` (see [kinoite-workspace-root.env.example](kinoite-workspace-root.env.example) for a one-line template).
+**Workspace root:** your clone path on Windows. Set **`KINOITE_WORKSPACE_ROOT`** to that path so scripts and tools resolve the repo without hard-coding a drive (see [kinoite-workspace-root.env.example](kinoite-workspace-root.env.example)). Example: `KINOITE_WORKSPACE_ROOT=D:\repos\Kinoite`.
 
 ## Quick links
 
@@ -23,7 +22,7 @@
 
 ## Scripts (order of operations)
 
-1. **Windows (PowerShell, elevated if needed):** [scripts/import-kinoite-rootfs-to-wsl.ps1](scripts/import-kinoite-rootfs-to-wsl.ps1) — `podman pull` → `podman create` → `podman export` → `wsl --import`.
+1. **Windows (PowerShell, elevated if needed):** [scripts/import-kinoite-rootfs-to-wsl.ps1](scripts/import-kinoite-rootfs-to-wsl.ps1) — `podman pull` → `podman create` → `podman export`; optional **`-DoImport`** when **`KINOITE_WSL_INSTALL_DIR`** (or **`-InstallLocation`**) points at the target NTFS folder (defaults for tarball use **`KINOITE_WORKSPACE_ROOT`** and repo `scratch\` — see script header).
 2. **Inside WSL distro:** [scripts/bootstrap-kinoite-wsl2.sh](scripts/bootstrap-kinoite-wsl2.sh) — first `rpm-ostree` / Flathub hints, then [scripts/apply-atomic-provision.sh](scripts/apply-atomic-provision.sh) to apply **declarative** [config/rpm-ostree/layers.list](config/rpm-ostree/layers.list) + [config/flatpak](config/flatpak/) (edit lists first; see [GETTING_STARTED](GETTING_STARTED.md#step-3--edit-the-declarative-lists)). Optional: [scripts/install-atomic-provision-service.sh](scripts/install-atomic-provision-service.sh) to enable [config/systemd/kinoite-atomic-ostree.service](config/systemd/kinoite-atomic-ostree.service) (rpm-ostree **layers** on boot; reboot after layering).
 3. **Inventory (Windows, optional):** [scripts/export-winget.ps1](scripts/export-winget.ps1), [scripts/run-windows-inventory.ps1](scripts/run-windows-inventory.ps1), and [scripts/list-windows-shortcuts.ps1](scripts/list-windows-shortcuts.ps1) (see [scripts README — The imports directory](scripts/README.md#the-imports-directory)). Outputs land under `imports/` (mostly gitignored; sanitize before `git push`).
 

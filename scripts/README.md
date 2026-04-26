@@ -37,7 +37,7 @@ All WSL2- and WSLg-specific explanation (what each **script** does, troubleshoot
 
 ## The imports directory
 
-Place **raw** Windows inventory output under **[`../imports/`](../imports/)** (sibling to `scripts/`). **Typical workflow:** from the repo root on Windows, run [export-winget.ps1](export-winget.ps1) and [run-windows-inventory.ps1](run-windows-inventory.ps1). Optionally run [list-windows-shortcuts.ps1](list-windows-shortcuts.ps1) with **`-OutFile`** pointing at `imports\…`. Maintain **[`CAPTURE-MANIFEST.txt`](../imports/CAPTURE-MANIFEST.txt)** locally if you want an index of what you refreshed (only the manifest and patterns you un-ignore are commit-friendly). **`.gitignore` excludes** most bulk exports; run **`git status`** before a push. A [`.gitkeep`](../imports/.gitkeep) can sit in `imports/` when the clone has not had a run yet.
+Place **raw** Windows inventory output under **[`../imports/`](../imports/)** (sibling to `scripts/`). **Typical workflow:** from the repo root on Windows, run [export-winget.ps1](export-winget.ps1) and [run-windows-inventory.ps1](run-windows-inventory.ps1). Optionally run [list-windows-shortcuts.ps1](list-windows-shortcuts.ps1) with **`-OutFile`** pointing at `imports\…`. If you want a local index, create **`imports\CAPTURE-MANIFEST.txt`** on disk (gitignored with other `imports/*.txt`). **`.gitignore` excludes** most bulk exports; run **`git status`** before a push. A [`.gitkeep`](../imports/.gitkeep) can sit in `imports/` when the clone has not had a run yet.
 
 | File pattern | Source script | Notes |
 |--------------|---------------|--------|

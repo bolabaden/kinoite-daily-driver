@@ -27,7 +27,7 @@ Refresh **`imports/`** with the scripts in [scripts README — The imports direc
 | Date (ISO-8601) | |
 | OS (from CIM) | |
 | WSL distros (`wsl -l -v`) | |
-| Primary workspace path | `G:\workspaces\Kinoite` |
+| Primary workspace path | e.g. set `KINOITE_WORKSPACE_ROOT` to your clone, or `D:\path\to\Kinoite` |
 
 **Attachments:** point to sanitized files under `imports/` (do not commit secrets). Fill after `scripts/run-windows-inventory.ps1` and `scripts/export-winget.ps1`.
 

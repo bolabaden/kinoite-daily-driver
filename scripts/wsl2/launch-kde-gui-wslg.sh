@@ -5,9 +5,9 @@
 # If WAYLAND_DISPLAY stays set, Qt may pick Wayland and some setups never paint a window — so this
 # script defaults to pure X11 (xcb) unless WSLG_GUI_BACKEND=wayland.
 #
-# Windows:
+# Windows (repo path in WSL matches KINOITE_WORKSPACE_ROOT, e.g. D: -> /mnt/d/...):
 #   wsl --shutdown
-#   wsl -d Kinoite-WS2 -- bash /mnt/g/workspaces/Kinoite/scripts/wsl2/launch-kde-gui-wslg.sh
+#   wsl -d Kinoite-WS2 -- bash /mnt/<d>/<path>/Kinoite/scripts/wsl2/launch-kde-gui-wslg.sh
 # Or:  .\scripts\wsl2\Show-Kinoite-Gui.ps1
 #
 # Env:
@@ -112,5 +112,5 @@ fi
 
 echo ""
 echo "Smoke test (dialog only — if this fails, WSLg is not reaching your desktop session):"
-echo "  wsl -d Kinoite-WS2 -- bash /mnt/g/workspaces/Kinoite/scripts/wsl2/smoke-wslg-gui.sh"
+echo "  wsl -d Kinoite-WS2 -- bash <repo>/scripts/wsl2/smoke-wslg-gui.sh  # e.g. path from wslpath to your clone"
 echo "Logs: $LOG_DIR/*.log"

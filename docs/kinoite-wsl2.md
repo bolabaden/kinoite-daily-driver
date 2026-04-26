@@ -108,7 +108,7 @@ A **Windows 11** daily driver often has **Cloudflare WARP**, **Tailscale**, **PI
 |------|--------|
 | `podman pull quay.io/fedora-ostree-desktops/kinoite:43` | Success |
 | `podman export` → `scratch/kinoite-wsl-rootfs.tar` | Success |
-| `wsl --import Kinoite-WS2 G:\WSL\Kinoite-WS2 …tar --version 2` | Success |
+| `wsl --import Kinoite-WS2 <KINOITE_WSL_INSTALL_DIR or your NTFS path> …tar --version 2` | Success |
 | `cat /etc/os-release` inside distro | **Fedora Linux 43 (Kinoite)**, `VARIANT_ID=kinoite` |
 | `rpm-ostree status` | **Fails:** `This system was not booted via libostree` — the **OCI container rootfs** is not the same as a **disk image deployed through ostree-prepare-root**. Treat this WSL instance as **Kinoite-flavored userland** for **Flatpak/dnf in toolbox** experiments until a **full ostree** path is validated (VM/ISO, or a future community recipe). |
 
@@ -133,10 +133,10 @@ Bootable-container images are large; expect **multi-GB** pull and export.
 
 1. `podman pull quay.io/fedora-ostree-desktops/kinoite:<TAG>`
 2. `podman create --name kinoite-wsl-export quay.io/fedora-ostree-desktops/kinoite:<TAG>`
-3. `podman export kinoite-wsl-export -o $env:TEMP\kinoite-wsl-rootfs.tar` (or a path on `G:\`)
+3. `podman export kinoite-wsl-export -o $env:TEMP\kinoite-wsl-rootfs.tar` (or under your repo’s `scratch\` with `KINOITE_WORKSPACE_ROOT` set)
 4. `podman rm kinoite-wsl-export`
 5. `wsl --unregister <OldName>` only if replacing; then  
-   `wsl --import Kinoite-WS2 G:\WSL\Kinoite-WS2 G:\path\to\kinoite-wsl-rootfs.tar --version 2`
+   `wsl --import Kinoite-WS2 <NTFS path for WSL files> <path-to>\kinoite-wsl-rootfs.tar --version 2` (set `KINOITE_WSL_INSTALL_DIR` for the first path when using the bundled script)
 6. Delete or archive the `.tar` after successful import to reclaim space.
 
 **Automated script:** `..\scripts\import-kinoite-rootfs-to-wsl.ps1` (read parameters inside).

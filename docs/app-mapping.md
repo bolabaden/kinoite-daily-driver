@@ -2,9 +2,9 @@
 
 This file tracks **this daily-driver** machine: expand from **`winget export`** in `imports/` (see `../scripts/export-winget.ps1`). Exports are **gitignored** — commit only **this** doc, not raw JSON.
 
-**Inventory (optional):** run [`../scripts/export-winget.ps1`](../scripts/export-winget.ps1) and [`../scripts/run-windows-inventory.ps1`](../scripts/run-windows-inventory.ps1) from the repo on Windows; outputs go under `imports/` (mostly gitignored — see [scripts README — The imports directory](../scripts/README.md#the-imports-directory)). Optionally [`../scripts/list-windows-shortcuts.ps1`](../scripts/list-windows-shortcuts.ps1) **`-OutFile ..\imports\start-menu-shortcuts.txt`**. Update [`CAPTURE-MANIFEST.txt`](../imports/CAPTURE-MANIFEST.txt) if you keep an index. Re-run after **bulk** app changes.
+**Inventory (optional):** run [`../scripts/export-winget.ps1`](../scripts/export-winget.ps1) and [`../scripts/run-windows-inventory.ps1`](../scripts/run-windows-inventory.ps1) from the repo on Windows; outputs go under `imports/` (mostly gitignored — see [scripts README — The imports directory](../scripts/README.md#the-imports-directory)). Optionally [`../scripts/list-windows-shortcuts.ps1`](../scripts/list-windows-shortcuts.ps1) **`-OutFile ..\imports\start-menu-shortcuts.txt`**. Update optional local `imports/CAPTURE-MANIFEST.txt` if you keep an index. Re-run after **bulk** app changes.
 
-**This host (latest in `imports/`; sizes drift with re-runs):** see [`CAPTURE-MANIFEST.txt`](../imports/CAPTURE-MANIFEST.txt) for any index you maintain; older capture files may still exist on disk from prior runs.  
+**This host (latest in `imports/`; sizes drift with re-runs):** see local `imports/CAPTURE-MANIFEST.txt` for any index you maintain; older capture files may still exist on disk from prior runs.  
 **Rule:** prefer **Flathub**; **toolbox**/**distrobox** for heavy `dnf`; **`rpm-ostree install`** only on a **true** atomic **boot** (see [kinoite-wsl2 — honesty](kinoite-wsl2.md#systemd-and-rpm-ostree-in-wsl2-honesty)).
 
 ## When to keep Windows (or a VM) for these workloads

@@ -7,13 +7,15 @@
   Full OCI reference (default: quay.io/fedora-ostree-desktops/kinoite:43).
 
 .PARAMETER TarPath
-  Where to write the export tarball (default: G:\workspaces\Kinoite\scratch\kinoite-wsl-rootfs.tar).
+  Where to write the export tarball. Default: <repo>\scratch\kinoite-wsl-rootfs.tar, where
+  repo is KINOITE_WORKSPACE_ROOT or the parent of the scripts\ directory.
 
 .PARAMETER DistroName
   WSL distribution name (default: Kinoite-WS2).
 
 .PARAMETER InstallLocation
-  WSL filesystem directory on NTFS (default: G:\WSL\Kinoite-WS2).
+  WSL filesystem directory on NTFS. No default. Set KINOITE_WSL_INSTALL_DIR or pass this when
+  using -DoImport (required for import).
 
 .PARAMETER DoImport
   If set, runs wsl --import after export (requires existing TarPath or successful export).
@@ -21,16 +23,33 @@
 .NOTES
   Run from elevated PowerShell if InstallLocation requires it.
   Ensure podman works: podman version
+  Optional: KINOITE_WORKSPACE_ROOT (see kinoite-workspace-root.env.example) for default TarPath.
 #>
 param(
   [string]$Image = "quay.io/fedora-ostree-desktops/kinoite:43",
-  [string]$TarPath = "G:\workspaces\Kinoite\scratch\kinoite-wsl-rootfs.tar",
+  [string]$TarPath = "",
   [string]$DistroName = "Kinoite-WS2",
-  [string]$InstallLocation = "G:\WSL\Kinoite-WS2",
+  [string]$InstallLocation = $env:KINOITE_WSL_INSTALL_DIR,
   [switch]$DoImport
 )
 
 $ErrorActionPreference = "Stop"
+
+$repoRoot = if (-not [string]::IsNullOrWhiteSpace($env:KINOITE_WORKSPACE_ROOT)) {
+  $env:KINOITE_WORKSPACE_ROOT.TrimEnd('\', '/')
+} else {
+  (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+}
+if ([string]::IsNullOrWhiteSpace($TarPath)) {
+  $TarPath = Join-Path $repoRoot "scratch\kinoite-wsl-rootfs.tar"
+}
+
+if ($DoImport) {
+  if ([string]::IsNullOrWhiteSpace($InstallLocation)) {
+    throw "For -DoImport, set KINOITE_WSL_INSTALL_DIR or pass -InstallLocation (NTFS path for the distro's files)."
+  }
+}
+
 $containerName = "kinoite-wsl-export-temp"
 
 Write-Host "==> podman pull $Image"

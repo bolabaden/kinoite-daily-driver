@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Minimal WSLg visibility test: KDE dialog on Microsoft X server (:0).
 # Run from Windows (adjust distro name):
-#   wsl -d Kinoite-WS2 -- bash /mnt/g/workspaces/Kinoite/scripts/wsl2/smoke-wslg-gui.sh
+#   wsl -d Kinoite-WS2 -- bash /mnt/<d>/<path>/Kinoite/scripts/wsl2/smoke-wslg-gui.sh
 set -euo pipefail
 if [[ $(id -u) -eq 0 ]]; then
   echo "Run as a normal user, not root." >&2
