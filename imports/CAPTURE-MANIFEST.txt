@@ -4,7 +4,7 @@
 #  - scripts/export-winget.ps1
 #  - scripts/run-windows-inventory.ps1
 #  - scripts/list-windows-shortcuts.ps1  (e.g. -OutFile imports\start-menu-shortcuts.txt)
-#  - scripts/capture-dism-features.ps1   (optional; DISM may UAC/740 on non-admin)
+#  - scripts/capture-dism-features.ps1   (optional; DISM may UAC/740; -PassThru returns the document text)
 #
 # Example line per artifact:
 # 2026-04-26  windows-inventory.txt  run-windows-inventory.ps1
