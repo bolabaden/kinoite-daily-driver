@@ -211,7 +211,7 @@ Everything **Windows-host**, **WSLg**, and **import-specific** is intentionally 
 
 ## More documentation (if you are browsing the whole repo)
 
-**[docs/README.md](docs/README.md)** is a single **index**: topic → provisioning table and A–Z topic list. **[scripts/README.md](scripts/README.md)** lists what every script does. **[README.md — Where to start](README.md#where-to-start)** is the suggested reading order. For VM and bare-metal phases, use **[docs/migration-baremetal-checklist.md](docs/migration-baremetal-checklist.md)**.
+**[docs/README.md](docs/README.md)** is a single **index**: topic → provisioning table and A–Z topic list. **[scripts/README.md](scripts/README.md)** lists what every script does. **Optional** Windows **`imports/`** evidence (e.g. winget export, CIM inventory, Start Menu paths, `capture-dism-features.ps1` / DISM) is covered under **[The imports directory](scripts/README.md#the-imports-directory)** — most files are **gitignored**; you may keep a committable **[`imports/CAPTURE-MANIFEST.txt`](imports/CAPTURE-MANIFEST.txt)**. **[README.md — Where to start](README.md#where-to-start)** is the suggested reading order. For VM and bare-metal phases, use **[docs/migration-baremetal-checklist.md](docs/migration-baremetal-checklist.md)**.
 
 ## Optional: gitleaks
 
