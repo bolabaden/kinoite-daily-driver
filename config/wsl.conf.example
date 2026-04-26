@@ -1,14 +1,4 @@
-# Copy to /etc/wsl.conf inside the Kinoite WSL distro.
-# Then: exit ; wsl --shutdown (from Windows) ; wsl -d Kinoite-WS2
+# MOVED: WSL2-only examples now live under `config/wsl2/`.
+# Use: config/wsl2/distro.wsl.conf.example → copy to /etc/wsl.conf in the **WSL guest only**.
 
-[boot]
-systemd=true
-
-[user]
-# Linux account that should be default on wsl.exe launch
-default=CHANGE_ME
-
-# Optional: set appendWindowsPath=false to reduce "Failed to translate" spam from a long Windows PATH
-# [interop]
-# enabled=true
-# appendWindowsPath=false
+See [config/wsl2/README.md](wsl2/README.md).

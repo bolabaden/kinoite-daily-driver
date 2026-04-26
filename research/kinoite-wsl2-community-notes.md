@@ -3,7 +3,7 @@
 Use alongside **`docs/kinoite-wsl2.md`** (authoritative for **this** workspace).
 
 - Fedora KDE SIG issues: [pagure.io/fedora-kde/SIG](https://pagure.io/fedora-kde/SIG/issues)
-- Ask Fedora: [ask.fedoraproject.org](https://ask.fedoraproject.org/) — tag **kinoite** / **silverblue** / **atomic**
+- Ask Fedora: [ask.fedoraproject.org](https://ask.fedoraproject.org/) — tag **kinoite** / **atomic**
 - Atomic desktops hub: [fedoraproject.org/atomic-desktops](https://fedoraproject.org/atomic-desktops/)
 - Kinoite OCI on Quay: `quay.io/fedora-ostree-desktops/kinoite`
 

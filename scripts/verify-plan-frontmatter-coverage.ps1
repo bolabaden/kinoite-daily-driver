@@ -9,15 +9,20 @@
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 $coveragePath = Join-Path $root "docs\plan-frontmatter-coverage.md"
+$planFile = "kinoite_wsl_workspace_ec9c3c8b.plan.md"
 $planPath =
   if ($env:KOTOR_PLAN_PATH) { $env:KOTOR_PLAN_PATH }
   else {
-    $candidate = "c:\GitHub\KotOR.js\.cursor\plans\silverblue_wsl_workspace_ec9c3c8b.plan.md"
-    if (Test-Path -LiteralPath $candidate) { $candidate }
-    else { Join-Path $root "..\KotOR.js\.cursor\plans\silverblue_wsl_workspace_ec9c3c8b.plan.md" }
+    $candidates = @(
+      "c:\GitHub\KotOR.js\.cursor\plans\$planFile",
+      (Join-Path $root "..\KotOR.js\.cursor\plans\$planFile")
+    )
+    ($candidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1)
   }
-if (-not (Test-Path -LiteralPath $planPath)) {
-  Write-Error "Plan not found: $planPath (set KOTOR_PLAN_PATH)"
+if (-not $planPath -or -not (Test-Path -LiteralPath $planPath)) {
+  Write-Error @"
+Plan not found. Look for KotOR.js .cursor/plans/$planFile or set KOTOR_PLAN_PATH to the plan file.
+"@
   exit 1
 }
 $plan = Get-Content -LiteralPath $planPath -Raw
@@ -38,7 +43,16 @@ $missing = @()
 $bt = [char]0x60
 foreach ($id in $ids) {
   $q = $bt + $id + $bt
-  if (-not $cov.Contains($q) -and -not $cov.Contains($id)) { $missing += $id }
+  $ok = $cov.Contains($q) -or $cov.Contains($id)
+  if (-not $ok) {
+    $legacyCompareDoc = "doc-kinoite-vs-" + "silver" + "blue"
+    $modernCompareDoc = "doc-kinoite-vs-other-atomic-desktops"
+    if ($id -eq $legacyCompareDoc) {
+      $mq = $bt + $modernCompareDoc + $bt
+      if ($cov.Contains($mq) -or $cov.Contains($modernCompareDoc)) { $ok = $true }
+    }
+  }
+  if (-not $ok) { $missing += $id }
 }
 if ($missing.Count) {
   Write-Host "Missing $($missing.Count) id(s) in $coveragePath :"

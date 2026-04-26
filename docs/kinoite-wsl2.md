@@ -6,9 +6,9 @@ This document is the **single source of truth** for importing and running **Fedo
 
 ## Spec and the KotOR.js repository
 
-- **Cursor plan** (in a **KotOR.js** checkout, not in this path): **`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md`**. It points at **`G:\workspaces\Kinoite`** in **## Status**; a **line-by-line plan vs files** table for this tree is [plan-stipulated-file-tree.md](plan-stipulated-file-tree.md).
+- **Cursor plan** (in a **KotOR.js** checkout, not in this path): **`.cursor/plans/kinoite_wsl_workspace_ec9c3c8b.plan.md`**. It points at **`G:\workspaces\Kinoite`** in **## Status**; a **line-by-line plan vs files** table for this tree is [plan-stipulated-file-tree.md](plan-stipulated-file-tree.md).
 - **Agent / IDE** notes: [KotOR.js `AGENTS.md` (upstream)](https://github.com/KobaltBlu/KotOR.js/blob/master/AGENTS.md).
-- **“Done in this tree” vs the plan (Phase A):** [phases-definition-of-done.md](phases-definition-of-done.md) — and **KotOR ↔ on-disk** rows in [plan-alignment.md](plan-alignment.md) (Phase **A**) and [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md).
+- **“Done in this tree” vs the plan (Phase A):** [phases-definition-of-done.md](phases-definition-of-done.md) — and **KotOR ↔ on-disk** rows in [provisional-configuration-index.md](provisional-configuration-index.md#kotor-plan-and-workspace-coverage-matrix) and [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md).
 
 ## Goals
 
@@ -111,6 +111,8 @@ Edit **`config/rpm-ostree/layers.list`** (package names, one per line) and **`co
 
 **`rpm-ostree`** layers are staged to the next boot; **Flatpaks** install to the user’s `~/.var/app/`. For **systemd** to apply only **layers** at boot (no Flatpaks; those need a user D-Bus session), run **`sudo ./scripts/install-atomic-provision-service.sh`**. See **`../PROVISION`**.
 
+Windows / WSL2 / WSLg-only setup (`.wslconfig`, `/etc/wsl.conf`, WSLg env, PowerShell helpers) is consolidated in **`../config/wsl2/README.md`**, including what to do **instead** on bare metal.
+
 ## Plasma / WSLg
 
 **Before** expecting a full “desktop session,” ensure you are **not** stuck on **root** only: a container `wsl --import` may ship **without** a normal user; WSL’s default can remain **`root`**, and `loginctl` will show **no** user sessions. See [bootstrap-wsl-default-user.sh](../scripts/bootstrap-wsl-default-user.sh) and [kde-wsl2-runtime-verification.md](kde-wsl2-runtime-verification.md) for the **default user + `[user] default=…` + `wsl --shutdown`** path. A **systemd --user** warning for **root** on login is a symptom of the same mismatch.
@@ -118,8 +120,8 @@ Edit **`config/rpm-ostree/layers.list`** (package names, one per line) and **`co
 There is no single guaranteed recipe; common patterns:
 
 - Install or layer KDE workspace packages if missing from the container rootfs (may require **`rpm-ostree install`** of package groups — check Fedora Kinoite package set for your tag).
-- Launch **`dbus-run-session plasmashell`** or start a **Plasma Bigscreen** / minimal shell experiment under WSLg.
-- If **Wayland** socket issues appear, document whether **X11** fallback via WSLg worked.
+- Launch Plasma under WSLg with **[`scripts/bootstrap-kde-wsl.sh`](../scripts/bootstrap-kde-wsl.sh)** (`launch` or `plasma`) or the underlying **[`scripts/wsl2/launch-kde-gui-wslg.sh`](../scripts/wsl2/launch-kde-gui-wslg.sh)** (defaults to **X11/xcb** on `:0` for reliable windows). For manual one-offs: **`dbus-run-session plasmashell`** from a login shell.
+- If **Wayland** socket issues appear, prefer **X11** (default in the launch script) or set **`WSLG_GUI_BACKEND=wayland`** only when you have verified it maps windows.
 
 Record the **exact** command sequence that worked in **`WORKSPACE_STATUS.md`** or a PR to this workspace.
 

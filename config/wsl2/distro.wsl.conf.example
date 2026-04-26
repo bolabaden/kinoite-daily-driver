@@ -1,0 +1,18 @@
+# WSL2 GUEST ONLY — copy to /etc/wsl.conf inside the distro.
+# Not read by bare-metal boot.
+# After edits: from Windows run  wsl --shutdown  then  wsl -d YourDistro
+
+[boot]
+systemd=true
+
+[user]
+default=CHANGE_ME_LINUX_USER
+
+[interop]
+enabled=true
+appendWindowsPath=false
+
+[automount]
+enabled=true
+mountFsTab=true
+options=metadata,umask=022,fmask=011

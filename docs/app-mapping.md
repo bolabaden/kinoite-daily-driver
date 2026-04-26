@@ -72,4 +72,4 @@ Clipchamp Phone Link Edge Game Assist	Kdenlive OBS KDE Connect	~
 PhysX redist	Proton bundles	N/A
 ```
 
-*Source alignment:* `.cursor/.../silverblue_wsl_workspace_ec9c3c8b.plan.md` **§ Fedora Kinoite mapping** (re-run `export-winget.ps1` to diff **your** machine vs condensed rows).
+*Source alignment:* `.cursor/.../kinoite_wsl_workspace_ec9c3c8b.plan.md` **§ Fedora Kinoite mapping** (re-run `export-winget.ps1` to diff **your** machine vs condensed rows).

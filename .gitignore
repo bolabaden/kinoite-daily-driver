@@ -6,6 +6,8 @@ imports/*.txt
 !imports/CAPTURE-MANIFEST-*.txt
 !imports/README.md
 !imports/.gitkeep
+imports/*.csv
+imports/*.reg
 
 # Local scratch
 *.tar
@@ -22,3 +24,9 @@ Desktop.ini
 # Optional gitleaks / tooling
 .gitleaks-cache/
 .history/
+
+# Provisional host secrets + machine-local NM profiles (never commit)
+host-local/
+**/host-local/
+*.secrets.env
+config/network/*.local.nmconnection

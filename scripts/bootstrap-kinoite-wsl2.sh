@@ -18,6 +18,12 @@ echo "==> flatpak update (user)"
 flatpak update -y || true
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+if [ -e /proc/version ] && grep -qi microsoft /proc/version && [ "${KINOITE_INSTALL_WSLG_PROFILE:-0}" = 1 ]; then
+  echo "==> Installing /etc/profile.d WSLg env (KINOITE_INSTALL_WSLG_PROFILE=1)"
+  sudo "$REPO_ROOT/scripts/wsl2/install-wslg-profile-d.sh"
+fi
+
 echo "==> Declarative provision (edit lists, then run):"
 echo "    sudo $REPO_ROOT/scripts/apply-atomic-provision.sh"
 echo "    (config: $REPO_ROOT/config/rpm-ostree/layers.list  and  $REPO_ROOT/config/flatpak/*.list )"

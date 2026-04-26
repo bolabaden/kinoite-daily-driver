@@ -1,20 +1,19 @@
 # Windows 11 daily driver — how this repo maps the machine
 
-The **Cursor plan** in KotOR (`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md`, section **“Windows C: software inventory (this host, 2026-04-25)”** and **“Fedora Kinoite mapping”**) is the **narrative** inventory: app categories, honest parity gaps, and named apps (**ShareX, Steam, Discord, Cloudflare WARP**, plus VPN/DCC/launchers, etc.).
+The **executable** mirror of the host is: **`scripts/run-full-plan-capture.ps1`** → **`imports/CAPTURE-MANIFEST-<stamp>.txt`** plus gitignored bulk (`winget-export-*.json`, `registry-uninstall-*.csv`, `appx-packages-*.csv`, `host-locale-network-*.txt`, `run-keys-*.txt`, etc.). Narrative inventory and app categories live in **`docs/app-mapping.md`** and the **row-level** map template **`config/capture/linux-map.template.csv`**.
 
-**This** workspace is the **executable** mirror of that spec.
-
-**Authoritative run index:** `imports/CAPTURE-MANIFEST-20260425T175108.txt` (from `scripts/run-full-plan-capture.ps1`, 2026-04-25). That run: **`winget list` = 318 lines** (plan “Windows C”); **Start Menu+Desktop** (`start-menu-shortcuts-*.txt`) = **838 lines**; plus `winget-export-*.json`, `windows-inventory-*.txt`, Scoop, StartApps, event samples, hardware outline, `wsl-Kinoite-WS2-verify-*.txt`, `host-tools-*.txt`. Rerun after **bulk** app changes; if multiple **`CAPTURE-MANIFEST-*.txt`** are committed, the **highest / latest stamp** in **`WORKSPACE_STATUS.md`** is authoritative for “this host, now.”
+**Authoritative run index:** the latest **`imports/CAPTURE-MANIFEST-*.txt`** committed or cited in **`WORKSPACE_STATUS.md`** (highest stamp wins after bulk refreshes). Example historical run (2026-04-25): **`winget list`** on the order of hundreds of lines; **Start Menu+Desktop** shortcuts list 800+ lines; plus inventory, Scoop, StartApps, events, hardware outline, WSL verify, `host-tools-*.txt`. Rerun after **bulk** app changes.
 
 | Evidence type | How to (re)generate | Where it lands |
 |---------------|---------------------|----------------|
 | **All of the below in one go** | `scripts/run-full-plan-capture.ps1` | `imports/CAPTURE-MANIFEST-<timestamp>.txt` (index) |
 | Installed packages (winget) | `export-winget.ps1` (also in full capture) | `imports/winget-export-*.json` (gitignored) |
-| `winget list` (plan “Windows C”) | full capture | `imports/winget-list-*.txt` |
+| `winget list` | full capture | `imports/winget-list-*.txt` |
 | CIM + WSL + podman | `run-windows-inventory.ps1` | `imports/windows-inventory-*.txt` (gitignored) |
-| Start Menu + Desktop | `list-windows-shortcuts.ps1` with `-OutFile` (full capture) | `imports/start-menu-shortcuts-*.txt` (gitignored) — may also exist under `%TEMP%` from a manual run |
+| Start Menu + Desktop | `list-windows-shortcuts.ps1` with `-OutFile` (full capture) | `imports/start-menu-shortcuts-*.txt` (gitignored) |
+| Registry ARP / Appx / locale-net / Run / DISM / pnputil | full capture | `imports/*.csv` / `imports/*.txt` per `imports/README.md` |
 | Scoop, StartApps, events | `inv-*.ps1` (also in full capture) | `imports/*` per manifest |
 
-**Machine-specific** table rows are in `app-mapping.md` TSV + `imports/`; **PUP/junk ARP** strings stay out of committed **prose** per plan — evidence is in local `winget` output files.
+**Machine-specific** table rows belong in **`host-local/linux-map.csv`** (from the template) and TSV in `app-mapping.md`; **PUP/junk ARP** strings stay out of committed **prose** — evidence stays in local exports.
 
-**Parity** for migration: `docs/keep-windows.md` + the full TSV in `app-mapping.md`.
+**Disposition** for migration: `docs/keep-windows.md` + full mapping in `app-mapping.md` + `config/capture/README.md`.

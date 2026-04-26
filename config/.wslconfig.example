@@ -1,20 +1,4 @@
-# Windows host: copy to  %UserProfile%\.wslconfig  (same folder as your user profile, not inside the distro).
-# After edits:  wsl --shutdown  from PowerShell/Terminal, then open your distro again.
-# Docs: https://learn.microsoft.com/en-us/windows/wsl/wsl-config#configuration-setting-for-wsl-2
-#
-# Uncomment and tune for this daily-driver machine (RAM-heavy IDEs, Podman, games on host).
+# MOVED: Windows host WSL settings now live under `config/wsl2/`.
+# Use: config/wsl2/windows.wslconfig.example → copy to `%UserProfile%\.wslconfig`
 
-[wsl2]
-# memory=32GB
-# processors=12
-# swap=16GB
-# swapFile=G:\\wsl-swap\\swap.vhdx
-# pageReporting=true
-# kernelCommandLine= sysctl.vm.swappiness=20
-# nestedVirtualization=true
-# vmIdleTimeout=60000
-
-# [experimental]
-# sparseVhd=true
-
-# Optional: limit WSL2 VM disk autogrow if you use large containers (see MS docs for your build).
+See [config/wsl2/README.md](wsl2/README.md).

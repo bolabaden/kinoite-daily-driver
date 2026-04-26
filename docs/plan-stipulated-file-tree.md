@@ -1,6 +1,6 @@
 # Plan-stipulated workspace file tree (satisfied)
 
-The plan **“Workspace path”** block in `silverblue_wsl_workspace_ec9c3c8b.plan.md` shows an example tree. This repository **includes** that tree **and** the **“(… other topic docs from prior plans …)”** expansion (atomic rollback, M365, games, 3D, swap, WSLg clipboard, etc. — all under `docs/`).
+The plan **“Workspace path”** block in `kinoite_wsl_workspace_ec9c3c8b.plan.md` shows an example tree. This repository **includes** that tree **and** the **“(… other topic docs from prior plans …)”** expansion (atomic rollback, M365, games, 3D, swap, WSLg clipboard, etc. — all under `docs/`).
 
 **Not in this path:** the **KotOR.js** game-engine repository (where the plan file and [AGENTS.md](https://github.com/KobaltBlu/KotOR.js/blob/master/AGENTS.md) live) is a **sibling** checkout, e.g. `c:\GitHub\KotOR.js` — it is **not** a subfolder of `G:\workspaces\Kinoite\`.
 
@@ -14,7 +14,7 @@ The plan **“Workspace path”** block in `silverblue_wsl_workspace_ec9c3c8b.pl
 | `scripts/run-full-plan-capture.ps1` | [../scripts/run-full-plan-capture.ps1](../scripts/run-full-plan-capture.ps1) (full Win11+WSL evidence + `CAPTURE-MANIFEST`) |
 | `scripts/apply-atomic-provision.sh` + `install-atomic-provision-service.sh` + `config/rpm-ostree/` + `config/systemd/kinoite-atomic-ostree.service` + `PROVISION` | [../PROVISION](../PROVISION), [../config/rpm-ostree/layers.list](../config/rpm-ostree/layers.list), [../scripts/apply-atomic-provision.sh](../scripts/apply-atomic-provision.sh), [../scripts/install-atomic-provision-service.sh](../scripts/install-atomic-provision-service.sh), [../config/systemd/kinoite-atomic-ostree.service](../config/systemd/kinoite-atomic-ostree.service) (plan: `provision-atomic-declarative`) |
 | `scripts/import-kinoite-rootfs-to-wsl.ps1` | [../scripts/import-kinoite-rootfs-to-wsl.ps1](../scripts/import-kinoite-rootfs-to-wsl.ps1) (Phase A import) |
-| `docs/kinoite-vs-atomic-desktops.md` | [kinoite-vs-atomic-desktops.md](kinoite-vs-atomic-desktops.md) (Kinoite vs **Silverblue**) |
+| `docs/kinoite-vs-atomic-desktops.md` | [kinoite-vs-atomic-desktops.md](kinoite-vs-atomic-desktops.md) (Kinoite vs other atomic editions) |
 | `docs/strategy-phaseA-kinoite-wsl2.md` | [strategy-phaseA-kinoite-wsl2.md](strategy-phaseA-kinoite-wsl2.md) |
 | `docs/app-mapping.md` + winget TSV | [app-mapping.md](app-mapping.md) + `imports/winget-export-*.json` (gitignored) |
 | `docs/keep-windows.md` | [keep-windows.md](keep-windows.md) |

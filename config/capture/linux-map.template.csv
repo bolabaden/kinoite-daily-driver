@@ -1,0 +1,4 @@
+source_type,source_key,source_name,source_version,publisher,linux_plane,linux_artifact,confidence,notes
+winget,,,,,flatpak,org.example.App,high,Replace with real mapping rows
+registry_uninstall,,DisplayName from ARP,,,rpm-ostree|flatpak|distrobox|toolbox|manual|windows_only,package or URL,med,
+appx,,Name,,,flatpak|manual|windows_only,,low,Many Appx are OS components; map only user-facing apps

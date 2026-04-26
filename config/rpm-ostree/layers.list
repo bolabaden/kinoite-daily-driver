@@ -2,11 +2,65 @@
 # Apply with: ./scripts/apply-atomic-provision.sh (or systemd first-boot, see config/systemd/)
 # After layering: reboot (bare metal) or wsl --shutdown and relaunch WSL2.
 #
-# Common examples (uncomment for your next ostree rebase/upgrade):
+# WSL2 imports: rpm-ostree may fail or be limited; trim this file to distrobox (+ fuse3 if needed)
+# or set KINOITE_OSTREE_ONLY=1 and use Flatpaks only. See docs/systemd-rpm-ostree-wsl2-claims.md
+#
+# --- Tier: minimal defaults (safe starting point) ---
+distrobox
+
+# --- Tier: daily-driver metal (fonts, VPN, AppImage FUSE, print, scan, peripherals, mesh VPN) ---
+# Comment out this block on WSL-only boxes if `rpm-ostree install` errors.
+google-noto-emoji-color-fonts
+wireguard-tools
+fuse3
+7zip
+cups
+cups-filters
+system-config-printer
+sane-backends
+simple-scan
+piper
+solaar
+tailscale
+nm-connection-editor
+NetworkManager-openvpn
+# NetworkManager-openconnect   # enterprise SSL VPN (OpenConnect); uncomment if needed
+libratbag-ratbagd
+blueman
+
+# --- Tier: CJK fonts (large download; uncomment if you use East Asian locales) ---
+# google-noto-sans-cjk-fonts
+
+# --- Tier: shells / editors (uncomment) ---
 # fish
 # zsh
 # helix
 # neovim
-# distrobox
+
+# --- Tier: dictionaries ---
 # cracklib-dicts
-# google-noto-emoji-color-fonts
+
+# --- Tier: input methods — pick IBus and/or Fcitx5 stack; match docs/input-and-ime.md ---
+# ibus
+# ibus-gtk4
+# fcitx5
+# fcitx5-configtool
+# fcitx5-gtk
+
+# --- Tier: power management (laptop; test one approach) ---
+# tlp
+# tlp-rdw
+# auto-cpufreq
+
+# --- Tier: virtualization (KVM users on metal) ---
+# libvirt
+# virt-manager
+
+# --- Tier: codecs / third-party repos (legal/policy — optional RPM Fusion free) ---
+# After enabling rpmfusion-free from Fedora docs, uncomment e.g.:
+# ffmpeg
+
+# --- Tier: gaming / 32-bit (Steam from rpm — heavy; Flatpak Steam preferred in gaming.list) ---
+# steam
+
+# WSL2: many of the above are irrelevant or fail; prefer Flatpak + distrobox. Edit before apply.

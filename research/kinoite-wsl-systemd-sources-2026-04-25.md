@@ -19,5 +19,5 @@
 
 ## Full parity targets
 
-- **Rebase / atomic desktop** workflows: Fedora FAQ and Fedora Discussion for **rpm-ostree rebase** between **Silverblue/Kinoite** (when on **real** ostree boot).  
+- **Rebase / atomic desktop** workflows: Fedora FAQ and Fedora Discussion for **`rpm-ostree rebase`** between **Kinoite** and other **Fedora Atomic Desktop** editions (when on **real** ostree boot).  
 - For **no-caveat** `rpm-ostree` + upgrades: **bare metal** or **VM/ISO** install, not the Phase-A WSL import path.

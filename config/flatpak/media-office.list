@@ -1,0 +1,16 @@
+# Media, creative, office — curated from docs/app-mapping.md (Flathub)
+# Long tail: search https://flathub.org/ and add IDs to a host-local list if needed.
+org.mozilla.firefox
+org.gimp.GIMP
+org.blender.Blender
+com.obsproject.Studio
+org.videolan.VLC
+io.github.celluloid_player.Celluloid
+org.kde.filelight
+io.github.Qalculate
+org.qbittorrent.qBittorrent
+org.kde.kdenlive
+org.libreoffice.LibreOffice
+org.mozilla.Thunderbird
+me.kozec.syncthingtk
+org.gnome.DejaDup

@@ -1,0 +1,6 @@
+Flatpak provisioning for this repo
+==================================
+
+- Application IDs live in *.list files next to this file.
+- scripts/apply-atomic-provision.sh installs from every *.list, then runs flatpak repair and flatpak update (user scope when invoked via sudo).
+- Per-app permission tuning: install com.github.tchx84.Flatseal (utils.list) and use Flathub’s built-in update UX; avoid third-party “app store” wrappers for the core workflow.

@@ -9,16 +9,19 @@
 
 | Doc | Purpose |
 |-----|---------|
+| [GETTING_STARTED.md](GETTING_STARTED.md) | **Step-by-step** path for any install (with per-step **`CAUTION`** only where environments diverge) |
 | [docs/kinoite-wsl2.md](docs/kinoite-wsl2.md) | **Authoritative** import, `wsl.conf`, first boot, Plasma, rollback; **## Spec and the KotOR.js repository** |
 | [docs/systemd-rpm-ostree-wsl2-claims.md](docs/systemd-rpm-ostree-wsl2-claims.md) | **systemd vs `rpm-ostree`** — what WSL2 can and cannot guarantee |
 | [docs/strategy-phaseA-kinoite-wsl2.md](docs/strategy-phaseA-kinoite-wsl2.md) | Why Phase A is Kinoite-in-WSL2 only |
 | [docs/app-mapping.md](docs/app-mapping.md) | Windows → Kinoite app parity (expand from your `winget export`) |
+| [docs/win11-kinoite-parity-matrix.md](docs/win11-kinoite-parity-matrix.md) | Honest **Win11 ↔ Kinoite**: automated vs manual vs Windows-only |
+| [docs/doc-to-provision-map.md](docs/doc-to-provision-map.md) | Each **topic doc** → rpm-ostree / Flatpak / distrobox / `host-local` / manual |
 | [docs/windows11-daily-driver-baseline.md](docs/windows11-daily-driver-baseline.md) | How this repo mirrors the plan’s **this host** inventory (scripts + `imports/`) |
 | [config/wsl.conf.example](config/wsl.conf.example) | Copy into WSL as `/etc/wsl.conf` after import |
 | [PROVISION](PROVISION) (repo root) | **Executable** path: `config/rpm-ostree/layers.list` + `config/flatpak/*.list` → `scripts/apply-atomic-provision.sh` and optional boot-time `kinoite-atomic-ostree.service` |
 | [docs/kde-wsl2-runtime-verification.md](docs/kde-wsl2-runtime-verification.md) | **Machine bar:** default user + WSLg + `plasmashell` (not the same as “all plan ids mapped”) |
 | [docs/plan-stipulated-file-tree.md](docs/plan-stipulated-file-tree.md) | Plan **Workspace path** ↔ on-disk files (KotOR.js plan file is a **sibling** checkout) |
-| [docs/plan-alignment.md](docs/plan-alignment.md) | Phases **A** / **B** / **C** vs docs (KotOR plan ↔ this tree) |
+| [docs/provisional-configuration-index.md](docs/provisional-configuration-index.md#kotor-plan-and-workspace-coverage-matrix) | KotOR plan ↔ this tree (**coverage matrix**); [plan-alignment.md](docs/plan-alignment.md) is a short redirect |
 | [docs/plan-frontmatter-coverage.md](docs/plan-frontmatter-coverage.md) | All **75** `todos` `id` → files (Appendix **C**); re-run [scripts/verify-plan-frontmatter-coverage.ps1](scripts/verify-plan-frontmatter-coverage.ps1) after plan YAML changes |
 
 ## Scripts (order of operations)
@@ -36,7 +39,7 @@
 - [docs/plan-stipulated-file-tree.md](docs/plan-stipulated-file-tree.md) — matches the plan’s **Workspace path** file list + env.
 - **Exhaustive (repo):** all **completed** frontmatter items in the KotOR plan are mapped here; **Win11** “current” = latest `CAPTURE-MANIFEST-*.txt` plus the files it lists, or the latest `imports/winget-export-*.json` and `windows-inventory-*.txt` named in [WORKSPACE_STATUS](WORKSPACE_STATUS.md) and [app-mapping](docs/app-mapping.md). Re-run **`run-full-plan-capture.ps1`** (or the individual inventory scripts) after bulk app changes. **Phase B/C installs** (VBox / bare metal) remain **on machine** (see [phases-definition-of-done](docs/phases-definition-of-done.md)).
 
-The spec file `silverblue_wsl_workspace_ec9c3c8b.plan.md` in **KotOR.js** now **references this workspace** in its **## Status** section; the **execution log** is still this repo, not a duplicate inside KotOR.
+The spec file `kinoite_wsl_workspace_ec9c3c8b.plan.md` in **KotOR.js** now **references this workspace** in its **## Status** section; the **execution log** is still this repo, not a duplicate inside KotOR.
 
 ## Legal
 

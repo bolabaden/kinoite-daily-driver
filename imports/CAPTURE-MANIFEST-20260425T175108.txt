@@ -1,4 +1,4 @@
-Plan capture (silverblue WSL + Win11 inventory). All paths relative to this repo: imports/
+Plan capture (Kinoite WSL + Win11 inventory). All paths relative to this repo: imports/
 Run: G:\workspaces\Kinoite\scripts\run-full-plan-capture.ps1 from PowerShell 5+ with full PATH merge.
 
 OK  winget export                                              8186 winget-export-20260425T175108.json

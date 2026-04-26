@@ -2,8 +2,11 @@
 # Declarative provisional configuration for rpm-ostree (Kinoite) + user Flatpaks.
 # Run INSIDE the Kinoite system (WSL2 import or bare metal) with: sudo ./apply-atomic-provision.sh
 # - Reads: config/flatpak/*.list and config/rpm-ostree/layers.list (or /etc/kinoite-provision after install-atomic-provision-service.sh)
+# - Runs optional executable scripts/provision.d/NN-*.sh unless KINOITE_SKIP_PROVISION_HOOKS=1
 # - Idempotent: safe to re-run. rpm-ostree will no-op for already-layered packages.
 # - WSL2: if rpm-ostree install fails, fix rootfs/upgrade per docs; Flatpaks still apply.
+# - Root + sudo: Flatpaks target the **login user** with `flatpak --user` and `dbus-run-session`
+#   when `/run/user/UID` is missing (typical non-interactive sudo / WSL).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -41,16 +44,24 @@ _provision_user() {
   fi
 }
 _flatpak() {
+  # When root provisions for a login user, target the per-user Flatpak installation (required on Atomic/WSL).
+  local -a _u=( )
   if [ "${EUID:-0}" -eq 0 ] && command -v runuser &>/dev/null; then
     u="$(_provision_user || true)"
     if [ -n "$u" ] && id -u "$u" &>/dev/null; then
+      _u=(--user)
       uid=$(id -u "$u")
       rtdir="/run/user/${uid}"
       if [ ! -d "$rtdir" ]; then
-        echo "==> (flatpak) $rtdir missing; log in once or: loginctl enable-linger $u" >&2
+        # WSL / non-interactive sudo: no user session dir yet — still works with a private dbus session.
+        if command -v dbus-run-session &>/dev/null; then
+          runuser -u "$u" -- dbus-run-session -- /usr/bin/flatpak "${_u[@]}" "$@"
+          return
+        fi
+        echo "==> (flatpak) $rtdir missing; install dbus-daemon or log in once, or: loginctl enable-linger $u" >&2
         return 1
       fi
-      runuser -u "$u" -- env "XDG_RUNTIME_DIR=$rtdir" /usr/bin/flatpak "$@"
+      runuser -u "$u" -- env "XDG_RUNTIME_DIR=$rtdir" /usr/bin/flatpak "${_u[@]}" "$@"
       return
     fi
   fi
@@ -86,6 +97,9 @@ if [ "${KINOITE_OSTREE_ONLY:-0}" != 1 ] && [ "${KINOITE_SKIP_FLATPAK:-0}" != 1 ]
       done <"$list"
     done
   fi
+  echo "==> flatpak repair (best-effort; fixes broken refs)"
+  _flatpak repair 2>/dev/null || true
+  echo "==> flatpak update"
   _flatpak update -y 2>/dev/null || true
 elif [ "${KINOITE_OSTREE_ONLY:-0}" = 1 ]; then
   echo "==> KINOITE_OSTREE_ONLY=1: skipped Flatpaks (run this script from a user session without that env to apply lists)."
@@ -129,6 +143,20 @@ if command -v systemctl &>/dev/null; then
   systemctl enable --now rpm-ostreed.service 2>/dev/null || true
   if systemctl list-unit-files 2>/dev/null | grep -q rpm-ostreed-automatic.timer; then
     systemctl enable --now rpm-ostreed-automatic.timer 2>/dev/null || true
+  fi
+fi
+
+# --- Optional provision.d hooks (executable NN-name.sh only; see scripts/provision.d/README.md) ---
+if [ "${KINOITE_SKIP_PROVISION_HOOKS:-0}" != 1 ]; then
+  HOOK_DIR="$SCRIPT_DIR/provision.d"
+  if [ -d "$HOOK_DIR" ]; then
+    shopt -s nullglob
+    for h in "$HOOK_DIR"/[0-9][0-9]-*.sh; do
+      [ -x "$h" ] || continue
+      echo "==> provision.d: $(basename "$h")"
+      bash "$h" || echo "  (hook failed: $h)" >&2
+    done
+    shopt -u nullglob
   fi
 fi
 

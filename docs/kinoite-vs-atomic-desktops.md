@@ -1,9 +1,9 @@
-# Kinoite vs Silverblue (and siblings)
+# Kinoite and other Fedora Atomic Desktops
 
 | Variant | Desktop | Notes |
 |---------|---------|--------|
-| **Fedora Kinoite** | KDE Plasma | **This workspace’s target** — same `rpm-ostree` / Flatpak model as other atomic desktops. |
-| **Fedora Silverblue** | GNOME | Same OSTree technology; different default apps and settings. |
-| **Fedora Sway Atomic** | Sway | Tiling WM stack. |
+| **Fedora Kinoite** | KDE Plasma | **This workspace’s target** — `rpm-ostree` + Flatpak, KDE by default. |
+| **Fedora Atomic Desktop (GNOME)** | GNOME | Sister atomic edition: same upgrade and layering model, different default desktop and apps. |
+| **Fedora Sway Atomic** | Sway | Tiling window-manager stack. |
 
 Pick **one** atomic variant per machine or VM; rebasing between them is supported on **real** ostree deployments (`rpm-ostree rebase`).

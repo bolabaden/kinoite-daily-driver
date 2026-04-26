@@ -1,13 +1,13 @@
 # Plan frontmatter `todos` → workspace artifacts (exhaustive)
 
-**Plan:** `KotOR.js` → `.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md` (all items below were **`completed`** or **`cancelled`** in plan YAML as of the plan revision). This file is the **machine-readable** map for “is every `id` covered in `G:\workspaces\Kinoite`?”
+**Plan:** `KotOR.js` → `.cursor/plans/kinoite_wsl_workspace_ec9c3c8b.plan.md` (all items below were **`completed`** or **`cancelled`** in plan YAML as of the plan revision). This file is the **machine-readable** map for “is every `id` covered in `G:\workspaces\Kinoite`?”
 
 | `id` | Plan status | This workspace (path or note) |
 |------|-------------|------------------------------|
 | `phaseA-kinoite-wsl2-import` | completed | `docs/kinoite-wsl2.md` + `scripts/import-kinoite-rootfs-to-wsl.ps1` + executed import recorded in `WORKSPACE_STATUS.md` |
 | `phaseA-wsl-conf-systemd` | completed | `config/wsl.conf.example` + in-distro `/etc/wsl.conf` note in `kinoite-wsl2.md` |
 | `phaseA-rpm-ostree-verify` | completed | `systemd-rpm-ostree-wsl2-claims.md`, `kinoite-wsl2.md` (expected not-booted error for container import) |
-| `phaseA-plasma-wslg` | completed | `kinoite-wsl2.md` § Plasma/WSLg, `optional-kde-wsl.md`, `bootstrap-kde-wsl.sh` |
+| `phaseA-plasma-wslg` | completed | `kinoite-wsl2.md` § Plasma/WSLg, `scripts/bootstrap-kde-wsl.sh`, `scripts/wsl2/launch-kde-gui-wslg.sh` |
 | `research-kinoite-rootfs-sources` | completed | `kinoite-wsl2.md` (Quay pin) + `research/*` |
 | `doc-kinoite-wsl2-authoritative` | completed | `docs/kinoite-wsl2.md` |
 | `inv-refresh-date` / `inv-os-cim` / `inv-winget-json` | completed | `run-windows-inventory.ps1` + `export-winget.ps1` → `imports/*` (gitignored); or **`run-full-plan-capture.ps1`** (all of the above + `winget list`, Start Menu, optional logs; **`CAPTURE-MANIFEST-*.txt`** unignored) |
@@ -19,7 +19,7 @@
 | `doc-virtualbox-kinoite` / `script-virtualbox-snapshots` | completed | `docs/virtualbox-kinoite-fallback.md`, `docs/virtualbox-snapshots-workflow.md` |
 | `doc-fallback-classic-fedora-optional` | completed | `docs/fedora-dnf-fallback-optional.md` + `scripts/fedora-dnf-fallback.sh` (not Phase A) |
 | `doc-pc-inventory-snapshot` | completed | `docs/this-pc-inventory-template.md` |
-| `doc-kinoite-vs-silverblue` | completed | `docs/kinoite-vs-atomic-desktops.md` (title: Kinoite vs **Silverblue**) |
+| `doc-kinoite-vs-other-atomic-desktops` | completed | `docs/kinoite-vs-atomic-desktops.md` (Kinoite vs other atomic editions) |
 | `doc-wsl-atomic-parity` | completed | `docs/wsl-atomic-parity.md` |
 | `doc-app-mapping` | completed | `docs/app-mapping.md` |
 | `doc-kde-daily-driver` / `kde-plasma6-widgets` | completed | `docs/kde-daily-driver-recommendations.md` (Plasma 6) |
@@ -34,7 +34,7 @@
 | `handoff-user-test` | completed | `WORKSPACE_STATUS.md` + `phases-definition-of-done.md` (Phase A real-world caveats) |
 | `doc-ostree-rollback` … `doc-bluetooth-audio` | completed | `atomic-updates-rollback.md` … `bluetooth-pipewire.md` |
 | `pre-commit-secrets` | completed | `docs/gitleaks-optional.md` |
-| `post-exec-mark-plan` | completed in plan (KotOR) | `WORKSPACE_STATUS.md` + KotOR plan **Status** (`.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md`) + `AGENTS.md` (full-capture pointer) |
+| `post-exec-mark-plan` | completed in plan (KotOR) | `WORKSPACE_STATUS.md` + KotOR plan **Status** (`.cursor/plans/kinoite_wsl_workspace_ec9c3c8b.plan.md`) + `AGENTS.md` (full-capture pointer) |
 | `provision-atomic-declarative` | completed | `config/rpm-ostree/layers.list`, [../scripts/apply-atomic-provision.sh](../scripts/apply-atomic-provision.sh), [../scripts/install-atomic-provision-service.sh](../scripts/install-atomic-provision-service.sh), [../config/systemd/kinoite-atomic-ostree.service](../config/systemd/kinoite-atomic-ostree.service), [../PROVISION](../PROVISION) |
 | *Pre-provision-atomic execution extras (subsumed by id above when present):* | — | (historical) same paths as `provision-atomic-declarative` + `docs/plan-alignment.md` |
 | *Added by execution (other):* | — | `scripts/run-full-plan-capture.ps1`, committed `imports/CAPTURE-MANIFEST-*.txt`, `docs/plan-alignment.md`, `windows11-daily-driver-baseline.md`, `plan-frontmatter-coverage.md` (this file) |
@@ -53,7 +53,7 @@
 | `doc-virtualbox-kinoite` | [virtualbox-kinoite-fallback.md](virtualbox-kinoite-fallback.md) |
 | `doc-fallback-classic-fedora-optional` | [fedora-dnf-fallback-optional.md](fedora-dnf-fallback-optional.md) |
 | `doc-pc-inventory-snapshot` | [this-pc-inventory-template.md](this-pc-inventory-template.md) |
-| `doc-kinoite-vs-silverblue` | [kinoite-vs-atomic-desktops.md](kinoite-vs-atomic-desktops.md) |
+| `doc-kinoite-vs-other-atomic-desktops` | [kinoite-vs-atomic-desktops.md](kinoite-vs-atomic-desktops.md) |
 | `doc-wsl-atomic-parity` | [wsl-atomic-parity.md](wsl-atomic-parity.md) |
 | `doc-app-mapping` | [app-mapping.md](app-mapping.md) |
 | `doc-kde-daily-driver` | [kde-daily-driver-recommendations.md](kde-daily-driver-recommendations.md) |
@@ -63,8 +63,8 @@
 | `doc-printing-scanning` | [printing-and-scanning.md](printing-and-scanning.md) |
 | `doc-filesystems` | [filesystems-and-external.md](filesystems-and-external.md) |
 | `doc-backup-sync` | [backup-and-sync.md](backup-and-sync.md) |
-| `doc-appimage-fuse` | [appimage-on-atomic.md](appimage-on-atomic.md) |
-| `doc-gear-lever` | [gear-lever.md](gear-lever.md) |
+| `doc-appimage-fuse` | [../scripts/appimage-fuse-atomic.sh](../scripts/appimage-fuse-atomic.sh) + FUSE tier in [../config/rpm-ostree/layers.list](../config/rpm-ostree/layers.list) (topic doc removed; behavior in repo) |
+| `doc-gear-lever` | [../config/flatpak/README](../config/flatpak/README) + [../scripts/flatpak-maintain.sh](../scripts/flatpak-maintain.sh) (topic doc removed) |
 | `doc-podman-docker` | [podman-and-toolbox.md](podman-and-toolbox.md) |
 | `doc-secrets-ssh` | [secrets-ssh-gpg.md](secrets-ssh-gpg.md) |
 | `doc-3d-autodesk` | [3d-and-autodesk.md](3d-and-autodesk.md) |
@@ -74,7 +74,7 @@
 | `doc-llm-local` | [llm-and-dev-ai.md](llm-and-dev-ai.md) |
 | `doc-ides` | [ides-and-terminals.md](ides-and-terminals.md) |
 | `doc-m365` | [microsoft-365-on-linux.md](microsoft-365-on-linux.md) |
-| `doc-optional-kde-wsl` | [optional-kde-wsl.md](optional-kde-wsl.md) |
+| `doc-optional-kde-wsl` | [../scripts/bootstrap-kde-wsl.sh](../scripts/bootstrap-kde-wsl.sh) + [../config/wsl2/README.md](../config/wsl2/README.md) (topic doc removed; behavior in repo) |
 | `doc-migration-baremetal` | [migration-baremetal-checklist.md](migration-baremetal-checklist.md) |
 | *Plan **Workspace** tree* — `keep-windows` *(no separate YAML `doc-` `id`)* | [keep-windows.md](keep-windows.md) |
 | *`win-c-drive-app-snapshot-2026-04` + Win11 host mirror* | [app-mapping.md](app-mapping.md) + [windows11-daily-driver-baseline.md](windows11-daily-driver-baseline.md) + `imports/*` (see [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md)) |
@@ -85,7 +85,7 @@
 | `doc-power-battery` | [power-and-battery.md](power-and-battery.md) |
 | `doc-virtualization-windows-vm` | [virtualization-windows-vm.md](virtualization-windows-vm.md) |
 | `doc-swap-zram` | [swap-and-zram.md](swap-and-zram.md) |
-| `doc-clipboard-wslg` | [wslg-clipboard-gui.md](wslg-clipboard-gui.md) |
+| `doc-clipboard-wslg` | [../config/wsl2/README.md](../config/wsl2/README.md) (topic doc removed) |
 | `doc-bluetooth-audio` | [bluetooth-pipewire.md](bluetooth-pipewire.md) |
 | `kde-plasma6-widgets` | [kde-daily-driver-recommendations.md](kde-daily-driver-recommendations.md) (Plasma 6) |
 | `pre-commit-secrets` | [gitleaks-optional.md](gitleaks-optional.md) |
@@ -131,7 +131,7 @@
 
 ## Appendix C — Canonical plan `todos` `id` list (75)
 
-**Source of truth (YAML order):** KotOR.js `.cursor/plans/silverblue_wsl_workspace_ec9c3c8b.plan.md` frontmatter. This appendix is a **1:1 ordered list** of all `id` values; **row-by-row** mapping to files is in the **main table** and in **Appendix A** and **B** above, plus [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) for on-host execution. **Regenerate** this list (or run [`../scripts/verify-plan-frontmatter-coverage.ps1`](../scripts/verify-plan-frontmatter-coverage.ps1)) when the plan’s `todos` change.
+**Source of truth (YAML order):** KotOR.js `.cursor/plans/kinoite_wsl_workspace_ec9c3c8b.plan.md` frontmatter. This appendix is a **1:1 ordered list** of all `id` values; **row-by-row** mapping to files is in the **main table** and in **Appendix A** and **B** above, plus [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) for on-host execution. **Regenerate** this list (or run [`../scripts/verify-plan-frontmatter-coverage.ps1`](../scripts/verify-plan-frontmatter-coverage.ps1)) when the plan’s `todos` change.
 
 1. `phaseA-kinoite-wsl2-import`  
 2. `phaseA-wsl-conf-systemd`  
@@ -155,7 +155,7 @@
 20. `doc-virtualbox-kinoite`  
 21. `doc-fallback-classic-fedora-optional`  
 22. `doc-pc-inventory-snapshot`  
-23. `doc-kinoite-vs-silverblue`  
+23. `doc-kinoite-vs-other-atomic-desktops`  
 24. `doc-wsl-atomic-parity`  
 25. `doc-app-mapping`  
 26. `doc-kde-daily-driver`  
