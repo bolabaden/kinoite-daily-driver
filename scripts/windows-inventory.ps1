@@ -1,24 +1,30 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-  Run `dism /Online /Get-Features` and write imports/dism-features.txt. On exit 740 / "elevated
-  permissions required" while not admin, a one-off elevated helper (UAC) runs DISM and writes
-  the same file with a header block (provenance + WSL/VM subset) so `imports/` matches the
-  repo's host-evidence story (see scripts/README.md, docs/win11-kinoite-parity-matrix.md).
-.PARAMETER PassThru
-  If set, returns the same text written to the output file. Default: write the file only (no
-  return value) so a large string is not emitted to the success pipeline.
+  One entry point for Windows host evidence under `imports/`: winget export, CIM+WSL inventory,
+  Start Menu shortcuts, and optional DISM /Get-Features (UAC on 740). See scripts/README.md and
+  docs/windows-migration.md.
+.DESCRIPTION
+  If you pass none of -Winget, -CimWsl, -StartMenu, or -Dism, all four run. -Dism may prompt UAC
+  for elevation when the shell is not admin. -DismPassThru returns the DISM import document text
+  when the DISM step runs (not when DISM is skipped by selective flags without -Dism).
 .EXAMPLE
-  ./capture-dism-features.ps1
+  ./windows-inventory.ps1
 .EXAMPLE
-  ./capture-dism-features.ps1 -OutputPath (Join-Path (Get-Location) 'imports\dism-features.txt')
+  ./windows-inventory.ps1 -OutDir D:\Kinoite\imports
 .EXAMPLE
-  $doc = ./capture-dism-features.ps1 -PassThru
+  ./windows-inventory.ps1 -Dism -DismOutputPath (Join-Path (Get-Location) 'imports\dism-features.txt') -DismPassThru
 #>
 [CmdletBinding()]
 param(
-  [string] $OutputPath = "",
-  [switch] $PassThru
+  [string] $OutDir = (Join-Path (Split-Path $PSScriptRoot -Parent) "imports"),
+  [switch] $Winget,
+  [switch] $CimWsl,
+  [switch] $StartMenu,
+  [switch] $Dism,
+  [string] $DismOutputPath = "",
+  [string] $StartMenuOutFile = "",
+  [switch] $DismPassThru
 )
 
 $ErrorActionPreference = "Stop"
@@ -28,13 +34,71 @@ if ($machinePath -or $userPath) {
   $env:Path = @($env:Path, $machinePath, $userPath) -join ";" 2>$null
 }
 
-$root = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
-if ([string]::IsNullOrWhiteSpace($OutputPath)) {
-  $OutputPath = Join-Path $root "imports\dism-features.txt"
+$doAll = -not ($Winget -or $CimWsl -or $StartMenu -or $Dism)
+if ($doAll) { $Winget = $CimWsl = $StartMenu = $Dism = $true }
+
+$null = New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
+
+if ($Winget) {
+  $wingetExe = $null
+  if (Get-Command winget -ErrorAction SilentlyContinue) { $wingetExe = (Get-Command winget).Source } elseif (Test-Path "$env:LocalAppData\Microsoft\WindowsApps\winget.exe") {
+    $wingetExe = "$env:LocalAppData\Microsoft\WindowsApps\winget.exe"
+  }
+  if (-not $wingetExe) {
+    throw "winget not found. Add Windows Package Manager to PATH or run: $env:LocalAppData\Microsoft\WindowsApps\winget.exe (from User shell)."
+  }
+  $json = Join-Path $OutDir "winget-export.json"
+  Write-Host "Exporting winget packages to $json (via $wingetExe)"
+  & $wingetExe export $json --accept-source-agreements
+  Write-Host "Done. Review and sanitize before git commit."
 }
-$outDir = Split-Path -Path $OutputPath -Parent
-if ($outDir -and -not (Test-Path -LiteralPath $outDir)) {
-  $null = New-Item -ItemType Directory -Path $outDir -Force
+
+if ($CimWsl) {
+  $out = Join-Path $OutDir "windows-inventory.txt"
+  $lines = [System.Collections.Generic.List[string]]::new()
+  [void]$lines.Add("=== Get-CimInstance Win32_OperatingSystem ===")
+  [void]$lines.Add((Get-CimInstance Win32_OperatingSystem | Format-List * | Out-String))
+  [void]$lines.Add("=== wsl -l -v ===")
+  [void]$lines.Add((wsl -l -v 2>&1 | Out-String))
+  [void]$lines.Add("=== wsl --version (optional) ===")
+  [void]$lines.Add((wsl --version 2>&1 | Out-String))
+  [void]$lines.Add("=== podman version ===")
+  if (Get-Command podman -ErrorAction SilentlyContinue) {
+    $op = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    [void]$lines.Add([string](& podman version 2>&1))
+    $ErrorActionPreference = $op
+  } else {
+    [void]$lines.Add("(podman not on PATH in this session; Machine+User PATH is merged in this script.)")
+  }
+  $lines -join [Environment]::NewLine | Set-Content -Path $out -Encoding utf8
+  Write-Host "Wrote $out"
+}
+
+if ($StartMenu) {
+  $eap0 = $ErrorActionPreference
+  $ErrorActionPreference = "SilentlyContinue"
+  $outFile = if ($StartMenuOutFile) { $StartMenuOutFile } else { Join-Path $OutDir "start-menu-shortcuts.txt" }
+  $lineList = [System.Collections.Generic.List[string]]::new()
+  foreach ($root in @(
+    "C:\ProgramData\Microsoft\Windows\Start Menu\Programs",
+    "$env:APPDATA\Microsoft\Windows\Start Menu\Programs",
+    "C:\Users\Public\Desktop",
+    [Environment]::GetFolderPath("Desktop")
+  )) {
+    if (Test-Path -LiteralPath $root) {
+      [void]$lineList.Add("=== $root ===")
+      Get-ChildItem -LiteralPath $root -Recurse -Include *.lnk, *.url -File -ErrorAction SilentlyContinue | ForEach-Object { [void]$lineList.Add($_.FullName) }
+    }
+  }
+  $text = $lineList -join "`n"
+  $parent = Split-Path -Path $outFile -Parent
+  if ($parent -and -not (Test-Path -LiteralPath $parent)) {
+    $null = New-Item -ItemType Directory -Path $parent -Force
+  }
+  Set-Content -Path $outFile -Value $text -Encoding utf8
+  $ErrorActionPreference = $eap0
+  Write-Output "Wrote $($lineList.Count) lines to $outFile"
 }
 
 $DismExe = Join-Path $env:WINDIR "System32\dism.exe"
@@ -82,7 +146,6 @@ function Get-OptionalFeatureSubsetBlock {
 # Header + subset + body — what the docs expect under `imports/` for host evidence.
 function New-DismFeaturesImportDocument {
   param(
-    # No [Mandatory]: PS rejects both @() and "" for [string[]]; we normalize empty to @().
     [string[]] $DismOutLines = [string[]]@(),
     [Parameter(Mandatory)]
     [int] $DismExitCode,
@@ -111,7 +174,7 @@ function New-DismFeaturesImportDocument {
   if ($DismOutLines -and $DismExitCode -eq 0) { $sub = (Get-OptionalFeatureSubsetBlock -DismLines $DismOutLines -FeatureNames $keyNames) }
   $sb = [System.Text.StringBuilder]::new()
   [void]$sb.AppendLine("# Kinoite imports: optional Windows features (DISM: /Online /Get-Features).")
-  [void]$sb.AppendLine("# See: scripts/README.md, docs/win11-kinoite-parity-matrix.md, docs/app-mapping.md")
+  [void]$sb.AppendLine("# See: scripts/README.md, docs/windows-migration.md")
   [void]$sb.AppendLine(("# Captured-UTC: {0}" -f $utc))
   [void]$sb.AppendLine(("# Captured-local: {0}" -f $local))
   [void]$sb.AppendLine(("# Computer: {0}" -f $env:COMPUTERNAME))
@@ -187,55 +250,65 @@ function ConvertFrom-DismCommandOutput {
   return [string[]]@($t -split "\r?\n" | ForEach-Object { "$_" })
 }
 
-# --- DISM: try System32 dism; on 740, delegate to UAC helper ---
-$dismCode = 0
-$lines = $null
-$blob = ""
-$text = $null
-$captureMode = "in-session"
-try {
-  if (-not (Test-Path -LiteralPath $DismExe)) { throw "Not found: $DismExe" }
-  $lines = & $DismExe /Online /Get-Features 2>&1
-  $dismCode = $LASTEXITCODE
-  $arr = (ConvertFrom-DismCommandOutput -Native $lines)
-  $blob = if ($arr.Count) { $arr -join [Environment]::NewLine } else { "" }
-  if ($dismCode -ne 0) { throw "DISM_NONZERO" }
-  $text = (New-DismFeaturesImportDocument -DismOutLines $arr -DismExitCode $dismCode -CaptureMode $captureMode)
-  $text | Set-Content -LiteralPath $OutputPath -Encoding utf8
-} catch {
-  if ($_.Exception.Message -ne "DISM_NONZERO" -or $dismCode -eq 0) { throw $_.Exception }
+if ($Dism) {
+  if ([string]::IsNullOrWhiteSpace($DismOutputPath)) {
+    $DismOutputPath = Join-Path $OutDir "dism-features.txt"
+  }
+  $OutputPath = $DismOutputPath
+  $outDirDism = Split-Path -Path $OutputPath -Parent
+  if ($outDirDism -and -not (Test-Path -LiteralPath $outDirDism)) {
+    $null = New-Item -ItemType Directory -Path $outDirDism -Force
+  }
 
-  $uac = ($dismCode -eq 740) -or ($blob -match 'Error:\s*740') -or
-         ($blob -match "Elevated permissions are required to run DISM")
-  if (-not $uac) {
-    if ($null -ne $lines) {
-      $arr2 = (ConvertFrom-DismCommandOutput -Native $lines)
-      $text = (New-DismFeaturesImportDocument -DismOutLines $arr2 -DismExitCode $dismCode -CaptureMode $captureMode)
-      $text | Set-Content -LiteralPath $OutputPath -Encoding utf8
-    }
-    throw "dism.exe failed (exit $dismCode). $blob"
-  }
-  if (Test-IsAdmin) {
-    if ($null -ne $lines) {
-      $arr2 = (ConvertFrom-DismCommandOutput -Native $lines)
-      $text = (New-DismFeaturesImportDocument -DismOutLines $arr2 -DismExitCode $dismCode -CaptureMode $captureMode)
-      $text | Set-Content -LiteralPath $OutputPath -Encoding utf8
-    }
-    throw "DISM still reports 740/elevation in an **elevated** session. $blob"
-  }
-  Write-Verbose "Catching 740 / UAC case — re-running via elevated PowerShell…"
-  $captureMode = "UAC-elevation"
-  $raw = (Start-ElevatedDismAndRead -LiteralPath $OutputPath)
   $dismCode = 0
-  $arr3 = DismTextToLineArray -Raw $raw
-  $text = (New-DismFeaturesImportDocument -DismOutLines $arr3 -DismExitCode $dismCode -CaptureMode $captureMode)
-  $text | Set-Content -LiteralPath $OutputPath -Encoding utf8
+  $lines = $null
+  $blob = ""
+  $text = $null
+  $captureMode = "in-session"
+  try {
+    if (-not (Test-Path -LiteralPath $DismExe)) { throw "Not found: $DismExe" }
+    $lines = & $DismExe /Online /Get-Features 2>&1
+    $dismCode = $LASTEXITCODE
+    $arr = (ConvertFrom-DismCommandOutput -Native $lines)
+    $blob = if ($arr.Count) { $arr -join [Environment]::NewLine } else { "" }
+    if ($dismCode -ne 0) { throw "DISM_NONZERO" }
+    $text = (New-DismFeaturesImportDocument -DismOutLines $arr -DismExitCode $dismCode -CaptureMode $captureMode)
+    $text | Set-Content -LiteralPath $OutputPath -Encoding utf8
+  } catch {
+    if ($_.Exception.Message -ne "DISM_NONZERO" -or $dismCode -eq 0) { throw $_.Exception }
+
+    $uac = ($dismCode -eq 740) -or ($blob -match 'Error:\s*740') -or
+           ($blob -match "Elevated permissions are required to run DISM")
+    if (-not $uac) {
+      if ($null -ne $lines) {
+        $arr2 = (ConvertFrom-DismCommandOutput -Native $lines)
+        $text = (New-DismFeaturesImportDocument -DismOutLines $arr2 -DismExitCode $dismCode -CaptureMode $captureMode)
+        $text | Set-Content -LiteralPath $OutputPath -Encoding utf8
+      }
+      throw "dism.exe failed (exit $dismCode). $blob"
+    }
+    if (Test-IsAdmin) {
+      if ($null -ne $lines) {
+        $arr2 = (ConvertFrom-DismCommandOutput -Native $lines)
+        $text = (New-DismFeaturesImportDocument -DismOutLines $arr2 -DismExitCode $dismCode -CaptureMode $captureMode)
+        $text | Set-Content -LiteralPath $OutputPath -Encoding utf8
+      }
+      throw "DISM still reports 740/elevation in an **elevated** session. $blob"
+    }
+    Write-Verbose "Catching 740 / UAC case — re-running via elevated PowerShell…"
+    $captureMode = "UAC-elevation"
+    $raw = (Start-ElevatedDismAndRead -LiteralPath $OutputPath)
+    $dismCode = 0
+    $arr3 = DismTextToLineArray -Raw $raw
+    $text = (New-DismFeaturesImportDocument -DismOutLines $arr3 -DismExitCode $dismCode -CaptureMode $captureMode)
+    $text | Set-Content -LiteralPath $OutputPath -Encoding utf8
+  }
+  if ($null -eq $text) {
+    if (Test-Path -LiteralPath $OutputPath) { $text = Get-Content -LiteralPath $OutputPath -Raw }
+    else { $text = "" }
+  }
+  $len = 0
+  if (Test-Path -LiteralPath $OutputPath) { $len = (Get-Item -LiteralPath $OutputPath).Length }
+  Write-Host "Wrote: $OutputPath ($len bytes)" -ForegroundColor Green
+  if ($DismPassThru) { return $text }
 }
-if ($null -eq $text) {
-  if (Test-Path -LiteralPath $OutputPath) { $text = Get-Content -LiteralPath $OutputPath -Raw }
-  else { $text = "" }
-}
-$len = 0
-if (Test-Path -LiteralPath $OutputPath) { $len = (Get-Item -LiteralPath $OutputPath).Length }
-Write-Host "Wrote: $OutputPath ($len bytes)" -ForegroundColor Green
-if ($PassThru) { return $text }

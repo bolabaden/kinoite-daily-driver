@@ -23,7 +23,7 @@
 .NOTES
   Run from elevated PowerShell if InstallLocation requires it.
   Ensure podman works: podman version
-  Optional: KINOITE_WORKSPACE_ROOT (see kinoite-workspace-root.env.example) for default TarPath.
+  Optional: KINOITE_WORKSPACE_ROOT (see config/README.md — workspace + locale) for default TarPath.
 #>
 param(
   [string]$Image = "quay.io/fedora-ostree-desktops/kinoite:43",

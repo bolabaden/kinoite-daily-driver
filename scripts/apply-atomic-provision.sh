@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Declarative provisional configuration for rpm-ostree (Kinoite) + user Flatpaks.
-# Run INSIDE the Kinoite system (WSL2 import or bare metal) with: sudo ./apply-atomic-provision.sh
-# - Reads: config/flatpak/*.list and config/rpm-ostree/layers.list (or /etc/kinoite-provision after install-atomic-provision-service.sh)
+# Run INSIDE the Kinoite system (WSL2 import or bare metal) from repo root: sudo ./scripts/apply-atomic-provision.sh
+# - Reads: config/flatpak/*.list (e.g. kinoite.list) and config/rpm-ostree/layers.list (or /etc/kinoite-provision after install-service)
 # - Runs optional executable scripts/provision.d/NN-*.sh unless KINOITE_SKIP_PROVISION_HOOKS=1
 # - Idempotent: safe to re-run. rpm-ostree will no-op for already-layered packages.
 # - WSL2: if rpm-ostree install fails, fix rootfs/upgrade per docs; Flatpaks still apply.
@@ -12,7 +12,185 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
-# Config root: deployed copy (see install-atomic-provision-service.sh) or this repo’s config/
+_subcmd_usage() {
+  cat <<'EOF'
+Optional first-argument subcommands (merged helpers):
+  kde-night-light          KDE Night Color + schedule (desktop user; not sudo)
+  appimage-check           FUSE / fuse3 hints for AppImages
+  appimage-run <AppImage> [-- <app args...>]   extract-and-run (no FUSE mount)
+  install-service [user] /etc/kinoite-provision + systemd unit (root)
+  provision-locale         timedatectl/localectl from host-local/locale.env (root)
+  help                     List subcommands
+
+No arguments: normal Flatpak + rpm-ostree provision pass.
+EOF
+}
+
+_cmd_kde_night_light() {
+  if ! command -v kwriteconfig6 >/dev/null 2>&1; then
+    echo "apply-atomic-provision kde-night-light: kwriteconfig6 not found (install Plasma / kwin)." >&2
+    return 1
+  fi
+  _cfg_home() {
+    if [ -n "${KINOITE_KDE_CONFIG_HOME:-}" ]; then
+      printf '%s' "$KINOITE_KDE_CONFIG_HOME"
+    elif [ -n "${XDG_CONFIG_HOME:-}" ]; then
+      printf '%s' "$XDG_CONFIG_HOME"
+    else
+      printf '%s' "$HOME/.config"
+    fi
+  }
+  local CFG
+  CFG="$(_cfg_home)"
+  mkdir -p "$CFG"
+  echo "==> Night Light (kwinrc [NightColor]) + schedule (knighttimerc) -> $CFG"
+  kwriteconfig6 --file "$CFG/kwinrc" --group NightColor --key Active true
+  kwriteconfig6 --file "$CFG/kwinrc" --group NightColor --key Mode DarkLight
+  kwriteconfig6 --file "$CFG/kwinrc" --group NightColor --key DayTemperature 6500
+  kwriteconfig6 --file "$CFG/kwinrc" --group NightColor --key NightTemperature 4500
+  kwriteconfig6 --file "$CFG/knighttimerc" --group General --key Source Location
+  kwriteconfig6 --file "$CFG/knighttimerc" --group Location --key Automatic true
+  echo "==> Done. Log out/in or restart KWin for all effects to apply."
+}
+
+_cmd_appimage_check() {
+  echo "=== AppImage / FUSE quick check ==="
+  if command -v fusermount3 &>/dev/null; then
+    echo "OK: fusermount3 is on PATH."
+  else
+    echo "Note: fusermount3 not found — layer fuse3 (see config/rpm-ostree/layers.list) or use --appimage-extract-and-run."
+  fi
+  if command -v rpm-ostree &>/dev/null; then
+    if rpm -q fuse3 &>/dev/null; then
+      echo "OK: fuse3 RPM is installed in this deployment."
+    else
+      echo "Note: fuse3 RPM not installed — uncomment fuse3 in layers.list and apply + reboot if you need native AppImage mounts."
+    fi
+  else
+    echo "Note: rpm-ostree not available (container?); extract-and-run still works."
+  fi
+  echo "Fallback run: path/to/App.AppImage --appimage-extract-and-run"
+}
+
+_cmd_appimage_run() {
+  if [[ $# -lt 1 ]]; then
+    echo "error: appimage-run: missing AppImage path" >&2
+    exit 1
+  fi
+  local app="$1"
+  shift
+  if [[ ! -f "$app" ]]; then
+    echo "error: not a file: $app" >&2
+    exit 1
+  fi
+  if [[ ! -x "$app" ]]; then
+    echo "warning: not marked executable — try: chmod +x $app" >&2
+  fi
+  if [[ ${1:-} == -- ]]; then shift; fi
+  exec "$app" --appimage-extract-and-run "$@"
+}
+
+_cmd_install_service() {
+  ROOT_UID=0
+  if [ "${EUID:-0}" -ne "$ROOT_UID" ]; then
+    echo "Run as root: sudo $0 install-service [default-linux-username]" >&2
+    exit 1
+  fi
+  local TARGET_USER="${1:-}"
+  install -d -m 0755 /etc/kinoite-provision
+  cp -a "$REPO_ROOT/config/flatpak" /etc/kinoite-provision/
+  cp -a "$REPO_ROOT/config/rpm-ostree" /etc/kinoite-provision/
+  install -m 0755 "$REPO_ROOT/scripts/apply-atomic-provision.sh" /etc/kinoite-provision/apply-atomic-provision.sh
+  if [ -n "$TARGET_USER" ]; then
+    printf '%s' "$TARGET_USER" >/etc/kinoite-provision/default-user
+    chmod 0644 /etc/kinoite-provision/default-user
+  fi
+  if command -v systemctl &>/dev/null; then
+    install -m 0644 "$REPO_ROOT/config/systemd/kinoite-atomic-ostree.service" /etc/systemd/system/kinoite-atomic-ostree.service
+    systemctl daemon-reload
+    systemctl enable kinoite-atomic-ostree.service
+    echo "==> Enabled: kinoite-atomic-ostree.service (rpm-ostree layers on boot; reboot to apply if packages were added)."
+    echo "==> Flatpaks: after login, or: sudo -u YOURUSER $REPO_ROOT/scripts/apply-atomic-provision.sh  (or sudo from your account so SUDO_USER is set)"
+  else
+    echo "==> No systemctl; copied files to /etc/kinoite-provision only."
+  fi
+}
+
+_cmd_provision_locale() {
+  if [ "$(id -u)" -ne 0 ]; then
+    echo "Run as root: sudo $0 provision-locale" >&2
+    exit 1
+  fi
+  local ENV_FILE="${KINOITE_LOCALE_ENV:-$REPO_ROOT/host-local/locale.env}"
+  if [ -f "$ENV_FILE" ]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "$ENV_FILE"
+    set +a
+    echo "==> Loaded $ENV_FILE"
+  else
+    echo "==> No env file at $ENV_FILE — set KINOITE_LOCALE_ENV or create host-local/locale.env (see config/README.md)" >&2
+  fi
+  if [ -n "${KINOITE_TIMEZONE:-}" ]; then
+    echo "==> timedatectl set-timezone $KINOITE_TIMEZONE"
+    timedatectl set-timezone "$KINOITE_TIMEZONE"
+  fi
+  if [ -n "${KINOITE_LANG:-}" ]; then
+    echo "==> localectl set-locale LANG=$KINOITE_LANG"
+    localectl set-locale "LANG=$KINOITE_LANG"
+  fi
+  if [ -n "${KINOITE_KEYMAP:-}" ]; then
+    echo "==> localectl set-keymap $KINOITE_KEYMAP"
+    localectl set-keymap "$KINOITE_KEYMAP"
+  fi
+  local X_LAYOUT="${KINOITE_X11_LAYOUT:-${KINOITE_KEYMAP:-}}"
+  if [ -n "$X_LAYOUT" ]; then
+    echo "==> localectl set-x11-keymap $X_LAYOUT"
+    localectl set-x11-keymap "$X_LAYOUT" || true
+  fi
+  echo "==> Locale pass done. timedatectl / localectl status:"
+  timedatectl status 2>/dev/null || true
+  localectl status 2>/dev/null || true
+}
+
+case "${1:-}" in
+  kde-night-light | night-light)
+    shift || true
+    _cmd_kde_night_light "$@"
+    exit $?
+    ;;
+  appimage-check)
+    _cmd_appimage_check
+    exit $?
+    ;;
+  appimage-run)
+    shift || true
+    _cmd_appimage_run "$@"
+    ;;
+  install-service | install-atomic-provision-service)
+    shift || true
+    _cmd_install_service "$@"
+    exit $?
+    ;;
+  provision-locale | locale)
+    shift || true
+    _cmd_provision_locale "$@"
+    exit $?
+    ;;
+  help | -h | --help)
+    _subcmd_usage
+    exit 0
+    ;;
+  "")
+    ;;
+  *)
+    echo "apply-atomic-provision: unknown command: $1" >&2
+    _subcmd_usage >&2
+    exit 2
+    ;;
+esac
+
+# Config root: deployed copy (see install-service) or this repo’s config/
 if [ -d /etc/kinoite-provision/flatpak ] && [ -d /etc/kinoite-provision/rpm-ostree ]; then
   CFG_ROOT=/etc/kinoite-provision
 elif [ -n "${KINOITE_PROVISION_CONFIG:-}" ]; then

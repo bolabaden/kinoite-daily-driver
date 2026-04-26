@@ -2,7 +2,7 @@
 
 This document is the **single source of truth** for importing and running **Fedora Kinoite** (atomic desktop, KDE-oriented) inside **WSL2** with **systemd** where supported, and **honest** limits for **`rpm-ostree`**.
 
-> **Hard reality (read first):** **`systemd` and full `rpm-ostree` are not the same ask in WSL2.** See **§ [Systemd and `rpm-ostree` in WSL2 (honesty)](#systemd-and-rpm-ostree-in-wsl2-honesty)** below for what can be *fully* true vs what requires a **VM/bare metal** OSTree boot.
+> **Hard reality (read first):** **`systemd` and full `rpm-ostree` are not the same ask in WSL2.** See **[Systemd and `rpm-ostree` in WSL2 (honesty)](#systemd-and-rpm-ostree-in-wsl2-honesty)** below for what can be *fully* true vs what requires a **VM/bare metal** OSTree boot.
 
 ## Systemd and `rpm-ostree` in WSL2 (honesty)
 
@@ -50,7 +50,7 @@ appendWindowsPath=false
 
 `rpm-ostree` is designed to manage **ostree** deployments on a system that has **booted** through the **ostree** stack (e.g. `ostree-prepare-root`, deploy roots under `/ostree`, BLS, initramfs on real hardware, etc.). OSTree’s own deployment model is documented in the OSTree manual: [Deployments | ostree](https://ostreedev.github.io/ostree/deployment/).
 
-When you import a **container** rootfs produced from **`podman export`**, you are **not** importing a **bit-for-bit** booted OSTree deployment. In practice, **`rpm-ostree` checks fail** with messages like **“This system was not booted via libostree”** (what we observed on `Kinoite-WS2` in this workspace’s **2026-04-25** import). That is **not** a random bug: it is **`rpm-ostree` being honest** that the **running** root is not an **active ostree boot**.
+When you import a **container** rootfs produced from **`podman export`**, you are **not** importing a **bit-for-bit** booted OSTree deployment. In practice, **`rpm-ostree` checks fail** with messages like **“This system was not booted via libostree.”** That is **not** a random bug: it is **`rpm-ostree` being honest** that the **running** root is not an **active ostree boot**.
 
 **Therefore:**
 
@@ -62,7 +62,7 @@ When you import a **container** rootfs produced from **`podman export`**, you ar
 - **Real hardware** Fedora Kinoite, or
 - A **VM** (QEMU/KVM, VirtualBox, …) installed from the **Kinoite ISO** / an installer that actually deploys an **ostree** image.
 
-This workspace already points there in **[`migration-baremetal-checklist.md` — Kinoite guest VM](migration-baremetal-checklist.md#kinoite-guest-vm-with-the-official-iso-phase-b-or-c)** and this file.
+This workspace documents the same path in **[Kinoite guest VM (Phase B or C)](#kinoite-guest-vm-with-the-official-iso-phase-b-or-c)** below.
 
 ### 3) Practical split-brain strategy (what we recommend)
 
@@ -72,16 +72,10 @@ This workspace already points there in **[`migration-baremetal-checklist.md` —
 | **True `rpm-ostree` / rollbacks / layering** the way Atomic docs intend | **VM or bare metal Kinoite** |
 | **Honest** CI for atomic workflows | run jobs on **KVM** / **Vagrant** / `virt-install` with an ISO, not in WSL2 if you need **guaranteed** `rpm-ostree` semantics |
 
-### 4) “Research / tools” note (this session)
+### 4) Keeping expectations current
 
-- **Tavily / `tvly` / deep research** — not run here (CLI not on PATH; use when installed per Tavily’s docs).
-- **Firecrawl** — attempted; **credits** blocked (`Insufficient credits` from the hosted service). A stub filename was **not** written as if it were real research output.
-- **Context7** — for library-style API docs, use the Context7 flow on **`rpm-ostree` / `ostree` package docs** in your editor when you need *exact* subcommands for a *supported* host; it does not change WSL’s **boot** model.
-- **Cursor `brainstorm` command** is **deprecated** in your workspace rules — prefer the **“superpowers brainstorming”** skill for product/brainstorm work, not for OS physics.
-
-### 5) If upstream ever adds a “real OSTree in WSL” path
-
-Re-validate against **Fedora Atomic Desktop** release notes and `rpm-ostree`’s own requirements. Until then, treat this **section** as **ground truth** for **expectations** on the **2026-04-25** **container-export → WSL** import.
+- Treat **[Fedora Kinoite](https://docs.fedoraproject.org/en-US/fedora-kinoite/)**, **[rpm-ostree](https://coreos.github.io/rpm-ostree/)**, **[ostree](https://ostreedev.github.io/ostree/)**, and **[WSL](https://learn.microsoft.com/en-us/windows/wsl/)** docs as the sources of truth when versions or behavior change.
+- **Container-export → `wsl --import`** is convenient for Phase A, but it is **not** the same boot path as an ISO-installed atomic host. If upstream ever documents a **full OSTree-in-WSL** flow, re-validate this guide against release notes before relying on it.
 
 ## Repo scope
 
@@ -100,9 +94,9 @@ This repository is **self-contained documentation and scripts** for provisioning
 A **Windows 11** daily driver often has **Cloudflare WARP**, **Tailscale**, **PIA**, **OpenVPN**, and other clients **active together**. That stack is a **troubleshooting risk** (MTU, routing loops, **DNS** surprises). On **Fedora Kinoite**—whether in **WSL2** (mostly **development/experiment**) or **bare metal** (your eventual target)—prefer **one primary tunnel** for “general” connectivity and add **split routing** or **per-app** policy when a tool supports it. Re-implementing **four simultaneous full-tunnel** clients the way they often sit on Windows is rarely desirable.
 
 - **WARP (Linux / atomic):** [Get started (Linux)](https://developers.cloudflare.com/warp-client/get-started/linux/), [packages](https://pkg.cloudflareclient.com/) — on **rpm-ostree** hosts, install the system package, **reboot**, then **`systemctl enable --now warp-svc`** and `warp-cli …`.  
-- **Tailscale / PIA / OpenVPN:** see [`networking.md`](networking.md) for **NetworkManager**, vendor UIs, and “pick one **primary** VPN” guidance.
+- **Tailscale / PIA / OpenVPN:** see [windows-migration — networking and VPN](windows-migration.md#networking-and-vpn) and [Secrets, SSH, and GPG](windows-migration.md#secrets-ssh-and-gpg) for **NetworkManager**, vendor UIs, and “pick one **primary** VPN” guidance.
 
-## Verified import (this workspace, 2026-04-25)
+## Verified import (this workspace, 2026-04-26)
 
 | Step | Result |
 |------|--------|
@@ -157,7 +151,7 @@ Bootable-container images are large; expect **multi-GB** pull and export.
 
 **What often does not match**
 
-- **`rpm-ostree`:** may refuse to run if the environment was **not booted through libostree** (common when importing a **container export** as WSL rootfs) — see **Verified import** and [§ Systemd and `rpm-ostree` in WSL2 (honesty)](#systemd-and-rpm-ostree-in-wsl2-honesty).
+- **`rpm-ostree`:** may refuse to run if the environment was **not booted through libostree** (common when importing a **container export** as WSL rootfs) — see **Verified import** and [Systemd and `rpm-ostree` in WSL2 (honesty)](#systemd-and-rpm-ostree-in-wsl2-honesty).
 - **Firmware / secure boot / fwupd** — not applicable inside WSL.
 - **Full Plasma session + SDDM** — use partial **`plasmashell`** experiments or move to **VM/bare metal**.
 
@@ -175,7 +169,7 @@ systemd=true
 default=YOUR_LINUX_USERNAME
 ```
 
-Copy from `../config/wsl2/distro.wsl.conf.example`, adjust `default=`, place in `/etc/wsl.conf` **inside** the distro, then **`wsl --shutdown`** from Windows and start the distro again.
+Copy the **`[user]`** example from [config/wsl2/README.md](../config/wsl2/README.md) into `/etc/wsl.conf` **inside** the distro, adjust `default=`, then **`wsl --shutdown`** from Windows and start the distro again.
 
 Verify:
 
@@ -198,17 +192,17 @@ Use **`../scripts/bootstrap-kinoite-wsl2.sh`** for a guided sequence.
 
 ## Declarative `rpm-ostree` + Flatpak (provisional config, this repo)
 
-Edit **`config/rpm-ostree/layers.list`** (package names, one per line) and **`config/flatpak/*.list`** (Flathub app IDs), then from the repo root on the **Linux** side run:
+Edit **`config/rpm-ostree/layers.list`** (package names, one per line) and **`config/flatpak/kinoite.list`** (Flathub app IDs; additional `*.list` in that directory are also applied), then from the repo root on the **Linux** side run:
 
 `sudo ./scripts/apply-atomic-provision.sh`
 
-**`rpm-ostree`** layers are staged to the next boot; **Flatpaks** install to the user’s `~/.var/app/`. For **systemd** to apply only **layers** at boot (no Flatpaks; those need a user D-Bus session), run **`sudo ./scripts/install-atomic-provision-service.sh`**. See **[../GETTING_STARTED.md](../GETTING_STARTED.md#step-7--optional-apply-only-layered-rpms-at-boot)**.
+**`rpm-ostree`** layers are staged to the next boot; **Flatpaks** install to the user’s `~/.var/app/`. For **systemd** to apply only **layers** at boot (no Flatpaks; those need a user D-Bus session), run **`sudo ./scripts/apply-atomic-provision.sh install-service`**. See **[README — Step 7](../README.md#step-7--optional-apply-only-layered-rpms-at-boot)**.
 
 Windows / WSL2 / WSLg-only setup (`.wslconfig`, `/etc/wsl.conf`, WSLg env, PowerShell helpers) is consolidated in **`../config/wsl2/README.md`**, including what to do **instead** on bare metal.
 
 ## Plasma / WSLg
 
-**Before** expecting a full “desktop session,” ensure you are **not** stuck on **root** only: a container `wsl --import` may ship **without** a normal user; WSL’s default can remain **`root`**, and `loginctl` will show **no** user sessions. See **§ [Runtime completion bar (KDE and WSLg)](#runtime-completion-bar-kde-and-wslg)** below for the **default user + `[user] default=…` + `wsl --shutdown`** path. A **systemd --user** warning for **root** on login is a symptom of the same mismatch.
+**Before** expecting a full “desktop session,” ensure you are **not** stuck on **root** only: a container `wsl --import` may ship **without** a normal user; WSL’s default can remain **`root`**, and `loginctl` will show **no** user sessions. See **[Runtime completion bar (KDE and WSLg)](#runtime-completion-bar-kde-and-wslg)** below for the **default user + `[user] default=…` + `wsl --shutdown`** path. A **systemd --user** warning for **root** on login is a symptom of the same mismatch.
 
 There is no single guaranteed recipe; common patterns:
 
@@ -227,7 +221,7 @@ This subsection defines **“done”** for an *interactive* desktop, not for mar
 
 #### What a coding agent in Cursor can and cannot do
 
-- **In scope from a shell:** `wsl -d Kinoite-WS2` probes, `rpm -q`, `ps`, `loginctl`, checking `/etc/wsl.conf`, running [`scripts/verify-kde-wsl2-runtime.sh`](../scripts/verify-kde-wsl2-runtime.sh) *after* you have a default user and a graphical session.
+- **In scope from a shell:** `wsl -d Kinoite-WS2` probes, `rpm -q`, `ps`, `loginctl`, checking `/etc/wsl.conf`, running **`./scripts/wsl2/launch-kde-gui-wslg.sh verify`** *after* you have a default user and a graphical session.
 - **Out of scope unless you wire them in your IDE:** `windows-mcp`, **desktop-commander**, or any MCP that automates a **Windows desktop** or **WSLg window** was **not** available in the session that last edited this file. Treat any claim of “fully verified with those tools” as **user-provided** until attached to logs.
 
 #### Evidence run (2026-04-26) — what was actually true on the host
@@ -243,7 +237,7 @@ This subsection defines **“done”** for an *interactive* desktop, not for mar
 | `pgrep plasmashell` / full Plasma stack | **Not running** in that probe (no session started) |
 | `getent passwd` (human login) | **No unprivileged “human” user** in the file — only **root** and system accounts |
 
-**Conclusion:** the machine is **not** at “KDE fully configured and confirmed functional out of the box” until a **default non-root user** exists, **`/etc/wsl.conf`** has `[user] default=…` (see [distro.wsl.conf.example](../config/wsl2/distro.wsl.conf.example)), you **`wsl --shutdown`** and re-enter, then start Plasma under WSLg in this section (e.g. `dbus-run-session plasmashell`).
+**Conclusion:** the machine is **not** at “KDE fully configured and confirmed functional out of the box” until a **default non-root user** exists, **`/etc/wsl.conf`** has `[user] default=…` (see the **`[user]`** block in [config/wsl2/README.md](../config/wsl2/README.md)), you **`wsl --shutdown`** and re-enter, then start Plasma under WSLg in this section (e.g. `dbus-run-session plasmashell`).
 
 #### Required steps (order)
 
@@ -257,7 +251,7 @@ This subsection defines **“done”** for an *interactive* desktop, not for mar
    ```
 2. **Set** `/etc/wsl.conf` `[user] default=<name>` (and keep `[boot] systemd=true`), then from **Windows:** `wsl --shutdown` → `wsl -d Kinoite-WS2` and confirm `whoami` is **not** `root`.
 3. **WSLg:** from an interactive logon shell, `echo $DISPLAY` / `$WAYLAND_DISPLAY` should usually be set (WSLg). If not, see Microsoft WSLg troubleshooting.
-4. **Plasma:** use the bullets above; then run [`scripts/verify-kde-wsl2-runtime.sh`](../scripts/verify-kde-wsl2-runtime.sh).
+4. **Plasma:** use the bullets above; then run **`./scripts/wsl2/launch-kde-gui-wslg.sh verify`** (runtime checks; same as the former `verify-kde-wsl2-runtime.sh`).
 5. **Record** the exact working command(s) in your own notes (or a private fork); if you use external MCP tools, keep **command logs** or **screenshots** in `imports/` (sanitized) *if* you choose to commit evidence.
 
 #### Exit criteria (copy into your checklist when true)
@@ -265,7 +259,7 @@ This subsection defines **“done”** for an *interactive* desktop, not for mar
 - [ ] Default WSL user is **not** `root` (`/etc/wsl.conf` + `wsl` opens as your user).
 - [ ] `loginctl` shows a **user** session (or you document WSLg-only session where `loginctl` stays empty, with evidence).
 - [ ] `plasmashell` (or your chosen Plasma surface) is **running** and usable under WSLg.
-- [ ] [`scripts/verify-kde-wsl2-runtime.sh`](../scripts/verify-kde-wsl2-runtime.sh) **exit 0** in that context.
+- [ ] **`./scripts/wsl2/launch-kde-gui-wslg.sh verify`** **exit 0** in that context.
 
 When all are checked, treat the **KDE runtime** as verified for your machine and note the **date** and evidence pointer in your own docs.
 
@@ -276,7 +270,7 @@ When all are checked, treat the **KDE runtime** as verified for your machine and
 
 ## When to escalate (Phase B/C)
 
-- **VirtualBox / KVM** with the [official Kinoite ISO](https://fedoraproject.org/atomic-desktops/kinoite/download/) when WSL2 cannot provide acceptable **GPU**, **Plasma session**, or **rpm-ostree** stability — see [migration-baremetal-checklist — Kinoite guest VM + snapshots](migration-baremetal-checklist.md#kinoite-guest-vm-with-the-official-iso-phase-b-or-c) (includes [snapshots workflow](migration-baremetal-checklist.md#snapshots-workflow-virtualbox)).
+- **VirtualBox / KVM** with the [official Kinoite ISO](https://fedoraproject.org/atomic-desktops/kinoite/download/) when WSL2 cannot provide acceptable **GPU**, **Plasma session**, or **rpm-ostree** stability — see [Kinoite guest VM + snapshots](#kinoite-guest-vm-with-the-official-iso-phase-b-or-c) below (includes [snapshots workflow](#snapshots-workflow-virtualbox)).
 
 ## Optional: classic Fedora in WSL
 
@@ -289,7 +283,7 @@ When all are checked, treat the **KDE runtime** as verified for your machine and
 
 **Phase A** is **Fedora Kinoite** (OSTree / `rpm-ostree` + KDE-oriented atomic desktop bits) inside **WSL2**, with **systemd** and **WSLg** for GUI experiments.
 
-**Not Phase A:** “Fedora for WSL” from the Store as a **dnf** substitute for the same goals. That path is **optional** and must be **explicitly** chosen; see [§ Optional: classic Fedora in WSL](#optional-classic-fedora-in-wsl) above.
+**Not Phase A:** “Fedora for WSL” from the Store as a **dnf** substitute for the same goals. That path is **optional** and must be **explicitly** chosen; see [Optional: classic Fedora in WSL](#optional-classic-fedora-in-wsl) above.
 
 **Why WSL2 first:** same **Flatpak**, **toolbox/distrobox**, and **`rpm-ostree` mental model** as bare-metal Kinoite, with faster iteration — accepting WSL-specific fragility documented in this file.
 
@@ -312,7 +306,7 @@ Forums and hubs to read **with** (not instead of) this file:
 - Atomic desktops hub: [fedoraproject.org/atomic-desktops](https://fedoraproject.org/atomic-desktops/)
 - Kinoite OCI on Quay: `quay.io/fedora-ostree-desktops/kinoite`
 
-**Note (2026-04-25):** importing a **container** rootfs into WSL can leave a system where the **`rpm-ostree` CLI reports it is not booted via libostree** — i.e. not a full OSTree boot. Treat community “WSL + ostree” write-ups with skepticism; verify on your build (see [honesty section](#systemd-and-rpm-ostree-in-wsl2-honesty) above).
+**Note (2026-04-26):** importing a **container** rootfs into WSL can leave a system where the **`rpm-ostree` CLI reports it is not booted via libostree** — i.e. not a full OSTree boot. Treat community “WSL + ostree” write-ups with skepticism; verify on your build (see [honesty section](#systemd-and-rpm-ostree-in-wsl2-honesty) above).
 
 ## Primary sources digest: WSL, systemd, and OSTree
 
@@ -322,3 +316,85 @@ Compact list of first-party pages that back the narrative above:
 - **Fedora Kinoite:** [Fedora Kinoite](https://fedoraproject.org/atomic-desktops/kinoite/) — atomic desktop, Plasma, rollback model; `rpm-ostree` on that stack.
 - **Custom WSL from a rootfs tar:** [Import a custom Linux distribution](https://learn.microsoft.com/en-us/windows/wsl/use-custom-distro) — `wsl --import` from a **tar** (often from [container export](https://docs.docker.com/reference/cli/docker/container/export/) or the Podman equivalent).
 - **WSL hub:** [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/) (documentation home).
+
+---
+
+## Migration checklist: WSL lab → bare-metal Kinoite
+
+*Merged from the former `docs/migration-baremetal-checklist.md` — same section anchors.*
+
+**This section** also includes **Phase B / C** [Kinoite guest VM with the official ISO (snapshots)](#kinoite-guest-vm-with-the-official-iso-phase-b-or-c), then **short Phase C** notes: [atomic updates / rollback](#atomic-updates-and-rollback), [firmware and Secure Boot](#firmware-and-secure-boot), [power and battery](#power-and-battery), [swap and zram](#swap-and-zram), [backup and sync](#backup-and-sync), and [filesystems and external drives](#filesystems-and-external-drives). Older one-topic stubs were merged here or removed; the former `virtualbox-kinoite-fallback.md` is folded into the **Kinoite guest VM** section below.
+
+- [ ] Export **Flatpak** list: `flatpak list --app --columns=application`
+- [ ] Save **SSH keys** and **GPG** stubs (not private material in cloud).
+- [ ] Document **`rpm-ostree` layers** you actually used on real ostree (not applicable if `rpm-ostree` never worked in WSL).
+- [ ] Re-create **Podman** volumes / quadlets from compose files kept in this workspace.
+- [ ] Verify **firmware** updates (`fwupd`) on the laptop/desktop before go-live.
+
+### Windows 11 guest VM on Linux (QEMU and KVM)
+
+When Linux-native tools are insufficient, run **Windows 11** as a **VM** on a Linux host with **GPU passthrough** (advanced) or accept software rendering for light tasks.
+
+- **virt-manager** for QEMU/KVM on Fedora Workstation/Kinoite (may require layering `libvirt` / `virt-manager` per your `layers.list`).
+- **Looking Glass** + VFIO is expert territory — validate against your motherboard and IOMMU groups.
+
+This is **not** Phase A WSL work; it is a **parallel** capability on a future **bare-metal** Kinoite machine (e.g. **3ds Max** and other **Windows-only DCC** — see also [windows-migration — 3D and Autodesk (DCC)](windows-migration.md#3d-and-autodesk-dcc) and [when to keep Windows/VM](windows-migration.md#when-to-keep-windows-or-a-vm-for-these-workloads)).
+
+### Kinoite guest VM with the official ISO (Phase B or C)
+
+Use when **Kinoite-in-WSL2** is insufficient (GPU, full Plasma session, stable `rpm-ostree` upgrades) or as a **parallel** reference environment. *(Merged from the former `virtualbox-kinoite-fallback.md`.)*
+
+1. Download the [official Kinoite ISO](https://fedoraproject.org/atomic-desktops/kinoite/download/).
+2. Create a VM: **EFI**, **8 GB RAM** (minimum comfortable), **60+ GB** disk.
+3. After install: `sudo rpm-ostree upgrade` → reboot; add **RPM Fusion** per Fedora Atomic docs if you need codecs (see [windows-migration — Steam / Proton](windows-migration.md#steam-proton-heroic-and-anti-cheat) / [media / homelab — same doc appendix](windows-migration.md#media-and-homelab-jellyfin-plex-and-arr)).
+4. **Snapshots** before experimental `rpm-ostree install` / Plasma changes — see [Snapshots workflow (VirtualBox)](#snapshots-workflow-virtualbox) below.
+
+Guest additions on atomic hosts require layering the correct package set for your hypervisor — follow current Fedora docs for the release year.
+
+### Snapshots workflow (VirtualBox)
+
+1. **Power off** the VM cleanly (`sudo systemctl poweroff` inside the guest).
+2. **Snapshot** in the VirtualBox UI before `rpm-ostree install` or risky Plasma experiments.
+3. **Restore** the snapshot if the guest fails to boot.
+
+### Atomic updates and rollback
+
+On **real** ostree-booted systems:
+
+- `sudo rpm-ostree upgrade` then reboot.
+- `sudo rpm-ostree rollback` to return to the previous deployment.
+
+In **WSL** with a **container-exported** rootfs, `rpm-ostree` may be **unavailable** — treat rollback as **restore WSL from backup tar** or re-import. See [Systemd and `rpm-ostree` in WSL2 (honesty)](#systemd-and-rpm-ostree-in-wsl2-honesty) above.
+
+### Firmware and secure boot
+
+- **`fwupd`** applies on **physical** Fedora installs; not meaningful inside WSL.
+- **Secure Boot** + **third-party drivers** (NVIDIA): follow Fedora and vendor docs for the specific release.
+
+### Power and battery
+
+- **Powerdevil** (Plasma) profiles for AC vs battery.
+- **TLP** / **auto-cpufreq** are optional; test stability on your hardware before layering on atomic hosts.
+
+### Swap and zram
+
+Fedora often enables **zram** by default. For heavy builds, consider a **swap file** on a fast disk on **bare metal**.
+
+Inside **WSL2**, memory policy is dominated by **Windows host RAM** — tune **`.wslconfig`** on Windows if you OOM during large exports (see [config/wsl2/README.md](../config/wsl2/README.md)).
+
+### Backup and sync
+
+- **Deja Dup** / **Pika Backup** (borg) for user data.
+- **Syncthing** Flatpak for peer sync.
+- **restic** / **rclone** in **toolbox** for scripted backups.
+- OSTree hosts: remember **`rpm-ostree` rollback** is **system** state, not a substitute for **user data** backups.
+
+*Merged from the former `docs/backup-and-sync.md` — that file **removed**.*
+
+### Filesystems and external drives
+
+- **NTFS** on USB: `ntfs-3g` / kernel driver depending on Fedora version; **exFAT** widely used for cross-OS sticks.
+- **BitLocker** volumes: may require **dislocker** or unlock in Windows first.
+- **Windows partitions** from dual-boot: mount read-only until you understand fast startup/hibernation risks.
+
+*Merged from the former `docs/filesystems-and-external.md` — that file **removed**.*

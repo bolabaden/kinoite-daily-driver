@@ -40,7 +40,7 @@ blueman
 # --- Tier: dictionaries ---
 # cracklib-dicts
 
-# --- Tier: input methods — pick IBus and/or Fcitx5 stack; match docs/kde-daily-driver-recommendations.md#input-ime-and-accessibility ---
+# --- Tier: input methods — pick IBus and/or Fcitx5 stack; match docs/windows-migration.md#input-ime-and-accessibility ---
 # ibus
 # ibus-gtk4
 # fcitx5

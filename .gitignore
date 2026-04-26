@@ -4,9 +4,11 @@ imports/*.yaml
 imports/*winget*
 imports/*.txt
 !imports/CAPTURE-MANIFEST.txt
-!imports/.gitkeep
 imports/*.csv
 imports/*.reg
+
+# Local scratch (tar exports, temp; import script mkdirs as needed)
+scratch/
 
 # Local scratch
 scripts/debug-*.ps1

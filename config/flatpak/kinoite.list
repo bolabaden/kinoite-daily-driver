@@ -1,0 +1,42 @@
+# Flathub / Flatpak app IDs (single file — was desktop-core, dev, gaming, media-office, utils)
+# See config/README.md and README.md (getting started). Apply: sudo ./scripts/apply-atomic-provision.sh
+
+# -- desktop
+org.mozilla.firefox
+org.flameshot.Flameshot
+org.localsend.localsend_app
+org.kde.kate
+com.discordapp.Discord
+org.ksnip.ksnip
+
+# -- dev
+com.visualstudio.code
+org.remmina.Remmina
+io.podman_desktop.PodmanDesktop
+com.slack.Slack
+
+# -- gaming
+com.valvesoftware.Steam
+com.heroicgameslauncher.hgl
+net.lutris.Lutris
+com.usebottles.bottles
+
+# -- media, creative, office
+# Long tail: search https://flathub.org/ and add IDs to host-local if needed.
+org.gimp.GIMP
+org.blender.Blender
+com.obsproject.Studio
+org.videolan.VLC
+io.github.celluloid_player.Celluloid
+org.kde.filelight
+io.github.Qalculate
+org.qbittorrent.qBittorrent
+org.kde.kdenlive
+org.libreoffice.LibreOffice
+org.mozilla.Thunderbird
+me.kozec.syncthingtk
+org.gnome.DejaDup
+
+# -- desktop utilities
+com.github.tchx84.Flatseal
+com.github.wwmm.easyeffects

@@ -1,23 +1,16 @@
 # Scripts index
 
-WSL2 narrative and troubleshooting: **[config/wsl2/README.md](../config/wsl2/README.md)**. Doc hub: **[docs/README.md](../docs/README.md)**, **[GETTING_STARTED.md](../GETTING_STARTED.md)**, **[README.md](../README.md#where-to-start)**.
+WSL2 narrative and troubleshooting: **[config/wsl2/README.md](../config/wsl2/README.md)**. **Install path + topic hub:** **[README.md](../README.md#getting-started-full-install-path)** and **[#topic-docs-and-provisioning-plane](../README.md#topic-docs-and-provisioning-plane)**.
 
 | Group | Script | Role |
 |-------|--------|------|
 | **Import / WSL bootstrap** | [import-kinoite-rootfs-to-wsl.ps1](import-kinoite-rootfs-to-wsl.ps1) | Podman → rootfs tar; optional `wsl --import` |
 | | [bootstrap-kinoite-wsl2.sh](bootstrap-kinoite-wsl2.sh) | Inside distro: Flathub, optional WSLg `profile.d`, points at apply |
-| **Provision (Linux)** | [apply-atomic-provision.sh](apply-atomic-provision.sh) | Main declarative apply (`config/`, [provision.d](provision.d/)) |
-| | [install-atomic-provision-service.sh](install-atomic-provision-service.sh) | Optional systemd: rpm-ostree layers at boot |
-| | [provision-locale.sh](provision-locale.sh) | Timezone/keymap from `host-local/locale.env` |
-| | [apply-kde-night-light.sh](apply-kde-night-light.sh) | KDE Night Light + schedule (`kwriteconfig6`) |
-| | [verify-kde-wsl2-runtime.sh](verify-kde-wsl2-runtime.sh) | WSLg + `plasmashell` bar ([kinoite-wsl2](../docs/kinoite-wsl2.md)) |
-| **Tooling** | [appimage-fuse-atomic.sh](appimage-fuse-atomic.sh) | AppImage / FUSE on atomic |
-| | [flatpak-maintain.sh](flatpak-maintain.sh) | Repair/update user Flatpaks |
-| **WSL2 / WSLg** | [wsl2/launch-kde-gui-wslg.sh](wsl2/launch-kde-gui-wslg.sh) | Plasma on WSLg; subcommands: `hints`, `plasma`, `launch`, `smoke` |
+| **Provision (Linux)** | [apply-atomic-provision.sh](apply-atomic-provision.sh) | Main declarative apply (`sudo` from repo root). First-arg helpers: **`install-service`**, **`provision-locale`** (root), **`kde-night-light`** (desktop user, not root), **`appimage-check`** / **`appimage-run`**, **`help`**. [provision.d](provision.d/) hooks unchanged. |
+| **WSL2 / WSLg** | [wsl2/launch-kde-gui-wslg.sh](wsl2/launch-kde-gui-wslg.sh) | Plasma on WSLg; subcommands: `hints`, `plasma`, `launch`, `smoke`, **`verify`** (DISPLAY/WAYLAND + `plasmashell`; see [kinoite-wsl2](../docs/kinoite-wsl2.md)) |
 | | [wsl2/Show-Kinoite-Gui.ps1](wsl2/Show-Kinoite-Gui.ps1) | Start GUI from Windows; **`-Focus`** brings msrdc window forward |
-| **Windows inventory** | [export-winget.ps1](export-winget.ps1), [run-windows-inventory.ps1](run-windows-inventory.ps1), [list-windows-shortcuts.ps1](list-windows-shortcuts.ps1) | Outputs under `imports/` (gitignored) |
-| | [capture-dism-features.ps1](capture-dism-features.ps1) | `dism /Online /Get-Features` → `imports/dism-features.txt` **(comment header, WSL/VM subset, raw list)**; UAC on **740**; optional **`-PassThru`** returns the document text (default: file only) |
-| **CI / docs** | [check-md-links.ps1](check-md-links.ps1) ([verify-repo-health.ps1](verify-repo-health.ps1) = same) | Broken relative links in `*.md` — **exit 1** if any missing |
+| **Windows inventory** | [windows-inventory.ps1](windows-inventory.ps1) | All-in-one: **winget** export, CIM+WSL inventory, Start Menu list, `dism /Get-Features` (default: run all; use **`-Winget`**, **`-CimWsl`**, **`-StartMenu`**, or **`-Dism`** for subsets; **`-DismPassThru`**; **`-OutDir`**) |
+| **CI / docs** | [check-md-links.ps1](check-md-links.ps1) | Broken relative links in `*.md` — **exit 1** if any missing |
 
 **Default user after `wsl --import`:** run as **root** once: `useradd -m -s /bin/bash -G wheel YOURNAME` → `passwd YOURNAME` → set `[user] default=YOURNAME` in `/etc/wsl.conf` → `wsl --shutdown`. See [docs/kinoite-wsl2.md](../docs/kinoite-wsl2.md#runtime-completion-bar-kde-and-wslg).
 
@@ -25,14 +18,14 @@ WSL2 narrative and troubleshooting: **[config/wsl2/README.md](../config/wsl2/REA
 
 ## The imports directory
 
-Raw Windows inventory under **[`../imports/`](../imports/)**. Run **export-winget.ps1**, **run-windows-inventory.ps1**, and **list-windows-shortcuts.ps1**; optional **capture-dism-features.ps1** (DISM may request UAC / 740 on non-admin). You can commit a short **[`../imports/CAPTURE-MANIFEST.txt`](../imports/CAPTURE-MANIFEST.txt)** to track which files you refreshed. **[`.gitkeep`](../imports/.gitkeep)** keeps the folder in git.
+Raw Windows inventory under **[`../imports/`](../imports/)**. Run **[windows-inventory.ps1](windows-inventory.ps1)** (with no sub-switches it does winget, CIM+WSL+podman, Start Menu+Desktop, and **DISM**; DISM may request **UAC** on **740** for non-admins). You can commit a short **[`../imports/CAPTURE-MANIFEST.txt`](../imports/CAPTURE-MANIFEST.txt)** to track which files you refreshed (that file also keeps `imports/` in git).
 
 | Pattern | Source |
 |---------|--------|
-| `winget-export.json` | export-winget.ps1 |
-| `windows-inventory.txt` | run-windows-inventory.ps1 |
-| `start-menu-shortcuts.txt` | list-windows-shortcuts.ps1 `-OutFile` |
-| `dism-features.txt` | [capture-dism-features.ps1](capture-dism-features.ps1) (header + WSL/VM/NetFX subset, **740** UAC, optional **-PassThru** to return text) |
+| `winget-export.json` | [windows-inventory.ps1](windows-inventory.ps1) `-Winget` or default all |
+| `windows-inventory.txt` | [windows-inventory.ps1](windows-inventory.ps1) `-CimWsl` or all |
+| `start-menu-shortcuts.txt` | [windows-inventory.ps1](windows-inventory.ps1) `-StartMenu` (optional **`-StartMenuOutFile`**) |
+| `dism-features.txt` | [windows-inventory.ps1](windows-inventory.ps1) **`-Dism`** (WSL/VM/NetFX subset in header, **740** UAC, optional **`-DismPassThru`**) |
 
 ## Post-provision hooks
 

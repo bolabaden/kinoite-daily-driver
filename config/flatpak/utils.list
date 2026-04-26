@@ -1,4 +1,0 @@
-# Desktop utilities — permissions, audio FX (optional)
-com.github.tchx84.Flatseal
-com.github.wwmm.easyeffects
-# 7-Zip: use Fedora `7zip` in rpm `layers.list` (replaces legacy p7zip stack on current Fedora).

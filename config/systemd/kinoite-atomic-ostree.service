@@ -1,5 +1,5 @@
 [Unit]
-Description=Kinoite declarative rpm-ostree layers (see scripts/install-atomic-provision-service.sh)
+Description=Kinoite declarative rpm-ostree layers (see scripts/apply-atomic-provision.sh install-service)
 Documentation=file:///etc/kinoite-provision/
 After=network-online.target local-fs.target
 Wants=network-online.target
