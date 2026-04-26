@@ -11,6 +11,7 @@
 | Need | Open |
 |------|------|
 | Windows → Linux app parity, categories | [win11-kinoite-parity-matrix.md](win11-kinoite-parity-matrix.md) (evidence + disposition in one file) |
+| Optional **`imports/`** on Windows (winget export, CIM inventory, shortcuts, `capture-dism-features`) | [scripts README — The imports directory](../scripts/README.md#the-imports-directory) |
 | VM, bare metal, snapshots, backup | [migration-baremetal-checklist.md](migration-baremetal-checklist.md) |
 | systemd vs `rpm-ostree` in WSL2 | [kinoite-wsl2 — honesty](kinoite-wsl2.md#systemd-and-rpm-ostree-in-wsl2-honesty) |
 | Markdown link sanity | [check-md-links.ps1](../scripts/check-md-links.ps1) (alias [verify-repo-health.ps1](../scripts/verify-repo-health.ps1)) |
