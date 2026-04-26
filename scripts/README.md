@@ -16,7 +16,7 @@ WSL2 narrative and troubleshooting: **[config/wsl2/README.md](../config/wsl2/REA
 | **WSL2 / WSLg** | [wsl2/launch-kde-gui-wslg.sh](wsl2/launch-kde-gui-wslg.sh) | Plasma on WSLg; subcommands: `hints`, `plasma`, `launch`, `smoke` |
 | | [wsl2/Show-Kinoite-Gui.ps1](wsl2/Show-Kinoite-Gui.ps1) | Start GUI from Windows; **`-Focus`** brings msrdc window forward |
 | **Windows inventory** | [export-winget.ps1](export-winget.ps1), [run-windows-inventory.ps1](run-windows-inventory.ps1), [list-windows-shortcuts.ps1](list-windows-shortcuts.ps1) | Outputs under `imports/` (gitignored) |
-| | [capture-dism-features.ps1](capture-dism-features.ps1) | `dism /Online /Get-Features` → `imports/dism-features.txt` **(comment header, WSL/VM subset, raw list)**; UAC helper on **740** |
+| | [capture-dism-features.ps1](capture-dism-features.ps1) | `dism /Online /Get-Features` → `imports/dism-features.txt` **(comment header, WSL/VM subset, raw list)**; UAC on **740**; optional **`-PassThru`** returns the document text (default: file only) |
 | **CI / docs** | [check-md-links.ps1](check-md-links.ps1) ([verify-repo-health.ps1](verify-repo-health.ps1) = same) | Broken relative links in `*.md` — **exit 1** if any missing |
 
 **Default user after `wsl --import`:** run as **root** once: `useradd -m -s /bin/bash -G wheel YOURNAME` → `passwd YOURNAME` → set `[user] default=YOURNAME` in `/etc/wsl.conf` → `wsl --shutdown`. See [docs/kinoite-wsl2.md](../docs/kinoite-wsl2.md#runtime-completion-bar-kde-and-wslg).
@@ -32,7 +32,7 @@ Raw Windows inventory under **[`../imports/`](../imports/)**. Run **export-winge
 | `winget-export.json` | export-winget.ps1 |
 | `windows-inventory.txt` | run-windows-inventory.ps1 |
 | `start-menu-shortcuts.txt` | list-windows-shortcuts.ps1 `-OutFile` |
-| `dism-features.txt` | [capture-dism-features.ps1](capture-dism-features.ps1) (elevates if **740** / not admin) |
+| `dism-features.txt` | [capture-dism-features.ps1](capture-dism-features.ps1) (header + WSL/VM/NetFX subset, **740** UAC, optional **-PassThru** to return text) |
 
 ## Post-provision hooks
 

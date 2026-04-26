@@ -5,14 +5,20 @@
   permissions required" while not admin, a one-off elevated helper (UAC) runs DISM and writes
   the same file with a header block (provenance + WSL/VM subset) so `imports/` matches the
   repo's host-evidence story (see scripts/README.md, docs/win11-kinoite-parity-matrix.md).
+.PARAMETER PassThru
+  If set, returns the same text written to the output file. Default: write the file only (no
+  return value) so a large string is not emitted to the success pipeline.
 .EXAMPLE
   ./capture-dism-features.ps1
 .EXAMPLE
   ./capture-dism-features.ps1 -OutputPath (Join-Path (Get-Location) 'imports\dism-features.txt')
+.EXAMPLE
+  $doc = ./capture-dism-features.ps1 -PassThru
 #>
 [CmdletBinding()]
 param(
-  [string] $OutputPath = ""
+  [string] $OutputPath = "",
+  [switch] $PassThru
 )
 
 $ErrorActionPreference = "Stop"
@@ -232,4 +238,4 @@ if ($null -eq $text) {
 $len = 0
 if (Test-Path -LiteralPath $OutputPath) { $len = (Get-Item -LiteralPath $OutputPath).Length }
 Write-Host "Wrote: $OutputPath ($len bytes)" -ForegroundColor Green
-return $text
+if ($PassThru) { return $text }
