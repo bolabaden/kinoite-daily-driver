@@ -10,6 +10,12 @@
 - **KotOR.js (sibling checkout) and this tree:** the Silverblue plan file lives in KotOR; how it maps to this repo and optional **`AGENTS.md`** pointers are in [kinoite-wsl2.md](kinoite-wsl2.md) (**## Spec and the KotOR.js repository**), [plan-stipulated-file-tree.md](plan-stipulated-file-tree.md), [plan-alignment.md](plan-alignment.md) (Phase **A**), and [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md).
 - Phase A oddities (e.g. `rpm-ostree` *not booted* on a container import) appear in `imports/wsl-Kinoite-WS2-verify-*.txt` and in `kinoite-wsl2.md` + `systemd-rpm-ostree-wsl2-claims.md`.
 
+## Product completion: KDE + WSLg (cannot be “green” from git only)
+
+A **runnable** Fedora Kinoite WSL2 install with an **interactive Plasma** experience under WSLg is a **separate** bar from “every plan `id` maps to a file” and “scripts exist.” **Minimum machine checks:** a **non-root** default user (`/etc/wsl.conf` + `wsl --shutdown`), a **WSLg** display session (`DISPLAY` / `WAYLAND_DISPLAY`), and **`plasmashell` actually running** when you want to call the desktop “functional.”
+
+Coding agents in Cursor do **not** all have **windows-mcp** or **desktop-commander**; do not treat those as guaranteed for verification. Use [kde-wsl2-runtime-verification.md](kde-wsl2-runtime-verification.md) + [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) for the live checklist and [scripts/verify-kde-wsl2-runtime.sh](../scripts/verify-kde-wsl2-runtime.sh) once the session is up.
+
 ## B / C: only physical installs are out of scope for a repo
 
 | Phase | In git (complete when present) | Outside any script (requires an OS install or bare metal) |

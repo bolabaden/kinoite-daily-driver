@@ -113,6 +113,8 @@ Edit **`config/rpm-ostree/layers.list`** (package names, one per line) and **`co
 
 ## Plasma / WSLg
 
+**Before** expecting a full “desktop session,” ensure you are **not** stuck on **root** only: a container `wsl --import` may ship **without** a normal user; WSL’s default can remain **`root`**, and `loginctl` will show **no** user sessions. See [bootstrap-wsl-default-user.sh](../scripts/bootstrap-wsl-default-user.sh) and [kde-wsl2-runtime-verification.md](kde-wsl2-runtime-verification.md) for the **default user + `[user] default=…` + `wsl --shutdown`** path. A **systemd --user** warning for **root** on login is a symptom of the same mismatch.
+
 There is no single guaranteed recipe; common patterns:
 
 - Install or layer KDE workspace packages if missing from the container rootfs (may require **`rpm-ostree install`** of package groups — check Fedora Kinoite package set for your tag).
