@@ -46,11 +46,12 @@ function Get-LauncherExe {
 # Parse DISM /Get-Features lines for a small, parity-oriented subset (Kinoite/WSL/VM work).
 function Get-OptionalFeatureSubsetBlock {
   param(
-    [Parameter(Mandatory)]
-    [string[]] $DismLines,
+    [string[]] $DismLines = [string[]]@(),
     [Parameter(Mandatory)]
     [string[]] $FeatureNames
   )
+  if ($null -eq $DismLines) { $DismLines = [string[]]@() }
+  if ($DismLines -is [string]) { $DismLines = (ConvertFrom-DismCommandOutput -Native $DismLines) }
   $byName = @{}
   for ($i = 0; $i -lt $DismLines.Count; $i++) {
     if ($DismLines[$i] -match "^\s*Feature Name\s*:\s*(.+?)\s*$") {
