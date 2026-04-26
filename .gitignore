@@ -9,6 +9,7 @@ imports/*.csv
 imports/*.reg
 
 # Local scratch
+scripts/debug-*.ps1
 *.tar
 *.tar.gz
 *.tmp
