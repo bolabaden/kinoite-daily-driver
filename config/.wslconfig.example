@@ -1,4 +1,0 @@
-# MOVED: Windows host WSL settings now live under `config/wsl2/`.
-# Use: config/wsl2/windows.wslconfig.example → copy to `%UserProfile%\.wslconfig`
-
-See [config/wsl2/README.md](wsl2/README.md).

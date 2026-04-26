@@ -133,6 +133,13 @@ After **new** layered packages, `rpm-ostree` applies them on the **next boot** o
 
 If **`apply-atomic-provision.sh`** already configured remotes and installed apps from your lists, **Discover** or **`flatpak list`** should show them.
 
+Quick metadata check (optional):
+
+```bash
+flatpak remote-list
+flatpak remote-info flathub org.flathub.Flathub 2>/dev/null || flatpak update --appstream
+```
+
 Otherwise, align with upstream guidance:
 
 - [Flatpak — Fedora](https://flatpak.org/setup/Fedora/)
@@ -184,6 +191,18 @@ For the official illustrated explanation, search the Kinoite docs for **atomic**
 
 ---
 
+## First week (stable Kinoite, metal or VM)
+
+After you can log in and have run **Step 4** at least once:
+
+1. **Declarative:** keep editing **`config/rpm-ostree/layers.list`** and **`config/flatpak/*.list`**, then **`sudo ./scripts/apply-atomic-provision.sh`** (and restart when layering changes).
+2. **Flathub** (if you skipped apply): `flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo`
+3. **`toolbox create`** or **distrobox** (optional) for mutable `dnf` experiments.
+4. **`rpm-ostree upgrade`** when you are on a **real** ostree-booted system; reboot to apply.
+5. **Optional** boot-time layers only: [Step 7 — install-atomic-provision-service](#step-7--optional-apply-only-layered-rpms-at-boot).
+
+---
+
 ## Where WSL2-only material lives
 
 Everything **Windows-host**, **WSLg**, and **import-specific** is intentionally **not** duplicated here. Use **[config/wsl2/README.md](config/wsl2/README.md)** only when **`CAUTION`** in this guide points you there.
@@ -192,7 +211,7 @@ Everything **Windows-host**, **WSLg**, and **import-specific** is intentionally 
 
 ## More documentation (if you are browsing the whole repo)
 
-**[docs/README.md](docs/README.md)** is a single **index**: topic → provisioning table and A–Z topic list. **[scripts/README.md](scripts/README.md)** lists what every script does. For VM and bare-metal phases, use **[docs/migration-baremetal-checklist.md](docs/migration-baremetal-checklist.md)**. You do not need to open every file in `docs/` or `scripts/` at random.
+**[docs/README.md](docs/README.md)** is a single **index**: topic → provisioning table and A–Z topic list. **[scripts/README.md](scripts/README.md)** lists what every script does. **[README.md — Where to start](README.md#where-to-start)** is the suggested reading order. For VM and bare-metal phases, use **[docs/migration-baremetal-checklist.md](docs/migration-baremetal-checklist.md)**.
 
 ## Optional: gitleaks
 

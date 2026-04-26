@@ -2,6 +2,9 @@
 # Run on the Kinoite host as root: copies declarative config to /etc/kinoite-provision and
 # wires systemd to apply rpm-ostree layers on boot. Flatpaks: run apply-atomic-provision.sh
 # as your user after login (or sudo with SUDO_USER set).
+#
+# Optional: /etc/kinoite-provision/default-user — single line, Linux username (no newline required).
+# This script writes it when you pass YOUR_LINUX_USER as the first argument.
 set -euo pipefail
 ROOT_UID=0
 if [ "${EUID:-0}" -ne "$ROOT_UID" ]; then

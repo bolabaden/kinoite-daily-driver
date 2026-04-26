@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 # WSL2 + WSLg: start Plasma shell + KDE apps so windows show on Windows 11.
 #
+# Optional first argument:
+#   (none)|launch|start — full GUI (default)
+#   plasma              — plasmashell only (START_KDE_APPS=0)
+#   smoke               — kdialog-only WSLg visibility test, then exit
+#   hints|help|-h|--help — tuning notes, then exit
+#
 # Microsoft’s X server on :0 is the most reliable path here (xdpyinfo reports “Microsoft Corporation”).
 # If WAYLAND_DISPLAY stays set, Qt may pick Wayland and some setups never paint a window — so this
 # script defaults to pure X11 (xcb) unless WSLG_GUI_BACKEND=wayland.
@@ -14,6 +20,54 @@
 #   START_PLASMASHELL=0     — skip plasmashell (default 1)
 #   START_KDE_APPS=0       — skip konsole/dolphin/systemsettings (default 1)
 #   WSLG_GUI_BACKEND=wayland — use Wayland Qt backend (default x11)
+
+_cmd_hints() {
+  cat <<'EOF'
+Plasma tuning under WSLg (no full SDDM session):
+
+- Prefer this launcher (X11/xcb on :0) over raw Wayland for Qt — avoids windows that never map.
+  Override: WSLG_GUI_BACKEND=wayland ./scripts/wsl2/launch-kde-gui-wslg.sh launch
+
+- Reduce load: plasmashell only — ./scripts/wsl2/launch-kde-gui-wslg.sh plasma
+
+- Desktop effects: disable blur/transparency in compositor settings if sluggish.
+
+- WSLg env shims: config/wsl2/profile.d-00-kinoite-wslg-env.sh.example
+  Install: KINOITE_INSTALL_WSLG_PROFILE=1 ./scripts/bootstrap-kinoite-wsl2.sh
+
+- If GUI never appears: ./scripts/wsl2/launch-kde-gui-wslg.sh smoke, then Show-Kinoite-Gui.ps1 -Focus (Windows).
+EOF
+}
+
+case "${1:-}" in
+  hints|help|-h|--help)
+    _cmd_hints
+    exit 0
+    ;;
+  smoke)
+    if [[ $(id -u) -eq 0 ]]; then
+      echo "Run as your normal user (not root)." >&2
+      exit 2
+    fi
+    export DISPLAY="${DISPLAY:-:0}"
+    export QT_QPA_PLATFORM=xcb
+    unset WAYLAND_DISPLAY || true
+    exec kdialog --msgbox "WSLg GUI smoke test: if you see this, X11 + KDE can paint on Windows. Close to exit."
+    ;;
+  plasma)
+    export START_KDE_APPS=0
+    shift
+    ;;
+  launch|start)
+    shift
+    ;;
+esac
+
+if [[ -n "${1:-}" ]]; then
+  echo "error: unexpected argument: $1 (try: hints, plasma, launch, smoke)" >&2
+  _cmd_hints >&2
+  exit 1
+fi
 
 set -u
 
@@ -111,6 +165,5 @@ if [[ "${START_KDE_APPS:-1}" == "1" ]]; then
 fi
 
 echo ""
-echo "Smoke test (dialog only — if this fails, WSLg is not reaching your desktop session):"
-echo "  wsl -d Kinoite-WS2 -- bash <repo>/scripts/wsl2/smoke-wslg-gui.sh  # e.g. path from wslpath to your clone"
+echo "Smoke test: ./scripts/wsl2/launch-kde-gui-wslg.sh smoke"
 echo "Logs: $LOG_DIR/*.log"

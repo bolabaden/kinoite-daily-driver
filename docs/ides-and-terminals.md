@@ -27,6 +27,6 @@ distrobox enter dev
 
 ## Optional shell skeleton
 
-**Path in repo:** `config/shell/`. Copy optional snippet files from that folder to your **Linux** `~/.bashrc` / `~/.zshrc` in the WSL distro (or on bare metal) if you want (e.g. `alias ll='ls -la'`). Do not overwrite your shell config without reading. The directory may only contain `.gitkeep` in git — add files there if you like them versioned.
+**Shell snippets:** keep personal `bash`/`zsh` fragments in **`host-local/`** (gitignored) or your own branch; do not overwrite `~/.bashrc` without reading what the distro already ships.
 
 *Merged from the former `config/shell/README.md` — that file **removed**.*

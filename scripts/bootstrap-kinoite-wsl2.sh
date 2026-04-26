@@ -21,7 +21,14 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if [ -e /proc/version ] && grep -qi microsoft /proc/version && [ "${KINOITE_INSTALL_WSLG_PROFILE:-0}" = 1 ]; then
   echo "==> Installing /etc/profile.d WSLg env (KINOITE_INSTALL_WSLG_PROFILE=1)"
-  sudo "$REPO_ROOT/scripts/wsl2/install-wslg-profile-d.sh"
+  SRC="$REPO_ROOT/config/wsl2/profile.d-00-kinoite-wslg-env.sh.example"
+  DEST=/etc/profile.d/00-kinoite-wslg-env.sh
+  if [ ! -f "$SRC" ]; then
+    echo "Missing $SRC" >&2
+    exit 1
+  fi
+  sudo install -m 0644 "$SRC" "$DEST"
+  echo "Installed $DEST (new logins will source it)."
 fi
 
 echo "==> Declarative provision (edit lists, then run):"

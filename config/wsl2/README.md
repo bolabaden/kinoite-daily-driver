@@ -2,7 +2,7 @@
 
 **If you are not using WSL2** (bare-metal install, a normal VM, dual-boot, or anything that is not “Linux distro imported/running under Windows Subsystem for Linux”), **this whole file does not apply.** Close it and follow **[GETTING_STARTED.md](../../GETTING_STARTED.md#step-3--edit-the-declarative-lists)**: edit `config/rpm-ostree/layers.list` and `config/flatpak/*.list`, run `sudo ./scripts/apply-atomic-provision.sh` inside Kinoite, then **reboot the machine** (or your VM) after new `rpm-ostree` layers. Log in with your real display manager (e.g. SDDM) and use Plasma like any other desktop. Do **not** copy `config/wsl2/*` examples onto that system as “Linux config.”
 
-**If you are using WSL2**, everything Windows- or WSLg-specific for this repo is meant to live **here** — host templates under `config/wsl2/`, helpers under `scripts/wsl2/`. Stubs at `config/.wslconfig.example` and `config/wsl.conf.example` only redirect you back to this folder.
+**If you are using WSL2**, everything Windows- or WSLg-specific for this repo is meant to live **here** — host templates under `config/wsl2/`, helpers under `scripts/wsl2/` (e.g. **`distro.wsl.conf.example`** for the guest, **`windows.wslconfig.example`** for the Windows host).
 
 ---
 
@@ -50,17 +50,11 @@ Optional boot-time layers-only service: **`sudo ./scripts/install-atomic-provisi
 
 These exist **only** for the Windows + WSL2 + WSLg combo. They are **not** the primary path on bare metal.
 
-**WSLg and “where did my window go?”** Linux GUIs often show up in a **Remote Desktop** (`msrdc`) window whose title may mention your distro (e.g. `… (Kinoite-WS2)`). It can sit minimized or behind other windows — try **Alt+Tab**, or from Windows run **`scripts/wsl2/Focus-Kinoite-WslgWindow.ps1`** to bring that window forward.
+**WSLg and “where did my window go?”** Linux GUIs often show up in a **Remote Desktop** (`msrdc`) window whose title may mention your distro (e.g. `… (Kinoite-WS2)`). It can sit minimized or behind other windows — try **Alt+Tab**, or from Windows run **`scripts/wsl2/Show-Kinoite-Gui.ps1 -Focus`** to bring that window forward.
 
-**[`../../scripts/bootstrap-kde-wsl.sh`](../../scripts/bootstrap-kde-wsl.sh)** — Entry point for optional Plasma on WSLg: `hints`, `plasma` (shell only), or `launch` (full). Wraps **`launch-kde-gui-wslg.sh`**.
+**[`../../scripts/wsl2/launch-kde-gui-wslg.sh`](../../scripts/wsl2/launch-kde-gui-wslg.sh)** — Plasma on WSLg; first argument optional: **`hints`**, **`plasma`** (shell only), **`launch`** (default), **`smoke`** (`kdialog` test). Defaults to **X11 (`:0`, `xcb`)**.
 
-**`launch-kde-gui-wslg.sh`** — Starts Plasma shell and KDE-oriented apps; defaults to **X11 (`:0`, `xcb`)** so Qt windows map reliably on WSLg.
-
-**`smoke-wslg-gui.sh`** — Minimal **`kdialog`** test. If this never appears, fix Windows/WSLg/session first, not Plasma packaging.
-
-**`Show-Kinoite-Gui.ps1`** — PowerShell wrapper that **`Start-Process`**’es `wsl.exe` from the desktop session (helps when GUI only attaches from an interactive Windows session).
-
-**`Focus-Kinoite-WslgWindow.ps1`** — Brings the **msrdc** WSLg window to the foreground.
+**[`../../scripts/wsl2/Show-Kinoite-Gui.ps1`](../../scripts/wsl2/Show-Kinoite-Gui.ps1)** — **`Start-Process`**’es `wsl.exe` from the desktop session; **`-Focus`** foregrounds the **msrdc** window instead of launching.
 
 If **`[interop] appendWindowsPath=false`** is set in `wsl.conf`, **`cmd.exe` is not on PATH inside WSL** — that is intentional, not a sign that GUI failed.
 

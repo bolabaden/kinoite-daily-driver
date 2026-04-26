@@ -1,4 +1,0 @@
-# MOVED: WSL2-only examples now live under `config/wsl2/`.
-# Use: config/wsl2/distro.wsl.conf.example → copy to /etc/wsl.conf in the **WSL guest only**.
-
-See [config/wsl2/README.md](wsl2/README.md).

@@ -85,7 +85,7 @@ Re-validate against **Fedora Atomic Desktop** release notes and `rpm-ostree`’s
 
 ## Repo scope
 
-This repository is **self-contained documentation and scripts** for provisioning Fedora Kinoite (WSL2 and bare metal). **Markdown completeness** does not prove a working desktop; validate with the steps in [runtime completion bar](#runtime-completion-bar-kde-and-wslg) and [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) reminders.
+This repository is **self-contained documentation and scripts** for provisioning Fedora Kinoite (WSL2 and bare metal). **Markdown completeness** does not prove a working desktop; validate with the steps in [runtime completion bar](#runtime-completion-bar-kde-and-wslg) and your own notes (see [README.md — Where to start](../README.md#where-to-start)).
 
 ## Goals
 
@@ -175,7 +175,7 @@ systemd=true
 default=YOUR_LINUX_USERNAME
 ```
 
-Copy from `../config/wsl.conf.example`, adjust `default=`, place in `/etc/wsl.conf` **inside** the distro, then **`wsl --shutdown`** from Windows and start the distro again.
+Copy from `../config/wsl2/distro.wsl.conf.example`, adjust `default=`, place in `/etc/wsl.conf` **inside** the distro, then **`wsl --shutdown`** from Windows and start the distro again.
 
 Verify:
 
@@ -208,12 +208,12 @@ Windows / WSL2 / WSLg-only setup (`.wslconfig`, `/etc/wsl.conf`, WSLg env, Power
 
 ## Plasma / WSLg
 
-**Before** expecting a full “desktop session,” ensure you are **not** stuck on **root** only: a container `wsl --import` may ship **without** a normal user; WSL’s default can remain **`root`**, and `loginctl` will show **no** user sessions. See [bootstrap-wsl-default-user.sh](../scripts/bootstrap-wsl-default-user.sh) and **§ [Runtime completion bar (KDE and WSLg)](#runtime-completion-bar-kde-and-wslg)** below for the **default user + `[user] default=…` + `wsl --shutdown`** path. A **systemd --user** warning for **root** on login is a symptom of the same mismatch.
+**Before** expecting a full “desktop session,” ensure you are **not** stuck on **root** only: a container `wsl --import` may ship **without** a normal user; WSL’s default can remain **`root`**, and `loginctl` will show **no** user sessions. See **§ [Runtime completion bar (KDE and WSLg)](#runtime-completion-bar-kde-and-wslg)** below for the **default user + `[user] default=…` + `wsl --shutdown`** path. A **systemd --user** warning for **root** on login is a symptom of the same mismatch.
 
 There is no single guaranteed recipe; common patterns:
 
 - Install or layer KDE workspace packages if missing from the container rootfs (may require **`rpm-ostree install`** of package groups — check Fedora Kinoite package set for your tag).
-- Launch Plasma under WSLg with **[`scripts/bootstrap-kde-wsl.sh`](../scripts/bootstrap-kde-wsl.sh)** (`launch` or `plasma`) or the underlying **[`scripts/wsl2/launch-kde-gui-wslg.sh`](../scripts/wsl2/launch-kde-gui-wslg.sh)** (defaults to **X11/xcb** on `:0` for reliable windows). For manual one-offs: **`dbus-run-session plasmashell`** from a login shell.
+- Launch Plasma under WSLg with **[`scripts/wsl2/launch-kde-gui-wslg.sh`](../scripts/wsl2/launch-kde-gui-wslg.sh)** (optional args: `launch`, `plasma`, `smoke`, `hints`; defaults to **X11/xcb** on `:0`). From Windows, **[`scripts/wsl2/Show-Kinoite-Gui.ps1`](../scripts/wsl2/Show-Kinoite-Gui.ps1)**. For manual one-offs: **`dbus-run-session plasmashell`** from a login shell.
 - If **Wayland** socket issues appear, prefer **X11** (default in the launch script) or set **`WSLG_GUI_BACKEND=wayland`** only when you have verified it maps windows.
 
 Record the **exact** command sequence that worked in your own notes or a PR to this workspace.
@@ -243,24 +243,31 @@ This subsection defines **“done”** for an *interactive* desktop, not for mar
 | `pgrep plasmashell` / full Plasma stack | **Not running** in that probe (no session started) |
 | `getent passwd` (human login) | **No unprivileged “human” user** in the file — only **root** and system accounts |
 
-**Conclusion:** the machine is **not** at “KDE fully configured and confirmed functional out of the box” until a **default non-root user** exists, **`/etc/wsl.conf`** has `[user] default=…` (see [wsl.conf.example](../config/wsl.conf.example)), you **`wsl --shutdown`** and re-enter, then start Plasma under WSLg in this section (e.g. `dbus-run-session plasmashell`).
+**Conclusion:** the machine is **not** at “KDE fully configured and confirmed functional out of the box” until a **default non-root user** exists, **`/etc/wsl.conf`** has `[user] default=…` (see [distro.wsl.conf.example](../config/wsl2/distro.wsl.conf.example)), you **`wsl --shutdown`** and re-enter, then start Plasma under WSLg in this section (e.g. `dbus-run-session plasmashell`).
 
 #### Required steps (order)
 
-1. **Create a normal user** (WSL is not “fully configured” for KDE while default login is `root` only). Use [`scripts/bootstrap-wsl-default-user.sh`](../scripts/bootstrap-wsl-default-user.sh) **inside** the distro as root, or: `useradd -m -s /bin/bash -G wheel <name>` and `passwd <name>`.
+1. **Create a normal user** (WSL is not “fully configured” for KDE while default login is `root` only). **Inside** the distro as root, for example:
+
+   ```bash
+   NAME=kinoiteuser   # or your choice
+   useradd -m -s /bin/bash -G wheel "$NAME"
+   passwd "$NAME"
+   # Then set /etc/wsl.conf [user] default=$NAME and wsl --shutdown from Windows.
+   ```
 2. **Set** `/etc/wsl.conf` `[user] default=<name>` (and keep `[boot] systemd=true`), then from **Windows:** `wsl --shutdown` → `wsl -d Kinoite-WS2` and confirm `whoami` is **not** `root`.
 3. **WSLg:** from an interactive logon shell, `echo $DISPLAY` / `$WAYLAND_DISPLAY` should usually be set (WSLg). If not, see Microsoft WSLg troubleshooting.
 4. **Plasma:** use the bullets above; then run [`scripts/verify-kde-wsl2-runtime.sh`](../scripts/verify-kde-wsl2-runtime.sh).
-5. **Record** the exact working command(s) in [`WORKSPACE_STATUS.md`](../WORKSPACE_STATUS.md) and, if you use external MCP tools, keep **command logs** or **screenshots** in `imports/` (sanitized) *if* you choose to commit evidence.
+5. **Record** the exact working command(s) in your own notes (or a private fork); if you use external MCP tools, keep **command logs** or **screenshots** in `imports/` (sanitized) *if* you choose to commit evidence.
 
-#### Exit criteria (copy into WORKSPACE_STATUS when true)
+#### Exit criteria (copy into your checklist when true)
 
 - [ ] Default WSL user is **not** `root` (`/etc/wsl.conf` + `wsl` opens as your user).
 - [ ] `loginctl` shows a **user** session (or you document WSLg-only session where `loginctl` stays empty, with evidence).
 - [ ] `plasmashell` (or your chosen Plasma surface) is **running** and usable under WSLg.
 - [ ] [`scripts/verify-kde-wsl2-runtime.sh`](../scripts/verify-kde-wsl2-runtime.sh) **exit 0** in that context.
 
-When all are checked, the **KDE runtime** line in [`WORKSPACE_STATUS.md`](../WORKSPACE_STATUS.md) can move from **Not done** to **Done** with a **date** and the evidence pointer.
+When all are checked, treat the **KDE runtime** as verified for your machine and note the **date** and evidence pointer in your own docs.
 
 ## Rollback
 
@@ -276,7 +283,7 @@ When all are checked, the **KDE runtime** line in [`WORKSPACE_STATUS.md`](../WOR
 **Not Phase A.** Use **only** when you **explicitly** accept that this does **not** replace Kinoite/OSTree Phase A goals (e.g. a one-off container host, or Kinoite-in-WSL2 is blocked). Label any docs or automation so it cannot be confused with this file’s Phase A path.
 
 - Microsoft Store **Fedora** / `wsl --install` **dnf** images: fine for **general Linux** work when you are not claiming atomic-desktop parity.
-- **No** script in this repo is the **default** path; see [`scripts/fedora-dnf-fallback.sh`](../scripts/fedora-dnf-fallback.sh) (stub) only with explicit approval.
+- **No** helper script in this repo automates that path; use Microsoft’s Fedora / `wsl --install` flows only when you **explicitly** accept it is **not** Phase A Kinoite parity.
 
 ## Strategy: Phase A (Kinoite in WSL2 only)
 

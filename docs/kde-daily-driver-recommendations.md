@@ -9,11 +9,11 @@ Under **WSLg**, expect **partial** Plasma (often `plasmashell` testing); full se
 
 ## Provisional KDE config in repo (user scope)
 
-Versioned **Plasma / KDE** dotfiles in **`config/kde/`** are **not** applied by `rpm-ostree`. They target **`$XDG_CONFIG_HOME`** (usually `~/.config`) for the **logged-in** Plasma user — the same model as other dotfiles: run the **apply** helper once per user (or after a **fresh** home), not on every `rpm-ostree` boot.
+**Plasma / KDE** tweaks in this repo use **apply helpers** (e.g. **`scripts/apply-kde-night-light.sh`**) that write into **`$XDG_CONFIG_HOME`** (usually `~/.config`) for the **logged-in** user — **not** via `rpm-ostree`. Run once per user (or after a **fresh** home), not on every boot.
 
 | Topic | Location in repo |
 |-------|------------------|
-| Night Color + sunrise/sunset + location | [`config/kde/night-light/`](../config/kde/night-light/README.md) + [`scripts/apply-kde-night-light.sh`](../scripts/apply-kde-night-light.sh) |
+| Night Color + sunrise/sunset + location | [`scripts/apply-kde-night-light.sh`](../scripts/apply-kde-night-light.sh) |
 
 Run apply scripts **as the desktop user** (not `sudo`), unless you deliberately set `KINOITE_KDE_CONFIG_HOME` to another user’s config path.
 

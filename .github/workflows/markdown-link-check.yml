@@ -1,5 +1,5 @@
 # Relative file targets in *.md (skips .git, .history, .cursor, .firecrawl).
-# Local pre-push: scripts/verify-repo-health.ps1 (same as check-md-links).
+# Local pre-push: scripts/check-md-links.ps1
 name: Markdown link check
 
 permissions:

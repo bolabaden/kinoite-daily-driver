@@ -1,3 +1,0 @@
-# Copy to /etc/kinoite-provision/default-user (single line, no newline required)
-# if you install the systemd service and want Flatpaks to target a specific user when run as root.
-your-linux-username

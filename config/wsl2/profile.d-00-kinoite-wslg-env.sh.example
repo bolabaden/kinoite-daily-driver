@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # WSL2 + WSLg — install to /etc/profile.d/ so all login shells get a stable GUI stack.
-#   sudo ./scripts/wsl2/install-wslg-profile-d.sh
+#   KINOITE_INSTALL_WSLG_PROFILE=1 ./scripts/bootstrap-kinoite-wsl2.sh
 # (from repo root, inside the distro). On bare-metal Kinoite, do not install this file.
 #
 # Covers: X11/WSLg display, Wayland socket selection, Pulse on WSLg, Qt/GTK backends,

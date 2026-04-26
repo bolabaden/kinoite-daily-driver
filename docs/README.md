@@ -6,14 +6,14 @@
 2. **[kinoite-wsl2.md](kinoite-wsl2.md)** — import, `wsl.conf`, Plasma, rolling back; WSL2 narrative in one place.
 3. **This file** — maps **topic docs** to `rpm-ostree` / Flatpak / `host-local`, and points at **Windows inventory** docs without opening dozens of paths at random.
 
-**Reminders:** [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md). **Script inventory (PowerShell, bash, WSL helpers):** [scripts/README.md](../scripts/README.md).
+**Reminders:** [README.md — Where to start](../README.md#where-to-start). **Scripts:** [scripts/README.md](../scripts/README.md).
 
 | Need | Open |
 |------|------|
 | Windows → Linux app parity, categories | [win11-kinoite-parity-matrix.md](win11-kinoite-parity-matrix.md) (evidence + disposition in one file) |
 | VM, bare metal, snapshots, backup | [migration-baremetal-checklist.md](migration-baremetal-checklist.md) |
 | systemd vs `rpm-ostree` in WSL2 | [kinoite-wsl2 — honesty](kinoite-wsl2.md#systemd-and-rpm-ostree-in-wsl2-honesty) |
-| Markdown link sanity | [check-md-links.ps1](../scripts/check-md-links.ps1) or [verify-repo-health.ps1](../scripts/verify-repo-health.ps1) |
+| Markdown link sanity | [check-md-links.ps1](../scripts/check-md-links.ps1) (alias [verify-repo-health.ps1](../scripts/verify-repo-health.ps1)) |
 | Per-topic guides (audio, print, games, …) | **Daily driver topic guides** below — pick one file |
 
 ---
@@ -40,14 +40,14 @@ Maps **`docs/*.md` topics** to how this repo applies them on **Fedora Kinoite**:
 | Flatpak maintenance ([`config/flatpak/README`](../config/flatpak/README)) | `apply-atomic-provision.sh` (repair+update) | [`scripts/flatpak-maintain.sh`](../scripts/flatpak-maintain.sh) | — |
 | [ides-and-terminals.md](ides-and-terminals.md) | `dev.list` | SDKs in distrobox | MSVC |
 | [Input / IME / accessibility (KDE daily driver)](kde-daily-driver-recommendations.md#input-ime-and-accessibility) | **`piper`**, **`libratbag-ratbagd`**, **`solaar`** in bare-metal `layers.list`; IBus/Fcitx5 lines still optional there | Fcitx5/IBus enablement per layout | — |
-| [kde-daily-driver-recommendations.md](kde-daily-driver-recommendations.md#provisional-kde-config-in-repo-user-scope) | `config/kde/`, [night-light](../config/kde/night-light/README.md) + [apply script](../scripts/apply-kde-night-light.sh) | Plasma settings | — |
+| [kde-daily-driver-recommendations.md](kde-daily-driver-recommendations.md#provisional-kde-config-in-repo-user-scope) | [apply-kde-night-light.sh](../scripts/apply-kde-night-light.sh) | Plasma settings | — |
 | *Kinoite vs GNOME/Sway atomic* | — | [kinoite-wsl2 § other Atomic](kinoite-wsl2.md#kinoite-and-other-atomic-desktops) | `rpm-ostree rebase` if switching |
 | [kinoite-wsl2.md](kinoite-wsl2.md) | Same lists; WSL caveats | `config/wsl2/README.md` | — |
 | [LLM + media / homelab](llm-and-dev-ai.md) | Jellyfin, Plex, Arr, etc.: see § [Media and homelab](llm-and-dev-ai.md#media-and-homelab-jellyfin-plex-and-arr) | Podman, AppImages, GPU; quadlets | Some vendor stacks |
 | [M365 (kde-daily-driver)](kde-daily-driver-recommendations.md#microsoft-365-on-linux) | — | Browser, PWA, KDE accounts | Native Office |
 | [migration-baremetal-checklist.md](migration-baremetal-checklist.md) | Apply lists post-install; [Windows 11 as QEMU/KVM guest](migration-baremetal-checklist.md#windows-11-guest-vm-on-linux-qemu-and-kvm) | Disk, firmware | — |
 | [networking.md](networking.md) | **`nm-connection-editor`**, **`NetworkManager-openvpn`**, optional `# NetworkManager-openconnect`, **`tailscale`** in bare-metal `layers.list`; `config/network/*.example` | `host-local/` NM profiles (SSID/PSK **never** in git) | — |
-| Plasma in WSL ([`scripts/bootstrap-kde-wsl.sh`](../scripts/bootstrap-kde-wsl.sh)) | — | [`scripts/wsl2/launch-kde-gui-wslg.sh`](../scripts/wsl2/launch-kde-gui-wslg.sh), [`config/wsl2/README.md`](../config/wsl2/README.md) | — |
+| Plasma in WSL | — | [`scripts/wsl2/launch-kde-gui-wslg.sh`](../scripts/wsl2/launch-kde-gui-wslg.sh) (`hints` / `plasma` / `smoke`), [`config/wsl2/README.md`](../config/wsl2/README.md) | — |
 | [Podman & toolbox (ides-and-terminals)](ides-and-terminals.md#podman-toolbox-and-docker-compatibility) | Podman Desktop in `dev.list` | rootless setup | — |
 | *Power and battery* | `tlp` in `layers.list` (commented) | [migration § power](migration-baremetal-checklist.md#power-and-battery); tuned, auto-cpufreq | OEM tools |
 | [Printing and scanning (KDE daily driver)](kde-daily-driver-recommendations.md#printing-and-scanning) | **`cups`**, **`cups-filters`**, **`system-config-printer`**, **`sane-backends`**, **`simple-scan`** in bare-metal `layers.list` (trim on WSL) | PPD quirks, proprietary drivers | — |

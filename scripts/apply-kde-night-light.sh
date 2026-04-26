@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
-# Apply Night Light + sunrise/sunset + automatic location to the current (or chosen) KDE config dir.
-# Run as the desktop user inside Kinoite — not via sudo (unless KINOITE_KDE_CONFIG_HOME points elsewhere).
+# Night Light (KWin) + day/night schedule: enabled, DarkLight, 6500K day / 4500K night, location-based
+# schedule with Automatic=true (GeoClue2 when available). Writes kwinrc [NightColor] + knighttimerc.
+# Upstream: kwin nightlightsettings.kcfg; plasma-workspace nighttimesettings.kcfg.
+# GeoClue / WSL caveats: see docs/kde-daily-driver-recommendations.md#provisional-kde-config-in-repo-user-scope
+# Run as the desktop user — not sudo (unless KINOITE_KDE_CONFIG_HOME points at another user’s ~/.config).
+# Optional: KINOITE_KDE_CONFIG_HOME=/path/to/.config ./scripts/apply-kde-night-light.sh
 set -euo pipefail
 
 _cfg_home() {
