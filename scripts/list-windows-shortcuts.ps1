@@ -1,4 +1,4 @@
-# Start Menu + Desktop shortcuts (matches KotOR.js scripts/list-windows-shortcuts.ps1 pattern)
+# Start Menu + Desktop shortcuts (writes UTF-8 list of .lnk/.url paths)
 # Default output: %TEMP%\start-menu-shortcuts-YYYYMMDD.txt — not committed.
 param(
   [string]$OutFile = $null

@@ -24,6 +24,11 @@ Desktop.ini
 .gitleaks-cache/
 .history/
 
+# Agent / web scratch (do not commit)
+.firecrawl/
+.cursor/hooks/state/
+research/
+
 # Provisional host secrets + machine-local NM profiles (never commit)
 host-local/
 **/host-local/

@@ -1,5 +1,5 @@
 # Relative file targets in *.md (skips .git, .history, .cursor, .firecrawl).
-# Plan id coverage (KotOR) is local/optional: scripts/verify-repo-health.ps1
+# Local pre-push: scripts/verify-repo-health.ps1 (same as check-md-links).
 name: Markdown link check
 
 permissions:

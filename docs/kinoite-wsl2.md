@@ -83,11 +83,9 @@ This workspace already points there in **[`migration-baremetal-checklist.md` —
 
 Re-validate against **Fedora Atomic Desktop** release notes and `rpm-ostree`’s own requirements. Until then, treat this **section** as **ground truth** for **expectations** on the **2026-04-25** **container-export → WSL** import.
 
-## Spec and the KotOR.js repository
+## Repo scope
 
-- **Cursor plan** (in a **KotOR.js** checkout, not in this path): **`.cursor/plans/kinoite_wsl_workspace_ec9c3c8b.plan.md`**. It points at **`G:\workspaces\Kinoite`** in **## Status**; a **line-by-line plan vs files** table for this tree is [provisional-configuration-index.md#plan-stipulated-file-tree](provisional-configuration-index.md#plan-stipulated-file-tree).
-- **Agent / IDE** notes: [KotOR.js `AGENTS.md` (upstream)](https://github.com/KobaltBlu/KotOR.js/blob/master/AGENTS.md).
-- **“Done in this tree” vs the plan (Phase A):** [provisional-configuration: phases definition of done](provisional-configuration-index.md#phases-definition-of-done) — and **KotOR ↔ on-disk** rows in [provisional-configuration-index.md](provisional-configuration-index.md#kotor-plan-and-workspace-coverage-matrix) and [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md).
+This repository is **self-contained documentation and scripts** for provisioning Fedora Kinoite (WSL2 and bare metal). **Markdown completeness** does not prove a working desktop; validate with the steps in [runtime completion bar](#runtime-completion-bar-kde-and-wslg) and [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) reminders.
 
 ## Goals
 
@@ -218,14 +216,14 @@ There is no single guaranteed recipe; common patterns:
 - Launch Plasma under WSLg with **[`scripts/bootstrap-kde-wsl.sh`](../scripts/bootstrap-kde-wsl.sh)** (`launch` or `plasma`) or the underlying **[`scripts/wsl2/launch-kde-gui-wslg.sh`](../scripts/wsl2/launch-kde-gui-wslg.sh)** (defaults to **X11/xcb** on `:0` for reliable windows). For manual one-offs: **`dbus-run-session plasmashell`** from a login shell.
 - If **Wayland** socket issues appear, prefer **X11** (default in the launch script) or set **`WSLG_GUI_BACKEND=wayland`** only when you have verified it maps windows.
 
-Record the **exact** command sequence that worked in **`WORKSPACE_STATUS.md`** or a PR to this workspace.
+Record the **exact** command sequence that worked in your own notes or a PR to this workspace.
 
 ### Runtime completion bar (KDE and WSLg)
 
 This subsection defines **“done”** for an *interactive* desktop, not for markdown or plan-coverage checklists.
 
 - Having **KDE/Plasma RPMs** and `plasmashell` on disk is **necessary** and **not sufficient**.
-- **Documentation-only** or **appendix-75 complete** in KotOR + this repo does **not** prove: boot → login user → WSLg → working Plasma.
+- **Documentation-only** checklists in this repo do **not** prove: boot → login user → WSLg → working Plasma.
 
 #### What a coding agent in Cursor can and cannot do
 
@@ -311,7 +309,7 @@ Forums and hubs to read **with** (not instead of) this file:
 
 ## Primary sources digest: WSL, systemd, and OSTree
 
-Compact list of first-party pages that back the narrative above (complements [`../research/kinoite-wsl-systemd-sources-2026-04-25.md`](../research/kinoite-wsl-systemd-sources-2026-04-25.md) and automated digests in [`docs/README` — Research](README.md#research-tavily-firecrawl-and-the-web)):
+Compact list of first-party pages that back the narrative above:
 
 - **systemd in WSL:** `[boot] systemd=true` in `/etc/wsl.conf` — [Use systemd to manage Linux services with WSL](https://learn.microsoft.com/en-us/windows/wsl/systemd); other boot options: [Advanced settings configuration in WSL](https://learn.microsoft.com/en-us/windows/wsl/wsl-config). A **full** WSL shutdown is the documented way to apply changes.
 - **Fedora Kinoite:** [Fedora Kinoite](https://fedoraproject.org/atomic-desktops/kinoite/) — atomic desktop, Plasma, rollback model; `rpm-ostree` on that stack.

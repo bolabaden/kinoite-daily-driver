@@ -1,5 +1,6 @@
-Plan capture (Kinoite WSL + Win11 inventory). All paths relative to this repo: imports/ (stable filenames, no -yyyyMMddTHHmmss- suffix; merge history: scripts/merge-timestamped-imports.ps1).
-Run: G:\workspaces\Kinoite\scripts\run-full-plan-capture.ps1 from PowerShell 5+ with full PATH merge.
+Imports index (optional). Paths relative to this repo: imports/
+Refresh inventory with: scripts/export-winget.ps1, scripts/run-windows-inventory.ps1, and optionally scripts/list-windows-shortcuts.ps1 -OutFile imports\start-menu-shortcuts.txt
+(Lines below are from a historical automated run; update or replace when you re-capture.)
 This run: runStamp=20260426T124804
 Outputs: registry-uninstall.csv, appx-packages.csv, host-locale-network.txt, run-keys.txt, dism-features.txt, pnputil-drivers.txt, winget-export.json, and the rest in imports/.
 

@@ -192,7 +192,7 @@ Everything **Windows-host**, **WSLg**, and **import-specific** is intentionally 
 
 ## More documentation (if you are browsing the whole repo)
 
-**[docs/README.md](docs/README.md)** is a single **index**: topic → provisioning table, A–Z topic list, and plan cross-links. **[docs/provisional-configuration-index.md](docs/provisional-configuration-index.md)** is the other “don’t juggle files” page: **KotOR** coverage matrix, **A/B/C phase “done”** criteria, and **plan-stipulated file tree** in one scroll. **[scripts/README.md](scripts/README.md)** lists what every script does. You do not need to open every file in `docs/` or `scripts/` at random.
+**[docs/README.md](docs/README.md)** is a single **index**: topic → provisioning table and A–Z topic list. **[scripts/README.md](scripts/README.md)** lists what every script does. For VM and bare-metal phases, use **[docs/migration-baremetal-checklist.md](docs/migration-baremetal-checklist.md)**. You do not need to open every file in `docs/` or `scripts/` at random.
 
 ## Optional: gitleaks
 

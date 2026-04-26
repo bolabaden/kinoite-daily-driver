@@ -23,18 +23,12 @@ All WSL2- and WSLg-specific explanation (what each **script** does, troubleshoot
 | | [flatpak-maintain.sh](flatpak-maintain.sh) | Repair/update user Flatpaks |
 | | [kinoite-first-week.sh](kinoite-first-week.sh) | Post-install checklist |
 | **Plasma in WSL** | [bootstrap-kde-wsl.sh](bootstrap-kde-wsl.sh) | KDE + WSLg path |
-| **Windows inventory / capture** | [run-full-plan-capture.ps1](run-full-plan-capture.ps1) | **One-shot** — overwrites `imports/*` **stable** names; index → `imports/CAPTURE-MANIFEST.txt` · **`-SkipWinget`** = skip `export-winget` + `winget list` (faster; leaves prior winget files on disk; manifest line `SKP` for that pair) · host phases logged as `[n/m]`; **`$TotalCaptureSteps = 16`** in the script (raise when adding a step) |
-| | [export-winget.ps1](export-winget.ps1) | `winget export` only |
-| | [run-windows-inventory.ps1](run-windows-inventory.ps1) | CIM + WSL + podman |
-| | [list-windows-shortcuts.ps1](list-windows-shortcuts.ps1) | Start Menu + Desktop |
-| | [merge-linux-map-stub.ps1](merge-linux-map-stub.ps1) | Map CSV merge helper |
-| | [verify-plan-frontmatter-coverage.ps1](verify-plan-frontmatter-coverage.ps1) | Every plan `todos` `id` in [docs/plan-frontmatter-coverage.md](../docs/plan-frontmatter-coverage.md) |
-| | [list-thin-docs.ps1](list-thin-docs.ps1) | Line-count on short `docs/*.md` |
-| | [check-md-links.ps1](check-md-links.ps1) | **Optional:** print broken relative `](path)` file targets in `*.md` (skips `.git` / `.history` / `.cursor` / `.firecrawl`); **exit 1** if any missing; one **OK** line on success. **CI:** [`.github/workflows/markdown-link-check.yml`](../.github/workflows/markdown-link-check.yml) |
-| | [verify-repo-health.ps1](verify-repo-health.ps1) | **Optional:** run **check-md-links** + **verify-plan-frontmatter-coverage** (first failure stops; for pre-commit / quick CI). **VS Code / Cursor:** [.vscode/tasks.json](../.vscode/tasks.json) — *Run Task* **Kinoite: verify repo health** or **Kinoite: check markdown links (only)** |
-| | [inv-scoop-list.ps1](inv-scoop-list.ps1), [inv-hardware-outline.ps1](inv-hardware-outline.ps1), [inv-reliability-sample.ps1](inv-reliability-sample.ps1), [inv-startapps-sample.ps1](inv-startapps-sample.ps1) | Scoop, hardware, events, start apps (also in full capture) |
-| | [sample-event-logs.ps1](sample-event-logs.ps1) | Event log sample |
-| | *Capture output folder* + **stamp re-merge (optional)** | [`../imports/`](../imports/) — [§ The imports directory](#the-imports-directory) · [merge-timestamped-imports.ps1](merge-timestamped-imports.ps1) |
+| **Windows inventory / capture** | [export-winget.ps1](export-winget.ps1) | `winget export` → `imports/winget-export.json` (gitignored via `*winget*`) |
+| | [run-windows-inventory.ps1](run-windows-inventory.ps1) | CIM + WSL + podman → `imports/windows-inventory.txt` |
+| | [list-windows-shortcuts.ps1](list-windows-shortcuts.ps1) | Start Menu + Desktop; pass **`-OutFile ..\imports\start-menu-shortcuts.txt`** to write under `imports/` |
+| | [check-md-links.ps1](check-md-links.ps1) | Relative `](path)` targets in `*.md` (skips `.git` / `.history` / `.cursor` / `.firecrawl`); **exit 1** if any missing. **CI:** [`.github/workflows/markdown-link-check.yml`](../.github/workflows/markdown-link-check.yml) |
+| | [verify-repo-health.ps1](verify-repo-health.ps1) | Same as **check-md-links** (convenience wrapper). **VS Code / Cursor:** [.vscode/tasks.json](../.vscode/tasks.json) — *Run Task* **Kinoite: check markdown links** |
+| | *Capture output folder* | [`../imports/`](../imports/) — [§ The imports directory](#the-imports-directory) |
 | **WSL2 / WSLg helpers** | [wsl2/Focus-Kinoite-WslgWindow.ps1](wsl2/Focus-Kinoite-WslgWindow.ps1) | Focus WSLg window (Windows) |
 | | [wsl2/Show-Kinoite-Gui.ps1](wsl2/Show-Kinoite-Gui.ps1) | Show GUI (Windows) |
 | | [wsl2/launch-kde-gui-wslg.sh](wsl2/launch-kde-gui-wslg.sh) | Launch KDE in WSLg (Linux) |
@@ -43,23 +37,16 @@ All WSL2- and WSLg-specific explanation (what each **script** does, troubleshoot
 
 ## The imports directory
 
-Place **raw** Windows inventory output under **[`../imports/`](../imports/)** (sibling to `scripts/`). The committed **“current”** filenames for this host (after a fresh capture) also appear in [`../WORKSPACE_STATUS.md`](../WORKSPACE_STATUS.md), [`../docs/app-mapping.md`](../docs/app-mapping.md), and the run index **`CAPTURE-MANIFEST.txt`**, produced by [`run-full-plan-capture.ps1`](run-full-plan-capture.ps1) (unignored in root `.gitignore` so the manifest can be committed). The same run overwrites stable names: `winget-export.json`, `winget-list.txt`, `windows-inventory.txt`, etc. **`.gitignore` excludes the usual patterns**; so a normal `git add` will not pick up bulk exports. Run `git status` before a push if you add new name patterns. A [`.gitkeep`](../imports/.gitkeep) can sit alongside manifests when a clone has not yet had a run.
+Place **raw** Windows inventory output under **[`../imports/`](../imports/)** (sibling to `scripts/`). **Typical workflow:** from the repo root on Windows, run [export-winget.ps1](export-winget.ps1) and [run-windows-inventory.ps1](run-windows-inventory.ps1). Optionally run [list-windows-shortcuts.ps1](list-windows-shortcuts.ps1) with **`-OutFile`** pointing at `imports\…`. Maintain **[`CAPTURE-MANIFEST.txt`](../imports/CAPTURE-MANIFEST.txt)** locally if you want an index of what you refreshed (only the manifest and patterns you un-ignore are commit-friendly). **`.gitignore` excludes** most bulk exports; run **`git status`** before a push. A [`.gitkeep`](../imports/.gitkeep) can sit in `imports/` when the clone has not had a run yet.
 
 | File pattern | Source script | Notes |
 |--------------|---------------|--------|
-| `CAPTURE-MANIFEST.txt` | [run-full-plan-capture.ps1](run-full-plan-capture.ps1) | **Commit-friendly** list of the current `imports/*` set, short notes (run id in the file body), plus a `wsl -l -v` table from `%WINDIR%\System32\wsl.exe` (UTF-8; avoids `cmd` PATH/encoding issues) |
-| `winget-export.json` (gitignored via `*winget*`) | [run-full-plan-capture.ps1](run-full-plan-capture.ps1) or [export-winget.ps1](export-winget.ps1) | Many `not available from any source` / Steam / MSIX lines are **normal** |
-| `windows-inventory.txt` | [run-windows-inventory.ps1](run-windows-inventory.ps1) (or full-capture) | CIM OS, `wsl -l -v`, `wsl --version`, **podman** (stderr if VM not up) |
-| `registry-uninstall.csv` | [run-full-plan-capture.ps1](run-full-plan-capture.ps1) | Add/Remove Programs (ARP) export; join with [`../config/capture/linux-map.template.csv`](../config/capture/linux-map.template.csv) for Kinoite rows |
-| `appx-packages.csv` | full-capture | Per-user Appx inventory |
-| `host-locale-network.txt` | full-capture | Culture, timezone, language list, connection profiles; **Wi-Fi PSK never exported** (only `netsh wlan show profiles` names) |
-| `run-keys.txt` | full-capture | HKCU/HKLM `Run` values |
-| `dism-features.txt`, `pnputil-drivers.txt` | full-capture | Optional; elevation improves usefulness |
-| (optional) hardware / scoop / events / shortcuts | `inv-*.ps1`, `sample-event-logs.ps1`, [list-windows-shortcuts.ps1](list-windows-shortcuts.ps1) | Full-capture uses stable names, e.g. `start-menu-shortcuts.txt` under `imports/`, with **`-OutFile`**, not only `%TEMP%` |
+| `CAPTURE-MANIFEST.txt` | (manual / local) | Optional index of what lives under `imports/` for this host |
+| `winget-export.json` (gitignored via `*winget*`) | [export-winget.ps1](export-winget.ps1) | Many `not available from any source` / Steam / MSIX lines are **normal** |
+| `windows-inventory.txt` | [run-windows-inventory.ps1](run-windows-inventory.ps1) | CIM OS, `wsl -l -v`, `wsl --version`, **podman** (stderr if VM not up) |
+| `start-menu-shortcuts.txt` | [list-windows-shortcuts.ps1](list-windows-shortcuts.ps1) with `-OutFile` | Default without `-OutFile` is `%TEMP%\start-menu-shortcuts-YYYYMMDD.txt` |
 
-**Start Menu / Desktop** shortcuts: standalone [list-windows-shortcuts.ps1](list-windows-shortcuts.ps1) defaults to **`%TEMP%`**; **`run-full-plan-capture.ps1`** writes **`start-menu-shortcuts.txt`** under **`imports/`** and lists it in the manifest.
-
-**Plan YAML sync:** if **`kinoite_wsl_workspace_ec9c3c8b.plan.md`** `todos` in KotOR change, run [verify-plan-frontmatter-coverage.ps1](verify-plan-frontmatter-coverage.ps1) and refresh [`../docs/plan-frontmatter-coverage.md`](../docs/plan-frontmatter-coverage.md) (Appendix C) as needed; **or** run [verify-repo-health.ps1](verify-repo-health.ps1) to also scan markdown links first. **Inventory files in `imports/`** are unrelated to that check.
+Older capture artifacts (ARP CSV, Appx, DISM, etc.) may still exist on disk from prior runs; they are **not** produced by scripts in this repo anymore.
 
 **Sanitization for sharing:** strip internal hostnames, e-mails, or one-off ARP junk before copying exports off this machine.
 
@@ -93,4 +80,4 @@ touch "$MARK"
 
 *Merged from the former `scripts/provision.d/README.md` — that file **removed**.*
 
-**Documentation hub:** [docs/README.md](../docs/README.md) · [GETTING_STARTED.md](../GETTING_STARTED.md) · [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md)
+**Documentation hub:** [docs/README.md](../docs/README.md) · [GETTING_STARTED.md](../GETTING_STARTED.md) · [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md) (suggested order / reminders)

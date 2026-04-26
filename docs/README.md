@@ -4,18 +4,16 @@
 
 1. **[GETTING_STARTED.md](../GETTING_STARTED.md)** — one path: edit lists → apply → restart; atomic Kinoite provisioning.
 2. **[kinoite-wsl2.md](kinoite-wsl2.md)** — import, `wsl.conf`, Plasma, rolling back; WSL2 narrative in one place.
-3. **This file** — maps **topic docs** to `rpm-ostree` / Flatpak / `host-local`, and points at **plan** / **KotOR** / **Windows inventory** files without opening dozens of paths at random.
+3. **This file** — maps **topic docs** to `rpm-ostree` / Flatpak / `host-local`, and points at **Windows inventory** docs without opening dozens of paths at random.
 
-**Status and execution log:** [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md). **Script inventory (PowerShell, bash, WSL helpers):** [scripts/README.md](../scripts/README.md).
+**Reminders:** [WORKSPACE_STATUS.md](../WORKSPACE_STATUS.md). **Script inventory (PowerShell, bash, WSL helpers):** [scripts/README.md](../scripts/README.md).
 
 | Need | Open |
 |------|------|
 | Windows → Linux app parity, categories | [win11-kinoite-parity-matrix.md](win11-kinoite-parity-matrix.md) (evidence + disposition in one file) |
-| Plan phases ↔ this tree | [provisional-configuration-index.md](provisional-configuration-index.md) — **KotOR plan and workspace coverage matrix** |
-| Every `todos` `id` → file (75) | [plan-frontmatter-coverage.md](plan-frontmatter-coverage.md); after plan or doc link edits, run [verify-repo-health.ps1](../scripts/verify-repo-health.ps1) (markdown links + `id` check) |
-| Plan’s **Workspace path** on disk (line-by-line) | [provisional-configuration-index#plan-stipulated-file-tree](provisional-configuration-index.md#plan-stipulated-file-tree) |
-| A/B/C “done” means what | [provisional-configuration-index#phases-definition-of-done](provisional-configuration-index.md#phases-definition-of-done) |
+| VM, bare metal, snapshots, backup | [migration-baremetal-checklist.md](migration-baremetal-checklist.md) |
 | systemd vs `rpm-ostree` in WSL2 | [kinoite-wsl2 — honesty](kinoite-wsl2.md#systemd-and-rpm-ostree-in-wsl2-honesty) |
+| Markdown link sanity | [check-md-links.ps1](../scripts/check-md-links.ps1) or [verify-repo-health.ps1](../scripts/verify-repo-health.ps1) |
 | Per-topic guides (audio, print, games, …) | **Daily driver topic guides** below — pick one file |
 
 ---
@@ -78,45 +76,19 @@ Plasma: [kde-daily-driver-recommendations.md](kde-daily-driver-recommendations.m
 
 Phases, VMs, migration: [migration-baremetal-checklist](migration-baremetal-checklist.md#kinoite-guest-vm-with-the-official-iso-phase-b-or-c) (Kinoite guest VM, ISO, [VirtualBox snapshots](migration-baremetal-checklist.md#snapshots-workflow-virtualbox); former `virtualbox-kinoite-fallback.md` merged) · [Windows guest VM (QEMU/KVM)](migration-baremetal-checklist.md#windows-11-guest-vm-on-linux-qemu-and-kvm) · [backup and sync](migration-baremetal-checklist.md#backup-and-sync) · [This PC template](win11-kinoite-parity-matrix.md#this-pc-quick-template)
 
-Meta and research: [Research (this file)](#research-tavily-firecrawl-and-the-web) · [Superseded doc fragments](#archived--superseded-notes)
+Meta: [Superseded doc fragments](#archived--superseded-notes)
 
-Exhaustive plan (feature write-up): [plans/2026-04-25-001-feat-exhaustive-kinoite-provisioning-plan.md](plans/2026-04-25-001-feat-exhaustive-kinoite-provisioning-plan.md)
+## External research (keep it boring)
 
-## Research: Tavily, Firecrawl, and the web
-
-- Prefer **primary sources** (Fedora Magazine, docs.fedoraproject.org, Flathub app pages) over random blogs for **install** commands.
-- When using automated web tools, store **digests** under `.firecrawl/` with **date-stamped** filenames; **sanitize** before sharing.
-- If **`tvly` / Tavily CLI** is not installed on the Windows host, add digests under **`../research/`** (committed) and cite URLs — see e.g. [`../research/kinoite-wsl-systemd-sources-2026-04-25.md`](../research/kinoite-wsl-systemd-sources-2026-04-25.md). When available, install: [Tavily CLI](https://github.com/tavily-ai/tavily) / `tvly` per project skill.
-
-### Tavily agent, RAG, and CLI digest
-
-Aligns **Tavily** skills (`tavily-search`, `tavily-research`, `tavily-best-practices`) with this repo. On hosts **without** the `tvly` binary, use the **API** (Python/JS) or the official docs below; store outputs under `../research/` or `../.firecrawl/`.
-
-**Official:** [Best practices: search](https://docs.tavily.com/documentation/best-practices/best-practices-search) · [Search API](https://docs.tavily.com/documentation/api-reference/endpoint/search) · [Tavily skills on GitHub](https://github.com/tavily-ai/skills) · [Tavily CLI / site](https://tavily.com) (`tvly login` / `search` / `research`) — not required if API or agents are used.
-
-**`search` (RAG, agents):** keep queries **under ~400 characters**; split multi-topic work into **2–3** focused searches. `max_results` default **5**; cap **~10–20** for breadth. `search_depth`: `ultra-fast` / `fast` / `basic` (default) / `advanced` — use **`advanced`** for tightest evidence; watch **credits**. Use `include_domains` / `exclude_domains` (e.g. **Fedora**, **Flathub**, **Microsoft Learn (WSL)**) when the question is not an open web crawl. `include_raw_content` / chunks: one **`advanced`** call with chunks can replace a separate “extract this URL” step for **docs citations**. `time_range` for recency (e.g. WSL2 systemd 2024+).
-
-**`extract` / `crawl` / `map`:** `extract` — 1–20 URLs per call for **known** spec pages. `crawl` / `map` — use sparingly; set depth/breadth limits.
-
-**`research` (synthesis):** `model` per **tavily-research** skill: “what is X” → `mini`; **compare X vs Y** → `pro`. Latency **30–120s** — prefer **`--stream`** in the CLI when available. Async: `--no-wait` + `poll` for long runs in agent loops.
-
-| Question type | Suggested call |
-|---------------|----------------|
-| Fedora Kinoite install / rebase | `search` + `include_domains` → `fedoraproject.org`, `docs.fedoraproject.org` |
-| WSL2 systemd, `.wslconfig` | `search` → `learn.microsoft.com` |
-| Flathub app id | `search` or one **`extract`** on `flathub.org/apps/...` |
+Prefer **primary sources** for install commands and expectations: [Fedora Kinoite](https://fedoraproject.org/atomic-desktops/kinoite/), [Fedora Docs](https://docs.fedoraproject.org/), [Flathub](https://flathub.org/), [Microsoft WSL](https://learn.microsoft.com/en-us/windows/wsl/). If you use an automated search or crawl tool, keep raw digests **outside** this git tree (personal notes or a scratch directory that is **gitignored**).
 
 ## Archived / superseded notes
 
-The repo does **not** use a separate `docs/archive/` tree. Reserved space for **merged or retired** fragments is described here: prefer folding short stubs into parent guides (see [provisional-configuration-index](provisional-configuration-index.md)) instead of adding new top-level files.
+The repo does **not** use a separate `docs/archive/` tree. Prefer folding short stubs into parent guides (this index or [migration-baremetal-checklist](migration-baremetal-checklist.md)) instead of adding new top-level files.
 
 ---
 
-## Plan, KotOR, and redirects
+## Redirects (merged docs)
 
-- **Coverage matrix (plan ↔ files):** [provisional-configuration-index.md#kotor-plan-and-workspace-coverage-matrix](provisional-configuration-index.md#kotor-plan-and-workspace-coverage-matrix)
-- **Verbatim “Workspace path” file tree (plan §):** [provisional-configuration-index.md#plan-stipulated-file-tree](provisional-configuration-index.md#plan-stipulated-file-tree)
-- **A/B/C “done” (repo vs machine, KDE bar):** [provisional-configuration-index.md#phases-definition-of-done](provisional-configuration-index.md#phases-definition-of-done)
-- **KotOR plan ↔ this repo (matrix):** [provisional-configuration-index.md#kotor-plan-and-workspace-coverage-matrix](provisional-configuration-index.md#kotor-plan-and-workspace-coverage-matrix) (replaces a former `plan-alignment.md` stub, **deleted**)
 - **Topic docs and provisioning (this file):** [Topic docs and provisioning plane](#topic-docs-and-provisioning-plane) — *former* `doc-to-provision-map.md` **deleted**
 - **Win11 host evidence:** [win11-kinoite-parity-matrix.md#host-evidence-and-capture-scripts](win11-kinoite-parity-matrix.md#host-evidence-and-capture-scripts) — *former* `windows11-daily-driver-baseline.md` **deleted**

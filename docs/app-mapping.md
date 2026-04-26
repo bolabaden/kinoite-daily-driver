@@ -2,14 +2,14 @@
 
 This file tracks **this daily-driver** machine: expand from **`winget export`** in `imports/` (see `../scripts/export-winget.ps1`). Exports are **gitignored** — commit only **this** doc, not raw JSON.
 
-**One-shot full capture:** [`../scripts/run-full-plan-capture.ps1`](../scripts/run-full-plan-capture.ps1) → `imports/CAPTURE-MANIFEST.txt` and **stable** artifact names in `imports/` (no `*-yyyyMMddTHHmmss*`), e.g. `winget-export.json`, `winget-list.txt`, `start-menu-shortcuts.txt`, `wsl-Kinoite-WS2-verify.txt` (all outputs listed in the manifest; each run overwrites the same paths). If old stamped files accumulate, run [`../scripts/merge-timestamped-imports.ps1`](../scripts/merge-timestamped-imports.ps1) once, then re-capture.  
+**Inventory (optional):** run [`../scripts/export-winget.ps1`](../scripts/export-winget.ps1) and [`../scripts/run-windows-inventory.ps1`](../scripts/run-windows-inventory.ps1) from the repo on Windows; outputs go under `imports/` (mostly gitignored — see [scripts README — The imports directory](../scripts/README.md#the-imports-directory)). Optionally [`../scripts/list-windows-shortcuts.ps1`](../scripts/list-windows-shortcuts.ps1) **`-OutFile ..\imports\start-menu-shortcuts.txt`**. Update [`CAPTURE-MANIFEST.txt`](../imports/CAPTURE-MANIFEST.txt) if you keep an index. Re-run after **bulk** app changes.
 
-**This host (latest in `imports/`; sizes drift with re-runs):** see [`CAPTURE-MANIFEST.txt`](../imports/CAPTURE-MANIFEST.txt) for the index of the current set; the file also ends with a **wsl -l -v** table (in addition to in-distro output in e.g. `wsl-Kinoite-WS2-verify.txt`). Rerun the full-capture script after **bulk** app changes.  
+**This host (latest in `imports/`; sizes drift with re-runs):** see [`CAPTURE-MANIFEST.txt`](../imports/CAPTURE-MANIFEST.txt) for any index you maintain; older capture files may still exist on disk from prior runs.  
 **Rule:** prefer **Flathub**; **toolbox**/**distrobox** for heavy `dnf`; **`rpm-ostree install`** only on a **true** atomic **boot** (see [kinoite-wsl2 — honesty](kinoite-wsl2.md#systemd-and-rpm-ostree-in-wsl2-honesty)).
 
 ## When to keep Windows (or a VM) for these workloads
 
-Honest **“no Kinoite parity / keep Win32 or a VM”** list for a **power-user Windows 11** host (DCC, games, creative, Razer/Vendor stacks). The **TSV and quick ref below** are the per-app view; this section is the **principle** list. See also **[kinoite-wsl2.md](kinoite-wsl2.md)**, **[provisional-configuration-index.md](provisional-configuration-index.md)**. *(Merged from the former `docs/keep-windows.md` — that file **removed**.)*
+Honest **“no Kinoite parity / keep Win32 or a VM”** list for a **power-user Windows 11** host (DCC, games, creative, Razer/Vendor stacks). The **TSV and quick ref below** are the per-app view; this section is the **principle** list. See also **[kinoite-wsl2.md](kinoite-wsl2.md)** and **[win11-kinoite-parity-matrix.md](win11-kinoite-parity-matrix.md)**. *(Merged from the former `docs/keep-windows.md` — that file **removed**.)*
 
 ### Always / usually Windows-only (for this class of machine)
 
@@ -118,11 +118,11 @@ Clipchamp Phone Link Edge Game Assist	Kdenlive OBS KDE Connect	~
 PhysX redist	Proton bundles	N/A
 ```
 
-*Source alignment:* `.cursor/.../kinoite_wsl_workspace_ec9c3c8b.plan.md` **§ Fedora Kinoite mapping** (re-run `export-winget.ps1` to diff **your** machine vs condensed rows).
+*Source alignment:* re-run **`export-winget.ps1`** to diff **your** machine vs condensed TSV rows.
 
-## Linux-map template (row-level map)
+## Linux-map (row-level map)
 
-Use **[`../config/capture/linux-map.template.csv`](../config/capture/linux-map.template.csv)** as the header row for per-row Windows → Kinoite disposition (alongside the TSV above, which is the condensed “plan” view).
+For per-row Windows → Kinoite disposition beyond the TSV, keep a CSV under **`host-local/`** (gitignored) with columns such as:
 
 | Column | Meaning |
 |--------|---------|
@@ -136,10 +136,6 @@ Use **[`../config/capture/linux-map.template.csv`](../config/capture/linux-map.t
 | `confidence` | `high` / `med` / `low` |
 | `notes` | Edge cases, licensing, metal-only, WSL caveat |
 
-**Inputs** are generated under [`imports/`](../scripts/README.md#the-imports-directory) (gitignored bulk) by [`../scripts/run-full-plan-capture.ps1`](../scripts/run-full-plan-capture.ps1): `registry-uninstall.csv`, `appx-packages.csv`, `winget-export.json`, etc.
-
-Keep filled maps in **`host-local/`** (gitignored) or merge into repo lists only after redacting machine-specific secrets.
-
-**`../scripts/merge-linux-map-stub.ps1`** documents the merge contract; extend it to join winget + registry rows with a map file.
+**Inputs** can come from [`imports/`](../scripts/README.md#the-imports-directory) (`winget-export.json`, inventory text, etc.). Merge into repo lists only after redacting machine-specific secrets.
 
 *Merged from the former `config/capture/README.md` — that file **removed**.*

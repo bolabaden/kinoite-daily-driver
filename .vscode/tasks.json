@@ -2,15 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Kinoite: verify repo health (links + plan ids)",
-      "type": "shell",
-      "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/scripts/verify-repo-health.ps1\"",
-      "group": "test",
-      "presentation": { "reveal": "always", "panel": "shared" },
-      "problemMatcher": []
-    },
-    {
-      "label": "Kinoite: check markdown links (only)",
+      "label": "Kinoite: check markdown links",
       "type": "shell",
       "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"${workspaceFolder}/scripts/check-md-links.ps1\"",
       "group": "test",
