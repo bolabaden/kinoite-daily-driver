@@ -1,3 +1,10 @@
+﻿---
+title: Scripts index
+---
+<div class="sync-banner" markdown="0">
+  <strong>Mirrored page.</strong> Generated from the main repo. Relative links may target repository paths -
+  use the <a href="https://github.com/bolabaden/kinoite-daily-driver">GitHub tree</a> for navigation.
+</div>
 # Scripts index
 
 WSL2 narrative and troubleshooting: **[config/wsl2/README.md](../config/wsl2/README.md)**. **Install path + topic hub:** **[README.md](../README.md#getting-started-full-install-path)** and **[#topic-docs-and-provisioning-plane](../README.md#topic-docs-and-provisioning-plane)**.
@@ -11,8 +18,6 @@ WSL2 narrative and troubleshooting: **[config/wsl2/README.md](../config/wsl2/REA
 | | [wsl2/Show-Kinoite-Gui.ps1](wsl2/Show-Kinoite-Gui.ps1) | Start GUI from Windows; **`-Focus`** brings msrdc window forward |
 | **Windows inventory** | [windows-inventory.ps1](windows-inventory.ps1) | All-in-one: **winget** export, CIM+WSL inventory, Start Menu list, `dism /Get-Features` (default: run all; use **`-Winget`**, **`-CimWsl`**, **`-StartMenu`**, or **`-Dism`** for subsets; **`-DismPassThru`**; **`-OutDir`**) |
 | **CI / docs** | [check-md-links.ps1](check-md-links.ps1) | Broken relative links in `*.md` — **exit 1** if any missing |
-| **Wiki / Jekyll** | [Init-WikiSubmodule.ps1](Init-WikiSubmodule.ps1) | Poll until `*.wiki.git` exists, then **`git submodule add`** `wiki/` |
-| | [Sync-WikiSubmodule.ps1](Sync-WikiSubmodule.ps1) | Refresh `_docs/` from repo, **robocopy** `wiki-source/` → `wiki/`, commit (optional **`-Push`**) |
 
 **Default user after `wsl --import`:** run as **root** once: `useradd -m -s /bin/bash -G wheel YOURNAME` → `passwd YOURNAME` → set `[user] default=YOURNAME` in `/etc/wsl.conf` → `wsl --shutdown`. See [docs/kinoite-wsl2.md](../docs/kinoite-wsl2.md#runtime-completion-bar-kde-and-wslg).
 
@@ -32,3 +37,4 @@ Raw Windows inventory under **[`../imports/`](../imports/)**. Run **[windows-inv
 ## Post-provision hooks
 
 Executable **`provision.d/*.sh`** run after Flatpak + `rpm-ostree` in [apply-atomic-provision.sh](apply-atomic-provision.sh), sorted. Name `NN-name.sh`; idempotent; skip all: `KINOITE_SKIP_PROVISION_HOOKS=1`. WSL vs bare metal: `grep -qi microsoft /proc/version` inside a hook if needed.
+

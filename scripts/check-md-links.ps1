@@ -4,6 +4,7 @@ param(
   [string]$Root = (Split-Path -Parent $PSScriptRoot)
 )
 $skipSegment = { param($p)
+  if ($p -match '(\\|/)wiki(\\|/)' -or $p -match '(\\|/)wiki-source(\\|/)') { return $true }
   $parts = $p -split [regex]::Escape([IO.Path]::DirectorySeparatorChar)
   $parts -contains ".git" -or $parts -contains ".history" -or $parts -contains ".cursor" -or $parts -contains ".firecrawl"
 }

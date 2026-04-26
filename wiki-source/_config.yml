@@ -1,0 +1,44 @@
+title: Kinoite daily driver
+description: >-
+  Fedora Kinoite (WSL2) workspace — documentation mirror with Jekyll.
+baseurl: ""
+url: "https://bolabaden.github.io"
+# If you publish the wiki repo to GitHub Pages, set url/baseurl to match:
+# url: "https://bolabaden.github.io"
+# baseurl: "/kinoite-daily-driver.wiki"   # adjust to your Pages path
+
+theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+collections:
+  docs:
+    output: true
+    permalink: /docs/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: "docs"
+    values:
+      layout: "doc"
+
+minima:
+  skin: solarized-dark
+  date_format: "%Y-%m-%d"
+
+header_pages:
+  - index.md
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - sync-docs-from-parent.ps1
+  - README.md

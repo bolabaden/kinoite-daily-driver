@@ -1,3 +1,10 @@
+﻿---
+title: README - workspace hub
+---
+<div class="sync-banner" markdown="0">
+  <strong>Mirrored page.</strong> Generated from the main repo. Relative links may target repository paths -
+  use the <a href="https://github.com/bolabaden/kinoite-daily-driver">GitHub tree</a> for navigation.
+</div>
 # Fedora Kinoite (WSL2) — workspace
 
 **Phase A:** Kinoite / OSTree userland in **WSL2** with **systemd**, **`rpm-ostree`**, **Flatpak (Flathub)**, and **KDE Plasma** under **WSLg** — not classic Fedora (dnf) as a substitute.
@@ -20,8 +27,6 @@
 | Doc index | [Documentation hub](#topic-docs-and-provisioning-plane) (below) |
 
 **Repo checks:** [scripts/check-md-links.ps1](scripts/check-md-links.ps1) (*Run Task* in [.vscode/tasks.json](.vscode/tasks.json)). **CI:** [.github/workflows/markdown-link-check.yml](.github/workflows/markdown-link-check.yml).
-
-**GitHub Wiki + Jekyll:** the [wiki](https://github.com/bolabaden/kinoite-daily-driver/wiki) is a **git submodule** at [`wiki/`](wiki/) (see [`.gitmodules`](.gitmodules)). Sources you edit in this repo live in **[`wiki-source/`](wiki-source/)** (Minima theme, mirrored pages under `_docs/`). After changing docs, run **`.\scripts\Sync-WikiSubmodule.ps1`** (and `git -C wiki push`, then commit the bumped submodule in the parent). New clone: **`git submodule update --init --recursive`**. First-time wiki remote: create a page on GitHub, then **`.\scripts\Init-WikiSubmodule.ps1`** or **`git submodule add https://github.com/bolabaden/kinoite-daily-driver.wiki.git wiki`**.
 
 ## Quick links
 
