@@ -75,10 +75,18 @@ function Get-OptionalFeatureSubsetBlock {
 # Header + subset + body — what the docs expect under `imports/` for host evidence.
 function New-DismFeaturesImportDocument {
   param(
-    [Parameter(Mandatory)] [string[]] $DismOutLines,
-    [Parameter(Mandatory)] [int] $DismExitCode,
-    [Parameter(Mandatory)] [ValidateSet("in-session", "UAC-elevation")] [string] $CaptureMode
+    # No [Mandatory]: PS rejects both @() and "" for [string[]]; we normalize empty to @().
+    [string[]] $DismOutLines = [string[]]@(),
+    [Parameter(Mandatory)]
+    [int] $DismExitCode,
+    [Parameter(Mandatory)]
+    [ValidateSet("in-session", "UAC-elevation")]
+    [string] $CaptureMode
   )
+  if ($null -eq $DismOutLines) { $DismOutLines = [string[]]@() }
+  elseif ($DismOutLines -is [string]) {
+    $DismOutLines = ConvertFrom-DismCommandOutput -Native $DismOutLines
+  }
   $utc = (Get-Date).ToUniversalTime().ToString("o")
   $local = (Get-Date).ToString("o")
   $ver = if ($PSVersionTable.PSVersion) { $PSVersionTable.PSVersion.ToString() } else { "unknown" }
