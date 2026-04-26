@@ -21,3 +21,4 @@ Desktop.ini
 
 # Optional gitleaks / tooling
 .gitleaks-cache/
+.history/
