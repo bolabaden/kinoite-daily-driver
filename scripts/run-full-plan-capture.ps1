@@ -1,19 +1,35 @@
 #Requires -Version 5.1
 <#
-  Runs plan-related Windows + WSL capture in one pass.
-  Writes into ../imports/ with a shared timestamp; also writes CAPTURE-MANIFEST-<stamp>.txt
+.SYNOPSIS
+  One-shot Windows + WSL inventory for this repo: writes stable paths under ../imports/ and CAPTURE-MANIFEST.txt.
+.DESCRIPTION
+  Runs export-winget, CIM+WSL inventory, winget list, shortcuts, Scoop, StartApps, events, ARP+Appx CSV, locale/net,
+  Run keys, optional DISM/pnputil, in-distro WSL verify, host-tools hint, and an embedded wsl -l -v table
+  (captured via Start-Process to %WINDIR%\System32\wsl.exe, UTF-8). Bulk follows root .gitignore. Keep script source ASCII.
 
-  Bulk outputs (winget, inventory, CSV, etc.) are gitignored per repo .gitignore.
-  Includes: registry Uninstall (ARP) CSV, Appx CSV, locale/network metadata (no Wi‑Fi PSK),
-  Run keys, optional DISM features + pnputil drivers (may require elevation for useful output).
+.PARAMETER KinoiteDistro
+  WSL distro name for the in-distro check (default Kinoite-WS2) and the output file wsl-<name>-verify.txt
+.PARAMETER SkipWinget
+  Do not run export-winget or winget list. Faster; prior winget-export.json and winget-list.txt unchanged;
+  manifest will note SkipWinget and a single SKP line for that pair.
+.EXAMPLE
+  PS> ./run-full-plan-capture.ps1
+  Full run; overwrites all stable imports/* names and the manifest.
+.EXAMPLE
+  PS> ./run-full-plan-capture.ps1 -SkipWinget
+  Skip the two winget steps only; refresh the rest and update the manifest.
 #>
 param(
-  [string]$KinoiteDistro = "Kinoite-WS2"
+  [string]$KinoiteDistro = "Kinoite-WS2",
+  [switch]$SkipWinget
 )
 $ErrorActionPreference = "Continue"
 $root = Split-Path -Parent $PSScriptRoot
 $outDir = Join-Path $root "imports"
-$stamp = Get-Date -Format "yyyyMMddTHHmmss"
+# Denominator for "=== [n/...] ===" log lines; bump when adding a real capture step.
+$TotalCaptureSteps = 16
+$runStamp = Get-Date -Format "yyyyMMddTHHmmss"
+$runIso = Get-Date -Format "o"
 $manifest = [System.Collections.Generic.List[string]]::new()
 
 $machinePath = [Environment]::GetEnvironmentVariable("Path", "Machine")
@@ -33,45 +49,52 @@ function Add-Manifest {
   }
 }
 
-Write-Host "=== [1/16] export-winget.ps1 ==="
-& (Join-Path $PSScriptRoot "export-winget.ps1") 2>&1 | Out-String | Write-Host
-$wg = Get-ChildItem -Path $outDir -Filter "winget-export-*.json" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-if ($wg) { Add-Manifest $wg.FullName "winget export" }
+if (-not $SkipWinget) {
+  Write-Host "=== [1/$TotalCaptureSteps] export-winget.ps1 ==="
+  & (Join-Path $PSScriptRoot "export-winget.ps1") 2>&1 | Out-String | Write-Host
+  $wgPath = Join-Path $outDir "winget-export.json"
+  if (Test-Path -LiteralPath $wgPath) { Add-Manifest $wgPath "winget export" }
+} else {
+  Write-Host "=== [1/$TotalCaptureSteps] export-winget.ps1 (SKIPPED: -SkipWinget) ==="
+  [void]$manifest.Add("SKP  winget export + list (re-run without -SkipWinget to refresh JSON/txt on disk)")
+}
 
-Write-Host "=== [2/16] run-windows-inventory.ps1 ==="
+Write-Host "=== [2/$TotalCaptureSteps] run-windows-inventory.ps1 ==="
 & (Join-Path $PSScriptRoot "run-windows-inventory.ps1") 2>&1 | Write-Host
-$inv = Get-ChildItem -Path $outDir -Filter "windows-inventory-*.txt" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-if ($inv) { Add-Manifest $inv.FullName "CIM+WSL+podman" }
+$invPath = Join-Path $outDir "windows-inventory.txt"
+if (Test-Path -LiteralPath $invPath) { Add-Manifest $invPath "CIM+WSL+podman" }
 
 $wingetExe = $null
-if (Get-Command winget -ErrorAction SilentlyContinue) { $wingetExe = (Get-Command winget).Source }
-elseif (Test-Path "$env:LocalAppData\Microsoft\WindowsApps\winget.exe") {
-  $wingetExe = "$env:LocalAppData\Microsoft\WindowsApps\winget.exe"
-}
-if ($wingetExe) {
-  Write-Host "=== [3/16] winget list (plan Windows C) ==="
-  $listOut = Join-Path $outDir "winget-list-$stamp.txt"
-  & $wingetExe list --accept-source-agreements 2>&1 | Set-Content -Path $listOut -Encoding utf8
-  Add-Manifest $listOut "winget list"
-} else { Write-Warning "winget not found, skip list" }
+if (-not $SkipWinget) {
+  if (Get-Command winget -ErrorAction SilentlyContinue) { $wingetExe = (Get-Command winget).Source }
+  elseif (Test-Path "$env:LocalAppData\Microsoft\WindowsApps\winget.exe") {
+    $wingetExe = "$env:LocalAppData\Microsoft\WindowsApps\winget.exe"
+  }
+  if ($wingetExe) {
+    Write-Host "=== [3/$TotalCaptureSteps] winget list (plan Windows C) ==="
+    $listOut = Join-Path $outDir "winget-list.txt"
+    & $wingetExe list --accept-source-agreements 2>&1 | Set-Content -Path $listOut -Encoding utf8
+    Add-Manifest $listOut "winget list"
+  } else { Write-Warning "winget not found, skip list" }
+} else { Write-Host "=== [3/$TotalCaptureSteps] winget list (SKIPPED: -SkipWinget) ===" }
 
-Write-Host "=== [4/16] list-windows-shortcuts to imports/ ==="
-$shortOut = Join-Path $outDir "start-menu-shortcuts-$stamp.txt"
+Write-Host "=== [4/$TotalCaptureSteps] list-windows-shortcuts to imports/ ==="
+$shortOut = Join-Path $outDir "start-menu-shortcuts.txt"
 & (Join-Path $PSScriptRoot "list-windows-shortcuts.ps1") -OutFile $shortOut
 Add-Manifest $shortOut "Start Menu+Desktop lnk"
 
-Write-Host "=== [5/16] inv-scoop-list ==="
+Write-Host "=== [5/$TotalCaptureSteps] inv-scoop-list ==="
 & (Join-Path $PSScriptRoot "inv-scoop-list.ps1") 2>&1 | Write-Host
-$sc = Get-ChildItem -Path $outDir -Filter "scoop-list-*.txt" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-if ($sc) { Add-Manifest $sc.FullName "scoop list" }
+$scPath = Join-Path $outDir "scoop-list.txt"
+if (Test-Path -LiteralPath $scPath) { Add-Manifest $scPath "scoop list" }
 
-Write-Host "=== [6/16] inv-startapps-sample ==="
+Write-Host "=== [6/$TotalCaptureSteps] inv-startapps-sample ==="
 & (Join-Path $PSScriptRoot "inv-startapps-sample.ps1") 2>&1 | Write-Host
-$sa = Get-ChildItem -Path $outDir -Filter "startapps-sample-*.txt" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-if ($sa) { Add-Manifest $sa.FullName "Get-StartApps" }
+$saPath = Join-Path $outDir "startapps-sample.txt"
+if (Test-Path -LiteralPath $saPath) { Add-Manifest $saPath "Get-StartApps" }
 
-Write-Host "=== [7/16] inv-reliability-sample to file ==="
-$relOut = Join-Path $outDir "reliability-events-sample-$stamp.txt"
+Write-Host "=== [7/$TotalCaptureSteps] inv-reliability-sample to file ==="
+$relOut = Join-Path $outDir "reliability-events-sample.txt"
 $relText = $null
 try {
   $ev = Get-WinEvent -LogName "Microsoft-Windows-Diagnostics-Performance/Operational" -MaxEvents 8 -ErrorAction Stop
@@ -82,21 +105,21 @@ try {
 $relText | Set-Content -Path $relOut -Encoding utf8
 Add-Manifest $relOut "reliability perf (sample)"
 
-Write-Host "=== [8/16] sample event logs to file ==="
-$evOut = Join-Path $outDir "application-error-sample-$stamp.txt"
+Write-Host "=== [8/$TotalCaptureSteps] sample event logs to file ==="
+$evOut = Join-Path $outDir "application-error-sample.txt"
 $start = (Get-Date).AddHours(-24)
 $ev = Get-WinEvent -FilterHashtable @{ LogName = "Application"; Level = 2, 3; StartTime = $start } -MaxEvents 30 -ErrorAction SilentlyContinue
 if ($ev) { $ev | Format-Table TimeCreated, Id, ProviderName, Message -Wrap | Out-String | Set-Content -Path $evOut -Encoding utf8 }
 else { "No level 2/3 application events in last 24h (or access denied)" | Set-Content -Path $evOut -Encoding utf8 }
 Add-Manifest $evOut "App log errors 24h"
 
-Write-Host "=== [9/16] inv-hardware-outline ==="
+Write-Host "=== [9/$TotalCaptureSteps] inv-hardware-outline ==="
 & (Join-Path $PSScriptRoot "inv-hardware-outline.ps1") 2>&1 | Write-Host
-$hw = Get-ChildItem -Path $outDir -Filter "hardware-outline-*.txt" -ErrorAction SilentlyContinue | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-if ($hw) { Add-Manifest $hw.FullName "CIM hardware outline" }
+$hwPath = Join-Path $outDir "hardware-outline.txt"
+if (Test-Path -LiteralPath $hwPath) { Add-Manifest $hwPath "CIM hardware outline" }
 
-Write-Host "=== [10/16] WSL $KinoiteDistro in-distro check ==="
-$wslOut = Join-Path $outDir "wsl-$KinoiteDistro-verify-$stamp.txt"
+Write-Host "=== [10/$TotalCaptureSteps] WSL $KinoiteDistro in-distro check ==="
+$wslOut = Join-Path $outDir "wsl-$KinoiteDistro-verify.txt"
 $wslBody = @()
 $wslBody += "=== wsl -d $KinoiteDistro (rpm-ostree, wsl.conf) ==="
 $wslBody += (wsl -d $KinoiteDistro -- bash -lc "echo '== whoami =='; whoami; echo '== /etc/wsl.conf =='; cat /etc/wsl.conf 2>&1; echo '== rpm-ostree =='; rpm-ostree status 2>&1" 2>&1)
@@ -104,8 +127,8 @@ $wslText = $wslBody -join "`n"
 $wslText | Set-Content -Path $wslOut -Encoding utf8
 Add-Manifest $wslOut "WSL Kinoite verify"
 
-Write-Host "=== [11/16] Registry Uninstall (ARP) CSV ==="
-$regCsv = Join-Path $outDir "registry-uninstall-$stamp.csv"
+Write-Host "=== [11/$TotalCaptureSteps] Registry Uninstall (ARP) CSV ==="
+$regCsv = Join-Path $outDir "registry-uninstall.csv"
 $uninstallGlobs = @(
   'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*',
   'HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\*',
@@ -130,8 +153,8 @@ $arpRows = $uninstallGlobs | ForEach-Object {
 $arpRows | Sort-Object DisplayName | Export-Csv -Path $regCsv -NoTypeInformation -Encoding UTF8
 Add-Manifest $regCsv "registry uninstall (ARP)"
 
-Write-Host "=== [12/16] Appx packages CSV (current user) ==="
-$appxCsv = Join-Path $outDir "appx-packages-$stamp.csv"
+Write-Host "=== [12/$TotalCaptureSteps] Appx packages CSV (current user) ==="
+$appxCsv = Join-Path $outDir "appx-packages.csv"
 try {
   Get-AppxPackage | Select-Object Name, Version, Publisher, PackageFullName |
     Sort-Object Name |
@@ -141,8 +164,8 @@ try {
 }
 Add-Manifest $appxCsv "Appx packages"
 
-Write-Host "=== [13/16] Locale + network metadata (no Wi‑Fi PSK) ==="
-$locOut = Join-Path $outDir "host-locale-network-$stamp.txt"
+Write-Host "=== [13/$TotalCaptureSteps] Locale + network metadata (no Wi-Fi PSK) ==="
+$locOut = Join-Path $outDir "host-locale-network.txt"
 $locLines = New-Object System.Collections.Generic.List[string]
 [void]$locLines.Add("=== Get-Culture ===")
 [void]$locLines.Add((Get-Culture | Format-List * | Out-String))
@@ -172,8 +195,8 @@ try {
 ($locLines -join "`n") | Set-Content -Path $locOut -Encoding utf8
 Add-Manifest $locOut "locale + network metadata"
 
-Write-Host "=== [14/16] Run keys (HKCU + HKLM) ==="
-$runOut = Join-Path $outDir "run-keys-$stamp.txt"
+Write-Host "=== [14/$TotalCaptureSteps] Run keys (HKCU + HKLM) ==="
+$runOut = Join-Path $outDir "run-keys.txt"
 $rk = New-Object System.Collections.Generic.List[string]
 foreach ($pair in @(
     @{ Hive = 'HKCU'; Path = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run' },
@@ -194,8 +217,8 @@ foreach ($pair in @(
 ($rk -join "`n") | Set-Content -Path $runOut -Encoding utf8
 Add-Manifest $runOut "Run keys"
 
-Write-Host "=== [15/16] DISM + pnputil (optional; elevation helps) ==="
-$dismOut = Join-Path $outDir "dism-features-$stamp.txt"
+Write-Host "=== [15/$TotalCaptureSteps] DISM + pnputil (optional; elevation helps) ==="
+$dismOut = Join-Path $outDir "dism-features.txt"
 try {
   & dism.exe /Online /Get-Features /Format:Table 2>&1 | Set-Content -Path $dismOut -Encoding utf8
 } catch {
@@ -204,7 +227,7 @@ try {
 if (-not (Test-Path -LiteralPath $dismOut)) { "" | Set-Content -Path $dismOut -Encoding utf8 }
 Add-Manifest $dismOut "DISM features"
 
-$pnpOut = Join-Path $outDir "pnputil-drivers-$stamp.txt"
+$pnpOut = Join-Path $outDir "pnputil-drivers.txt"
 try {
   & pnputil.exe /enum-drivers 2>&1 | Set-Content -Path $pnpOut -Encoding utf8
 } catch {
@@ -214,37 +237,53 @@ if (-not (Test-Path -LiteralPath $pnpOut)) { "" | Set-Content -Path $pnpOut -Enc
 Add-Manifest $pnpOut "pnputil drivers"
 
 # Host tools
-Write-Host "=== [16/16] Host tools hint ==="
+Write-Host "=== [16/$TotalCaptureSteps] Host tools hint ==="
 $vbox = Get-Command VBoxManage -ErrorAction SilentlyContinue
-$toolsOut = Join-Path $outDir "host-tools-$stamp.txt"
+$toolsOut = Join-Path $outDir "host-tools.txt"
 $tools = @"
-=== run-full-plan-capture $stamp ===
-Date: $(Get-Date -Format o)
+=== run-full-plan-capture (runId $runStamp) ===
+Date: $runIso
 VirtualBox: $(if ($vbox) { 'VBoxManage: ' + $vbox.Source } else { 'VBoxManage: not on PATH' })
 "@
 $tools | Set-Content -Path $toolsOut -Encoding utf8
 Add-Manifest $toolsOut "host tools hint"
 
 # Manifest
-$manPath = Join-Path $outDir "CAPTURE-MANIFEST-$stamp.txt"
+$manPath = Join-Path $outDir "CAPTURE-MANIFEST.txt"
+$optSkip = if ($SkipWinget) { " SkipWinget: winget export + list were not run; existing winget files on disk unchanged. " } else { "" }
 $hdr = @"
-Plan capture (Kinoite WSL + Win11 inventory). All paths relative to this repo: imports/
+Plan capture (Kinoite WSL + Win11 inventory). All paths relative to this repo: imports/ (stable filenames, no -yyyyMMddTHHmmss- suffix; merge history: scripts/merge-timestamped-imports.ps1).
 Run: $(Join-Path (Split-Path -Parent $PSCommandPath) 'run-full-plan-capture.ps1') from PowerShell 5+ with full PATH merge.
-New in this run: registry-uninstall-*.csv, appx-packages-*.csv, host-locale-network-*.txt, run-keys-*.txt, dism-features-*.txt, pnputil-drivers-*.txt
+This run: runStamp=$runStamp$optSkip
+Outputs: registry-uninstall.csv, appx-packages.csv, host-locale-network.txt, run-keys.txt, dism-features.txt, pnputil-drivers.txt, winget-export.json, and the rest in imports/.
 "@
-# wsl -l -v writes UTF-16; pipe/capture mojibakes in UTF-8 manifest without byte decode
+# wsl -l -v: Start-Process to System32\wsl.exe (not cmd) avoids PATH/alias; redirect matches UTF-16LE table output.
+# cmd.exe often lacks `wsl` on PATH. Decode: BOM UTF-16/UTF-8, UTF-16LE ASCII (null after code units), else UTF-8.
 $wslLvQuick = ""
 $tmpWsl = [System.IO.Path]::GetTempFileName()
+$wsl32 = Join-Path $env:WINDIR "System32\wsl.exe"
 try {
-  cmd /c "wsl -l -v >`"$tmpWsl`" 2>&1" | Out-Null
-  if (Test-Path -LiteralPath $tmpWsl) {
-    [byte[]]$wslBytes = [System.IO.File]::ReadAllBytes($tmpWsl)
-    if ($wslBytes.Length -ge 2 -and $wslBytes[0] -eq 0xFF -and $wslBytes[1] -eq 0xFE) { $wslBytes = $wslBytes[2..($wslBytes.Length - 1)] }
-    if ($wslBytes.Length) { $wslLvQuick = [System.Text.Encoding]::Unicode.GetString($wslBytes) } else { $wslLvQuick = "(no output)" }
+  if (-not (Test-Path -LiteralPath $wsl32)) { $wslLvQuick = "(wsl.exe not found in $wsl32)" }
+  else {
+    $p = Start-Process -FilePath $wsl32 -ArgumentList @("-l", "-v") -NoNewWindow -Wait -PassThru -RedirectStandardOutput $tmpWsl
+    if (Test-Path -LiteralPath $tmpWsl) {
+      [byte[]]$b = [System.IO.File]::ReadAllBytes($tmpWsl)
+      if ($b.Length -eq 0) { $wslLvQuick = "(no output; exit=$($p.ExitCode))" }
+      elseif ($b.Length -ge 2 -and $b[0] -eq 0xFF -and $b[1] -eq 0xFE) {
+        $wslLvQuick = [System.Text.Encoding]::Unicode.GetString($b, 2, $b.Length - 2)
+      } elseif ($b.Length -ge 2 -and $b[0] -eq 0xFE -and $b[1] -eq 0xFF) {
+        $wslLvQuick = [System.Text.Encoding]::BigEndianUnicode.GetString($b, 2, $b.Length - 2)
+      } elseif ($b.Length -ge 3 -and $b[0] -eq 0xEF -and $b[1] -eq 0xBB -and $b[2] -eq 0xBF) {
+        $wslLvQuick = [System.Text.Encoding]::UTF8.GetString($b, 3, $b.Length - 3)
+      } elseif ($b.Length -ge 4 -and $b[1] -eq 0 -and $b[3] -eq 0 -and ($b[0] -le 0x7F) -and ($b[2] -le 0x7F)) {
+        $wslLvQuick = [System.Text.Encoding]::Unicode.GetString($b)
+      } else { $wslLvQuick = [System.Text.Encoding]::UTF8.GetString($b) }
+    } else { $wslLvQuick = "(no temp output; exit=$($p.ExitCode))" }
   }
 } catch { $wslLvQuick = "wsl -l -v: $($_.Exception.Message)" } finally { Remove-Item -LiteralPath $tmpWsl -ErrorAction SilentlyContinue }
 $manBody = @($hdr, "" , ($manifest -join "`n"), "", "=== wsl -l -v (quick) ===", $wslLvQuick) -join "`n"
 [System.IO.File]::WriteAllText($manPath, $manBody, [System.Text.UTF8Encoding]::new($false))
 Write-Host "Wrote $manPath"
 Get-Content -Path $manPath
-Write-Host "=== Done. Newest files use stamp $stamp ==="
+$doneSfx = if ($SkipWinget) { " (winget steps skipped; use run without -SkipWinget to refresh export/list)" } else { "" }
+Write-Host "=== Done. Run $runStamp - outputs use stable names under $outDir (see $manPath)$doneSfx ==="

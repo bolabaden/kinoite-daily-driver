@@ -1,6 +1,6 @@
 # Research digest — WSL2 + systemd + OSTree/Kinoite (2026-04-25)
 
-**Tools:** `tvly` / Tavily CLI was **not** available on this host `PATH` during workspace refresh; this file uses **web-backed** primary sources instead. For automated Tavily→extract workflow, see `../docs/research-workflow-tavily-firecrawl.md`.
+**Tools:** `tvly` / Tavily CLI was **not** available on this host `PATH` during workspace refresh; this file uses **web-backed** primary sources instead. For automated Tavily→extract workflow, see [docs/README — Research](../docs/README.md#research-tavily-firecrawl-and-the-web).
 
 ## systemd in WSL2
 
@@ -15,7 +15,7 @@
 
 - **Import pattern:** OCI image → `podman export` tarball → `wsl --import` (see `docs/kinoite-wsl2.md`).  
 - **General container→WSL caveats** (metadata / whiteout): e.g. discussion of layered exports in community write-ups (search: “import container as WSL distribution rootfs”).  
-- **`rpm-ostree status` on a container-export tree** often reports **not booted via libostree** — matches our **Kinoite-WS2** observation; see `docs/systemd-rpm-ostree-wsl2-claims.md` for full **Kinoite-flavored userland** vs **true atomic host** split.
+- **`rpm-ostree status` on a container-export tree** often reports **not booted via libostree** — matches our **Kinoite-WS2** observation; see [kinoite-wsl2 — honesty](../docs/kinoite-wsl2.md#systemd-and-rpm-ostree-in-wsl2-honesty) for the full **Kinoite-flavored userland** vs **true atomic host** split.
 
 ## Full parity targets
 

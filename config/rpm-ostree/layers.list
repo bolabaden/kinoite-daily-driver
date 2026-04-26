@@ -3,7 +3,7 @@
 # After layering: reboot (bare metal) or wsl --shutdown and relaunch WSL2.
 #
 # WSL2 imports: rpm-ostree may fail or be limited; trim this file to distrobox (+ fuse3 if needed)
-# or set KINOITE_OSTREE_ONLY=1 and use Flatpaks only. See docs/systemd-rpm-ostree-wsl2-claims.md
+# or set KINOITE_OSTREE_ONLY=1 and use Flatpaks only. See docs/kinoite-wsl2.md#systemd-and-rpm-ostree-in-wsl2-honesty
 #
 # --- Tier: minimal defaults (safe starting point) ---
 distrobox
@@ -40,7 +40,7 @@ blueman
 # --- Tier: dictionaries ---
 # cracklib-dicts
 
-# --- Tier: input methods — pick IBus and/or Fcitx5 stack; match docs/input-and-ime.md ---
+# --- Tier: input methods — pick IBus and/or Fcitx5 stack; match docs/kde-daily-driver-recommendations.md#input-ime-and-accessibility ---
 # ibus
 # ibus-gtk4
 # fcitx5

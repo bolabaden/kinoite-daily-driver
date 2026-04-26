@@ -16,8 +16,7 @@ if (-not $wingetExe) {
   throw "winget not found. Add Windows Package Manager to PATH or run: $env:LocalAppData\Microsoft\WindowsApps\winget.exe (from User shell)."
 }
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
-$stamp = Get-Date -Format "yyyyMMddTHHmmss"
-$json = Join-Path $OutDir "winget-export-$stamp.json"
+$json = Join-Path $OutDir "winget-export.json"
 Write-Host "Exporting winget packages to $json (via $wingetExe)"
 & $wingetExe export $json --accept-source-agreements
 Write-Host "Done. Review and sanitize before git commit."

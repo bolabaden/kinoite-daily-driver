@@ -1,24 +1,0 @@
-Plan capture (Kinoite WSL + Win11 inventory). All paths relative to this repo: imports/
-Run: G:\workspaces\Kinoite\scripts\run-full-plan-capture.ps1 from PowerShell 5+ with full PATH merge.
-New in this run: registry-uninstall-*.csv, appx-packages-*.csv, host-locale-network-*.txt, run-keys-*.txt, dism-features-*.txt, pnputil-drivers-*.txt
-
-OK  winget export                                              8186 winget-export-20260426T011259.json
-OK  CIM+WSL+podman                                             5079 windows-inventory-20260426T011316.txt
-OK  winget list                                               37373 winget-list-20260426T011259.txt
-OK  Start Menu+Desktop lnk                                    76547 start-menu-shortcuts-20260426T011259.txt
-OK  scoop list                                                  248 scoop-list-20260426T011329.txt
-OK  Get-StartApps                                             46732 startapps-sample-20260426T011332.txt
-OK  reliability perf (sample)                                    71 reliability-events-sample-20260426T011259.txt
-OK  App log errors 24h                                        13200 application-error-sample-20260426T011259.txt
-OK  CIM hardware outline                                       3101 hardware-outline-20260426T011335.txt
-OK  WSL Kinoite verify                                          409 wsl-Kinoite-WS2-verify-20260426T011259.txt
-OK  registry uninstall (ARP)                                  84008 registry-uninstall-20260426T011259.csv
-OK  Appx packages                                             32226 appx-packages-20260426T011259.csv
-OK  locale + network metadata                                  3602 host-locale-network-20260426T011259.txt
-OK  Run keys                                                   2424 run-keys-20260426T011259.txt
-OK  DISM features                                               125 dism-features-20260426T011259.txt
-OK  pnputil drivers                                           29199 pnputil-drivers-20260426T011259.txt
-OK  host tools hint                                             128 host-tools-20260426T011259.txt
-
-=== wsl -l -v (quick) ===
-眧汳‧獩渠瑯爠捥杯楮敺⁤獡愠⁮湩整湲污漠⁲硥整湲污挠浯慭摮ബ漊数慲汢⁥牰杯慲⁭牯戠瑡档映汩⹥਍

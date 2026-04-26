@@ -16,7 +16,7 @@ Turn this workspace into an **exhaustive, row-level** provisioning system for **
 
 ## Problem Frame
 
-- **Declarative spine exists** (`PROVISION`, `config/rpm-ostree/layers.list`, `config/flatpak/*.list`, `scripts/apply-atomic-provision.sh`) but **`layers.list` is almost entirely commented** and there is **no** automated path for NetworkManager, locale, VPN secrets, or a gitignored secrets plane.
+- **Declarative spine exists** (`GETTING_STARTED.md`, `config/rpm-ostree/layers.list`, `config/flatpak/*.list`, `scripts/apply-atomic-provision.sh`) but **`layers.list` is almost entirely commented** and there is **no** automated path for NetworkManager, locale, VPN secrets, or a gitignored secrets plane.
 - **Docs** cover many topics (networking, audio, gaming, printing, LLM, M365, etc.) but many files are **thin stubs**; **three plan crosswalk docs** overlap with `docs/provisional-configuration-index.md`.
 - **Win11 → Kinoite** is tracked as **data**: `imports/*` capture on Windows, **`config/capture/linux-map.template.csv`** for per-row disposition, category tables in **`docs/win11-kinoite-parity-matrix.md`**. Proprietary CAD, anti-cheat, OEM bundles, etc. are **`windows_only` / `manual` rows**, not undocumented gaps.
 
@@ -30,13 +30,13 @@ Turn this workspace into an **exhaustive, row-level** provisioning system for **
 - R4. Add **optional hooks** (conceptually `scripts/provision.d/`, invoked from `apply-atomic-provision.sh`) for **first-boot markers** under `/var/lib/kinoite-provision/` and **idempotent** reconcile — **not** full reprovision every boot.
 - R5. Add **locale/timezone/keyboard** one-shot documentation + optional script **targeting bare metal** (`timedatectl`, `localectl`) — no secrets.
 - R6. **Repo cleanup**: gitignore or remove `.history/`, consolidate plan crosswalk docs, fix **empty `config/shell/`** story, demote stub docs into a **`docs/archive/`** or merge into parent topic guides.
-- R7. Maintain **canonical funnels**: WSL-only narrative stays in `config/wsl2/README.md`; universal path in `PROVISION` + `GETTING_STARTED.md`. Any **material** change to layers, secrets workflow, hook loader, or **capture/map** artifacts must update **all three** (plus `README.md` quick links if entrypoints move) so newcomers do not drift.
+- R7. Maintain **canonical funnels**: WSL-only narrative stays in `config/wsl2/README.md`; **universal** atomic path is **`GETTING_STARTED.md`**. Any **material** change to layers, secrets workflow, hook loader, or **capture/map** artifacts must update **WSL2 README** + **GETTING_STARTED** + `README` quick links so newcomers do not drift.
 
 ---
 
 ## Scope Boundaries
 
-- **Non-goals:** Shipping proprietary installers, Windows ISOs, or license keys; automating **interactive** store OAuth (Steam/Epic) beyond documenting; **perfect** anti-cheat compatibility; committing **real** Wi‑Fi PSKs or VPN private keys.
+- **Non-goals:** Shipping proprietary installers, Windows ISOs, or license keys; automating **interactive** store OAuth (Steam/Epic) beyond documenting; **perfect** anti-cheat compatibility; committing **real** Wi-Fi PSKs or VPN private keys.
 - **Deferred:** BlueBuild/custom OSTree images; full **Ansible pull** fleet pattern (document only unless later unit adds it); **Ignition** (wrong default for laptop Kinoite — see best-practices research).
 
 ---
@@ -72,7 +72,7 @@ Turn this workspace into an **exhaustive, row-level** provisioning system for **
 ### Resolved during planning
 
 - **Cloud-init every boot?** Rejected — use staged deployment + optional timer only if reconcile is truly needed.
-- **systemd-creds for NM Wi‑Fi?** Not portable first choice; prefer NM keyfile + secret flags / keyring / gitignored keyfiles per NM docs.
+- **systemd-creds for NM Wi-Fi?** Not portable first choice; prefer NM keyfile + secret flags / keyring / gitignored keyfiles per NM docs.
 
 ### Deferred to implementation
 
@@ -111,7 +111,7 @@ Turn this workspace into an **exhaustive, row-level** provisioning system for **
 
 **Files:**
 - Modify: `config/rpm-ostree/layers.list`
-- Modify: `docs/networking.md` or `PROVISION` — pointer to layered printing/network packages as needed
+- Modify: `docs/networking.md` or `GETTING_STARTED.md` — pointer to layered printing/network packages as needed
 - Modify: `GETTING_STARTED.md` — short pointer when new **metal-only** layers or secrets steps exist
 - Modify: `config/wsl2/README.md` — only if WSL caveats for new layers change (otherwise explicit “no change” in PR notes)
 
@@ -148,7 +148,7 @@ Turn this workspace into an **exhaustive, row-level** provisioning system for **
 **Dependencies:** U2
 
 **Files:**
-- Create: `scripts/provision.d/README.md`
+- `provision.d` hooks: [scripts/README.md — Post-provision hooks](../../scripts/README.md#post-provision-hooks) (in-script doc; ex-`provision.d/README.md` merged there)
 - Modify: `scripts/apply-atomic-provision.sh`
 
 **Test scenarios:**
@@ -186,8 +186,8 @@ Turn this workspace into an **exhaustive, row-level** provisioning system for **
 **Files:**
 - Modify: `.gitignore`
 - Modify: `README.md` (fewer duplicate links)
-- Create/Move: `docs/archive/README.md`
-- Possibly merge: `docs/plan-alignment.md` content into `docs/provisional-configuration-index.md` (leave stub pointer files if needed)
+- Merged: `docs/archive/README.md` → [docs/README — Archived / superseded notes](../README.md#archived--superseded-notes) (the empty `docs/archive/` tree was later removed; policy lives in the doc hub only).
+- Merged: phase “definition of done” and related material → [provisional-configuration-index.md#phases-definition-of-done](../provisional-configuration-index.md#phases-definition-of-done) (historical note; small stub files were later removed in favor of anchors in this file only).
 
 **Test scenarios:**
 - `scripts/verify-plan-frontmatter-coverage.ps1` still exits 0 when KotOR plan present.
@@ -198,7 +198,7 @@ Turn this workspace into an **exhaustive, row-level** provisioning system for **
 
 - [x] U7. **Parity matrix (row-level contract)**
 
-**Goal:** One category table: **topic → automated here → manual → Windows-only**, citing `keep-windows.md` / `wsl-atomic-parity.md`. Per-install rows live in **`config/capture/linux-map.template.csv`** + **`host-local/`** fills.
+**Goal:** One category table: **topic → automated here → manual → Windows-only**, citing [app-mapping — when to keep Windows or a VM](../app-mapping.md#when-to-keep-windows-or-a-vm-for-these-workloads) and [kinoite-wsl2 — WSL vs bare metal](../kinoite-wsl2.md#wsl2-vs-bare-metal-atomic-parity). Per-install rows live in **`config/capture/linux-map.template.csv`** + **`host-local/`** fills.
 
 **Requirements:** R1–R3 and R7 (explicit disposition for automation vs manual vs Windows).
 
@@ -207,21 +207,21 @@ Turn this workspace into an **exhaustive, row-level** provisioning system for **
 **Files:**
 - Create: `docs/win11-kinoite-parity-matrix.md`
 
-**Verification:** Review with `docs/app-mapping.md` and `config/capture/README.md` side-by-side.
+**Verification:** Review with `docs/app-mapping.md` (incl. **Linux-map template** section) and the template file side-by-side.
 
 ---
 
 - [x] U8. **Windows host capture extensions + linux-map scaffold**
 
-**Goal:** Extend **`scripts/run-full-plan-capture.ps1`** with registry Uninstall CSV, Appx CSV, locale/network metadata (no PSK export), Run keys, optional DISM + pnputil; add **`config/capture/linux-map.template.csv`**, **`config/capture/README.md`**, **`scripts/merge-linux-map-stub.ps1`**; gitignore **`imports/*.csv`** and **`imports/*.reg`**; document patterns in **`imports/README.md`**.
+**Goal:** Extend **`scripts/run-full-plan-capture.ps1`** with registry Uninstall CSV, Appx CSV, locale/network metadata (no PSK export), Run keys, optional DISM + pnputil; add **`config/capture/linux-map.template.csv`**, **`docs/app-mapping` — Linux-map section**, **`scripts/merge-linux-map-stub.ps1`**; gitignore **`imports/*.csv`** and **`imports/*.reg`**; document patterns in **[`scripts/README.md` — The imports directory](../../scripts/README.md#the-imports-directory)**.
 
 **Requirements:** R7, exhaustive inventory traceability
 
 **Dependencies:** U6 `.gitignore` discipline
 
 **Files:**
-- Modify: `scripts/run-full-plan-capture.ps1`, `.gitignore`, `imports/README.md`
-- Create: `config/capture/linux-map.template.csv`, `config/capture/README.md`, `scripts/merge-linux-map-stub.ps1`
+- Modify: `scripts/run-full-plan-capture.ps1`, `.gitignore`, `scripts/README.md` (imports/ section)
+- Create: `config/capture/linux-map.template.csv`, [app-mapping — Linux-map template](../app-mapping.md#linux-map-template-row-level-map) (ex-`config/capture/README.md`), `scripts/merge-linux-map-stub.ps1`
 
 **Test expectation:** none — capture scripts; validate manually on Win11 host.
 
@@ -233,7 +233,7 @@ Turn this workspace into an **exhaustive, row-level** provisioning system for **
 
 - **Provisioning** becomes multi-plane (ostree + flatpak + gitignored host-local); contributors must understand **gitignore** rules.
 - **WSL users** must not assume metal-only layers apply; script messaging must stay accurate.
-- **Security:** `.gitignore` and `gitleaks-optional.md` alignment; pre-commit optional.
+- **Security:** `.gitignore` and [GETTING_STARTED — gitleaks](../../GETTING_STARTED.md#optional-gitleaks); pre-commit optional.
 
 ---
 
@@ -249,12 +249,12 @@ Turn this workspace into an **exhaustive, row-level** provisioning system for **
 
 ## Documentation / Operational Notes
 
-- `provisional-configuration-index.md` updated with KotOR matrix + `doc-to-provision-map.md`; `plan-alignment.md` is a redirect stub.
+- `provisional-configuration-index.md` = KotOR matrix + plan-stipulated file tree + **phases A/B/C definition of done** + [docs/README.md](../README.md) hub (earlier one-file redirects for the same content were **deleted** to reduce file sprawl).
 - `AGENTS.md` includes **secrets plane** bullet (host-local, no PSK in git).
 
 ### Research / review delegation (Cursor)
 
-Parallel **Task** subagents (`ce-repo-research-analyst`, `ce-best-practices-researcher`, `ce-architecture-strategist`, `ce-web-researcher`, `ce-doc-review`, etc.) require available **model API quota**. When the harness returns **“API usage limit reached”**, run the same prompts again after the limit resets, or do a focused manual pass using `docs/doc-to-provision-map.md` + `imports/*` capture + `config/capture/linux-map.template.csv`.
+Parallel **Task** subagents (`ce-repo-research-analyst`, `ce-best-practices-researcher`, `ce-architecture-strategist`, `ce-web-researcher`, `ce-doc-review`, etc.) require available **model API quota**. When the harness returns **“API usage limit reached”**, run the same prompts again after the limit resets, or do a focused manual pass using [docs/README.md](../README.md#topic-docs-and-provisioning-plane) + `imports/*` capture + `config/capture/linux-map.template.csv`.
 
 ---
 

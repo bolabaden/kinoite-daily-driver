@@ -1,6 +1,6 @@
 # WSL2 and WSLg — Windows-only Kinoite notes
 
-**If you are not using WSL2** (bare-metal install, a normal VM, dual-boot, or anything that is not “Linux distro imported/running under Windows Subsystem for Linux”), **this whole file does not apply.** Close it and follow only **[PROVISION](../../PROVISION)** in the repo root: edit `config/rpm-ostree/layers.list` and `config/flatpak/*.list`, run `sudo ./scripts/apply-atomic-provision.sh` inside Kinoite, then **reboot the machine** (or your VM) after new `rpm-ostree` layers. Log in with your real display manager (e.g. SDDM) and use Plasma like any other desktop. Do **not** copy `config/wsl2/*` examples onto that system as “Linux config.”
+**If you are not using WSL2** (bare-metal install, a normal VM, dual-boot, or anything that is not “Linux distro imported/running under Windows Subsystem for Linux”), **this whole file does not apply.** Close it and follow **[GETTING_STARTED.md](../../GETTING_STARTED.md#step-3--edit-the-declarative-lists)**: edit `config/rpm-ostree/layers.list` and `config/flatpak/*.list`, run `sudo ./scripts/apply-atomic-provision.sh` inside Kinoite, then **reboot the machine** (or your VM) after new `rpm-ostree` layers. Log in with your real display manager (e.g. SDDM) and use Plasma like any other desktop. Do **not** copy `config/wsl2/*` examples onto that system as “Linux config.”
 
 **If you are using WSL2**, everything Windows- or WSLg-specific for this repo is meant to live **here** — host templates under `config/wsl2/`, helpers under `scripts/wsl2/`. Stubs at `config/.wslconfig.example` and `config/wsl.conf.example` only redirect you back to this folder.
 
@@ -14,7 +14,7 @@ WSL2 does **not** change how atomic provisioning works. You still edit the same 
 - Inside the distro: **`sudo ./scripts/apply-atomic-provision.sh`** (from your clone path).
 - After new **rpm-ostree** layers, from **Windows** run **`wsl --shutdown`** (or reboot Windows) so the next WSL start picks up the new deployment — **instead of** a full hardware reboot.
 
-Optional boot-time layers-only service: **`sudo ./scripts/install-atomic-provision-service.sh YOUR_LINUX_USER`** — see [PROVISION](../../PROVISION).
+Optional boot-time layers-only service: **`sudo ./scripts/install-atomic-provision-service.sh YOUR_LINUX_USER`** — see [GETTING_STARTED.md — Step 7](../../GETTING_STARTED.md#step-7--optional-apply-only-layered-rpms-at-boot).
 
 **If you are not using WSL2:** use a normal **reboot** of the physical machine or VM after layering, not `wsl --shutdown`.
 
@@ -45,6 +45,8 @@ Optional boot-time layers-only service: **`sudo ./scripts/install-atomic-provisi
 ---
 
 ## Helper scripts under `scripts/wsl2/`
+
+**Single catalog (no `README` inside `scripts/wsl2/`):** [scripts/README.md — WSL2 and WSLg](../../scripts/README.md#wsl2-and-wslg).
 
 These exist **only** for the Windows + WSL2 + WSLg combo. They are **not** the primary path on bare metal.
 
@@ -83,4 +85,4 @@ Or use **Windows Terminal** → `wsl -d YourDistroName` → run the same `bash` 
 - **`profile.d-00-kinoite-wslg-env.sh.example`** — Optional **`/etc/profile.d`** fragment for WSLg/Qt env.
 - **`README.md`** — This file (single place for WSL2-specific explanation in this repo).
 
-Other bootstrap/import scripts may still live under **`scripts/`** at repo root (e.g. import rootfs, first-boot hints). Those are WSL2 **workflow** scripts; when in doubt, this README’s rule stands: **if you are not on WSL2, use [PROVISION](../../PROVISION) and normal desktop login only.**
+Other bootstrap/import scripts may still live under **`scripts/`** at repo root (e.g. import rootfs, first-boot hints). Those are WSL2 **workflow** scripts; when in doubt, this README’s rule stands: **if you are not on WSL2, use [GETTING_STARTED.md](../../GETTING_STARTED.md#step-3--edit-the-declarative-lists) and normal desktop login only.**

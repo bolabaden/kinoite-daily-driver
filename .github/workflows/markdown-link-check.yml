@@ -1,0 +1,26 @@
+# Relative file targets in *.md (skips .git, .history, .cursor, .firecrawl).
+# Plan id coverage (KotOR) is local/optional: scripts/verify-repo-health.ps1
+name: Markdown link check
+
+permissions:
+  contents: read
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch: # re-run or dry-check in Actions tab
+
+concurrency:
+  group: "md-links-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  check-md-links:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run check-md-links.ps1
+        run: >
+          pwsh -NoProfile -ExecutionPolicy Bypass -File
+          "${{ github.workspace }}/scripts/check-md-links.ps1"

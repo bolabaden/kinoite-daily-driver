@@ -1,4 +1,4 @@
-# Example NetworkManager Wi‑Fi profile — copy to host-local/ and add secrets there only.
+# Example NetworkManager Wi-Fi profile — copy to host-local/ and add secrets there only.
 # Replace interface-name with your wlan device (ip link) if needed.
 #
 # After copy:

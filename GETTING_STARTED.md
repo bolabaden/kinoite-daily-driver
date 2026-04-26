@@ -17,7 +17,7 @@ This is a **single path** through this repository: you run **Fedora Kinoite** so
 
 Kinoite ships **KDE Plasma** and expects most desktop apps as **Flatpaks**. The OS image itself is updated atomically; extra RPMs are **layered** with `rpm-ostree` when you need them.
 
-![KDE Plasma desktop (illustrative screenshot: Konsole and Firefox under Wayland / XWayland).](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/XWayland_KDE_Plasma_screenshot.png/1024px-XWayland_KDE_Plasma_screenshot.png)
+![KDE Plasma desktop (illustrative screenshot: Konsole and Firefox under Wayland / XWayland).](https://upload.wikimedia.org/wikipedia/commons/0/0c/XWayland_KDE_Plasma_screenshot.png)
 
 *Source: [Wikimedia Commons — XWayland KDE Plasma screenshot](https://commons.wikimedia.org/wiki/File:XWayland_KDE_Plasma_screenshot.png) (Mozilla Public License 2.0; KDE / screenshot composite).*
 
@@ -77,12 +77,27 @@ Differences are **only** in how you complete **first boot**, **users**, **restar
 
 ## Step 3 — Edit the declarative lists
 
-The full rules and optional boot-time service are in [PROVISION](PROVISION). For conceptual background: [rpm-ostree: package layering](https://coreos.github.io/rpm-ostree/) and the [Fedora Kinoite documentation](https://docs.fedoraproject.org/en-US/fedora-kinoite/) linked above.
+*A former root-level `PROVISION` file only pointed here; it was **removed** to avoid an extra file—this step is the canonical “atomic lists” entry.*
+
+This repository defines **declarative** `rpm-ostree` layers and **Flatpak** apps as editable lists, plus scripts that apply them. **WSL2 does not change that edit-and-apply workflow** — only how you **restart** afterward; see the **WSL2** `CAUTION` in **Step 5** below. **Windows / WSL2 / WSLg-only** material (host `.wslconfig`, guest `wsl.conf`, WSLg env, PowerShell helpers) is not documented here. It lives in one file: **[config/wsl2/README.md](config/wsl2/README.md)**. If you are not using WSL2, you never need that file.
+
+### What to edit
+
+- **`config/rpm-ostree/layers.list`** — package names to layer onto the image. **Bare metal:** the default file includes a **daily-driver** block (print/scan, fonts, VPN helpers, FUSE, peripherals, Tailscale, Bluetooth **`blueman`**, optional **`NetworkManager-openconnect`** comment). **WSL2:** comment out that block if `rpm-ostree install` fails; keep **`distrobox`** (and optionally **`fuse3`**) per [kinoite-wsl2 — systemd / rpm-ostree honesty](docs/kinoite-wsl2.md#systemd-and-rpm-ostree-in-wsl2-honesty).
+- **`config/flatpak/*.list`** — Flatpak application IDs.
+- **`config/network/`** + **`config/secrets/README.md`** — Wi-Fi / VPN **templates**; real keys live in **gitignored** `host-local/` (never commit PSKs).
+- **`scripts/provision-locale.sh`** + **`config/locale.env.example`** — one-shot timezone/keyboard (copy the example to `host-local/locale.env`).
+
+### Checklist (same files in order)
 
 1. Open **`config/rpm-ostree/layers.list`** and **uncomment** (or add) RPM package names you want **layered** on the base image.
 2. Open **`config/flatpak/*.list`** and add **Flatpak application IDs** (as used on Flathub).
-3. **(Bare metal / VM with Wi‑Fi)** Copy [config/network/wifi.example.nmconnection](config/network/wifi.example.nmconnection) to a **gitignored** path such as `host-local/` (see [config/secrets/README.md](config/secrets/README.md)), set SSID/PSK only on the machine, then import with `nmcli` or place under `/etc/NetworkManager/system-connections/` (mode `0600`).
+3. **(Bare metal / VM with Wi-Fi)** Copy [config/network/wifi.example.nmconnection](config/network/wifi.example.nmconnection) to a **gitignored** path such as `host-local/` (see [config/secrets/README.md](config/secrets/README.md)), set SSID/PSK only on the machine, then import with `nmcli` or place under `/etc/NetworkManager/system-connections/` (mode `0600`).
 4. **(Optional)** Timezone and keyboard: copy [config/locale.env.example](config/locale.env.example) → `host-local/locale.env`, edit, then run `sudo ./scripts/provision-locale.sh` once.
+
+**Conceptual background:** [rpm-ostree: package layering](https://coreos.github.io/rpm-ostree/) and the [Fedora Kinoite documentation](https://docs.fedoraproject.org/en-US/fedora-kinoite/) in the introduction.
+
+**Optional boot-time** `rpm-ostree` (systemd, layers only — no Flatpaks in that pass) is covered in [Step 7](#step-7--optional-apply-only-layered-rpms-at-boot). **Immutability** (where changes land on disk) is under [Step 5 — Immutability](#immutability).
 
 ---
 
@@ -95,18 +110,22 @@ sudo ./scripts/apply-atomic-provision.sh
 ```
 
 - Re-run after you change the lists; the script is intended to be **idempotent**.
-- **`sudo`** uses your login user for Flatpak installs when possible (see script header in [scripts/apply-atomic-provision.sh](scripts/apply-atomic-provision.sh)).
+- **`sudo`** uses your login user for Flatpak installs with **`--user`** when there is a resolvable target user, and may run Flatpak under **`dbus-run-session`** when no user D-Bus session is present (see [scripts/apply-atomic-provision.sh](scripts/apply-atomic-provision.sh)).
 
 ---
 
 ## Step 5 — Restart so `rpm-ostree` deployments can take effect
 
-After **new** layered packages, `rpm-ostree` applies them on the **next boot** of the environment that runs Kinoite.
+After **new** layered packages, `rpm-ostree` applies them on the **next boot** of the environment that runs Kinoite. On **bare metal** or a **normal VM**, that means a normal **reboot** of the machine (or the guest). Under **WSL2**, use **`wsl --shutdown`** from **Windows** instead of a hardware-style reboot (see **`CAUTION`** below).
 
-1. Save work and **restart** that environment the way you normally would for a full system update.
+1. Save work and **restart** the environment the way that matches your install type.
 
 > **CAUTION — Linux running under Windows’ WSL2**  
-> From **Windows**, run **`wsl --shutdown`** (or reboot Windows). That replaces a traditional “hardware” reboot for the WSL2 VM. Details: [config/wsl2/README.md](config/wsl2/README.md) and [PROVISION](PROVISION).
+> From **Windows**, run **`wsl --shutdown`** (or reboot Windows). That replaces a traditional “hardware” reboot for the WSL2 VM. More detail: [config/wsl2/README.md](config/wsl2/README.md).
+
+### Immutability
+
+`rpm-ostree` stages changes into the **next** deployment; **`layers.list`** is the source of truth until you rebase or reset. **User Flatpaks** live under **`~/.var/app/`** and are not part of the base OSTree image.
 
 ---
 
@@ -119,6 +138,16 @@ Otherwise, align with upstream guidance:
 - [Flatpak — Fedora](https://flatpak.org/setup/Fedora/)
 - [Flathub quick setup — Fedora](https://flathub.org/setup/Fedora) (adds the Flathub remote users expect)
 
+### Flatpak overrides (optional, per app)
+
+When a Flatpak needs **extra** filesystem, GPU device, or Wayland/X11 socket access, use **Flatseal** or `flatpak override` — **least privilege**; widen permissions only when an app breaks (IDEs, Steam library paths, etc.).
+
+```bash
+flatpak override --user --filesystem=host com.valvesoftware.Steam
+```
+
+(Only if you understand the security tradeoff.) *Former stand-alone `docs/flatpak-overrides.md` — merged into this step.*
+
 ---
 
 ## Step 7 — (Optional) Apply only layered RPMs at boot
@@ -129,7 +158,7 @@ To stage **`rpm-ostree`** layers at boot **without** driving Flatpaks in that sy
 sudo ./scripts/install-atomic-provision-service.sh YOUR_LINUX_USER
 ```
 
-See [PROVISION](PROVISION) and [config/systemd/kinoite-atomic-ostree.service](config/systemd/kinoite-atomic-ostree.service).
+This installs under `/etc/kinoite-provision` and enables **`kinoite-atomic-ostree.service`**. See [config/systemd/kinoite-atomic-ostree.service](config/systemd/kinoite-atomic-ostree.service), [What to edit](#what-to-edit) in Step 3, and [Immutability](#immutability) in Step 5.
 
 ---
 
@@ -158,6 +187,16 @@ For the official illustrated explanation, search the Kinoite docs for **atomic**
 ## Where WSL2-only material lives
 
 Everything **Windows-host**, **WSLg**, and **import-specific** is intentionally **not** duplicated here. Use **[config/wsl2/README.md](config/wsl2/README.md)** only when **`CAUTION`** in this guide points you there.
+
+---
+
+## More documentation (if you are browsing the whole repo)
+
+**[docs/README.md](docs/README.md)** is a single **index**: topic → provisioning table, A–Z topic list, and plan cross-links. **[docs/provisional-configuration-index.md](docs/provisional-configuration-index.md)** is the other “don’t juggle files” page: **KotOR** coverage matrix, **A/B/C phase “done”** criteria, and **plan-stipulated file tree** in one scroll. **[scripts/README.md](scripts/README.md)** lists what every script does. You do not need to open every file in `docs/` or `scripts/` at random.
+
+## Optional: gitleaks
+
+If you `git init` in this clone and commit only **sanitized** exports, you can run **`gitleaks detect --source . -v`** after installing [gitleaks](https://github.com/gitleaks/gitleaks) per upstream. The root **`.gitignore`** already ignores typical `imports/` noise.
 
 ---
 

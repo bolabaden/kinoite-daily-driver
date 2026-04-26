@@ -146,7 +146,7 @@ if command -v systemctl &>/dev/null; then
   fi
 fi
 
-# --- Optional provision.d hooks (executable NN-name.sh only; see scripts/provision.d/README.md) ---
+# --- Optional provision.d hooks (executable NN-name.sh only; see scripts/README.md#post-provision-hooks) ---
 if [ "${KINOITE_SKIP_PROVISION_HOOKS:-0}" != 1 ]; then
   HOOK_DIR="$SCRIPT_DIR/provision.d"
   if [ -d "$HOOK_DIR" ]; then

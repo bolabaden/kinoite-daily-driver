@@ -1,9 +1,10 @@
 #Requires -Version 5.1
 <#
   Stub: merge Windows inventory exports into a linux-map CSV using config/capture/linux-map.template.csv.
+  Column semantics: ../docs/app-mapping.md#linux-map-template-row-level-map
 
   Usage (future): copy template to host-local/linux-map.csv, fill linux_plane / linux_artifact,
-  then run a merger that joins imports/registry-uninstall-*.csv + winget-export-*.json on keys.
+  then run a merger that joins imports/registry-uninstall.csv + winget-export.json on keys.
 
   This stub only validates paths and prints the contract — no destructive writes.
 #>

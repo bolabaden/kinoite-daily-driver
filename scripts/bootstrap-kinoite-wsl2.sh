@@ -27,5 +27,5 @@ fi
 echo "==> Declarative provision (edit lists, then run):"
 echo "    sudo $REPO_ROOT/scripts/apply-atomic-provision.sh"
 echo "    (config: $REPO_ROOT/config/rpm-ostree/layers.list  and  $REPO_ROOT/config/flatpak/*.list )"
-echo "    See $REPO_ROOT/PROVISION"
+echo "    See $REPO_ROOT/GETTING_STARTED.md (Step 3 — atomic provisioning)"
 echo "==> Or one-off: flatpak install -y com.valvesoftware.Steam  (see config/flatpak/*.list)"

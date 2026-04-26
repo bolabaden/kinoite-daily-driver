@@ -11,7 +11,7 @@ if ($machinePath -or $userPath) {
   $env:Path = @($env:Path, $machinePath, $userPath) -join ";" 2>$null
 }
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
-$out = Join-Path $OutDir "windows-inventory-$(Get-Date -Format 'yyyyMMddTHHmmss').txt"
+$out = Join-Path $OutDir "windows-inventory.txt"
 $lines = @()
 $lines += "=== Get-CimInstance Win32_OperatingSystem ==="
 $lines += (Get-CimInstance Win32_OperatingSystem | Format-List * | Out-String)

@@ -1,6 +1,45 @@
-# Windows 11 daily driver ↔ Fedora Kinoite (row-level mapping)
+# Windows 11 ↔ Fedora Kinoite (evidence and row-level mapping)
 
-This table is the **category disposition contract**: each row states how the repo **automates**, what stays **host-local / manual**, and what remains **Windows-only**. Per-app rows belong in **`config/capture/linux-map.template.csv`** (and machine-specific fills under **`host-local/`**). Cross-links: [keep-windows.md](keep-windows.md), [wsl-atomic-parity.md](wsl-atomic-parity.md).
+This single page replaces two former files: **host capture / evidence** (how `imports/` maps the machine) and the **category disposition contract** (how those concerns land on Kinoite). Per-app rows belong in **`config/capture/linux-map.template.csv`** and **`host-local/`**. Cross-links: [app-mapping — when to keep Windows or a VM](app-mapping.md#when-to-keep-windows-or-a-vm-for-these-workloads), [kinoite-wsl2 — WSL vs bare metal](kinoite-wsl2.md#wsl2-vs-bare-metal-atomic-parity). (The old `windows11-daily-driver-baseline.md` file was a thin redirect; it has been **removed** — use this page and the sections below.)
+
+---
+
+## Host evidence and capture scripts
+
+The **executable** mirror of the host is: **`scripts/run-full-plan-capture.ps1`** → **`imports/CAPTURE-MANIFEST.txt`** plus gitignored bulk (`winget-export.json` — *gitignored* via `*winget*` —, `registry-uninstall.csv`, `appx-packages.csv`, `host-locale-network.txt`, `run-keys.txt`, etc., each at a **stable** path under `imports/`). Narrative inventory and app categories live in **`docs/app-mapping.md`** and the **row-level** map template **`config/capture/linux-map.template.csv`**.
+
+**Authoritative run index:** **`imports/CAPTURE-MANIFEST.txt`**, also cited in **`WORKSPACE_STATUS.md`**. **Typical sizes:** `winget-list.txt` and **Start Menu+Desktop** `start-menu-shortcuts.txt` are large; plus `windows-inventory.txt`, Scoop, StartApps, events, hardware outline, WSL verify, `host-tools.txt` — all stable names, overwritten each full capture. Rerun after **bulk** app changes.
+
+| Evidence type | How to (re)generate | Where it lands |
+|---------------|---------------------|----------------|
+| **All of the below in one go** | `scripts/run-full-plan-capture.ps1` | `imports/CAPTURE-MANIFEST.txt` (index) |
+| Installed packages (winget) | `export-winget.ps1` (also in full capture) | `imports/winget-export.json` (gitignored) |
+| `winget list` | full capture | `imports/winget-list.txt` |
+| CIM + WSL + podman | `run-windows-inventory.ps1` | `imports/windows-inventory.txt` (gitignored) |
+| Start Menu + Desktop | `list-windows-shortcuts.ps1` with `-OutFile` (full capture) | `imports/start-menu-shortcuts.txt` (gitignored) |
+| Registry ARP / Appx / locale-net / Run / DISM / pnputil | full capture | `imports/*.csv` / `imports/*.txt` per [scripts — The imports directory](../scripts/README.md#the-imports-directory) |
+| Scoop, StartApps, events | `inv-*.ps1` (also in full capture) | `imports/*` per manifest |
+
+**Machine-specific** table rows belong in **`host-local/linux-map.csv`** (from the template) and TSV in `app-mapping.md`; **PUP/junk ARP** strings stay out of committed **prose** — evidence stays in local exports.
+
+**Disposition** for migration: [app-mapping](app-mapping.md#when-to-keep-windows-or-a-vm-for-these-workloads) (keep-Windows principles + TSV) + [linux-map template (same doc)](app-mapping.md#linux-map-template-row-level-map) + [`config/capture/linux-map.template.csv`](../config/capture/linux-map.template.csv).
+
+### This PC quick template
+
+| Field | Value |
+|-------|-------|
+| Date (ISO-8601) | |
+| OS (from CIM) | |
+| WSL distros (`wsl -l -v`) | |
+| Primary workspace path | `G:\workspaces\Kinoite` |
+
+**Attachments:** point to sanitized files under `imports/` (do not commit secrets). Fill after `scripts/run-windows-inventory.ps1` and `scripts/export-winget.ps1` (or `run-full-plan-capture.ps1`).
+
+---
+
+## Category disposition (row-level contract)
+
+This table states how the repo **automates**, what stays **host-local / manual**, and what remains **Windows-only**.
 
 | Topic | Automated in this repo | Manual / host-local | Windows-only / blocked |
 |--------|------------------------|---------------------|-------------------------|
@@ -11,7 +50,7 @@ This table is the **category disposition contract**: each row states how the rep
 | 3D / CAD | Blender Flatpak | Commercial CAD | 3ds Max, most Autodesk Windows stacks |
 | Chat / collab | Discord Flatpak; Thunderbird | Teams complexity | Full Teams parity |
 | M365 | Web + KDE accounts where applicable | Tenant policies | Native Office suite |
-| Network Wi‑Fi | NM templates in `config/network/` | PSK in `host-local/` only | — |
+| Network Wi-Fi | NM templates in `config/network/` | PSK in `host-local/` only | — |
 | VPN (WARP, PIA, Tailscale) | Docs + optional layers | Keys, `nmcli` import | — |
 | Printing / scanning | Optional **rpm-ostree** layers (see `layers.list`) | Driver quirks per printer | Some OEM bundles |
 | Audio / BT / PipeWire | Docs; EasyEffects Flatpak optional | UCM firmware | Voicemod-grade routing |
@@ -26,13 +65,13 @@ This table is the **category disposition contract**: each row states how the rep
 
 ## Provisional host snapshot → Fedora knobs (example)
 
-Captured from this workspace’s **Windows 11** shell (build 26200): **Central Time** → `KINOITE_TIMEZONE=America/Chicago`; **en-US** system locale → `KINOITE_LANG=en_US.UTF-8` in `host-local/locale.env` (see `config/locale.env.example`). **Multiple input languages** (e.g. Greek, Arabic, Japanese) → match on Linux with IBus/Fcitx5 + langpacks (`docs/input-and-ime.md`); layer/langpack details live in docs and `layers.list`, not in `rpm-ostree` alone.
+Captured from this workspace’s **Windows 11** shell (build 26200): **Central Time** → `KINOITE_TIMEZONE=America/Chicago`; **en-US** system locale → `KINOITE_LANG=en_US.UTF-8` in `host-local/locale.env` (see `config/locale.env.example`). **Multiple input languages** (e.g. Greek, Arabic, Japanese) → match on Linux with IBus/Fcitx5 + langpacks ([kde-daily-driver — input / IME / accessibility](kde-daily-driver-recommendations.md#input-ime-and-accessibility)); layer/langpack details live in docs and `layers.list`, not in `rpm-ostree` alone.
 
 **Winget-style apps (sample) → Linux plane**
 
 | Windows (winget / ARP) | Kinoite path |
 |------------------------|--------------|
-| 7-Zip | `org.7-Zip.7-Zip` in `config/flatpak/utils.list` |
+| 7-Zip | `org.7-Zip.7-Zip` in `config/flatpak/utils.list` (or **7zip** RPM in `layers.list` if you prefer) |
 | Firefox | `org.mozilla.firefox` in `config/flatpak/media-office.list` |
 | GIMP | `org.gimp.GIMP` (already listed) |
 | Notepad++ | `org.kde.kate` or VS Code Flatpak / distrobox editors |
@@ -41,7 +80,7 @@ Captured from this workspace’s **Windows 11** shell (build 26200): **Central T
 | TeamViewer | Vendor Linux tarball/RPM (often in **distrobox**); no canonical Flathub ID — check [teamviewer.com/linux](https://www.teamviewer.com/en/download/linux/) |
 | LM Studio / local LLM | AppImage or upstream bundle + GPU stack (`scripts/appimage-fuse-atomic.sh`, `docs/llm-and-dev-ai.md`) |
 | Temurin JDK | `EclipseAdoptium.Temurin.*` → SDK in **distrobox**, not necessarily Flatpak |
-| Maya / Autodesk | Windows-only or licensed Linux build (`docs/3d-and-autodesk.md`) |
-| ShareX | Flameshot / Spectacle / OBS (`parity` table above) |
+| Maya / Autodesk | Windows-only or licensed Linux build — [app-mapping — 3D and Autodesk (DCC)](app-mapping.md#3d-and-autodesk-dcc) |
+| ShareX | Flameshot / Spectacle / OBS (category table above) |
 
-Re-run **`imports/`** capture (`scripts/run-full-plan-capture.ps1`) when the Windows side changes; keep **Wi‑Fi PSK and VPN secrets** only under `host-local/` (`config/secrets/README.md`).
+Re-run **`imports/`** capture (`scripts/run-full-plan-capture.ps1`) when the Windows side changes; keep **Wi-Fi PSK and VPN secrets** only under `host-local/` (`config/secrets/README.md`).
