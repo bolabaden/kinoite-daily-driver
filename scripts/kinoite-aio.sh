@@ -86,6 +86,15 @@ step_Import() {
   return 1
 }
 
+step_WslConfig() {
+  local ps; ps=$(_powershell 2>/dev/null) || true
+  if [[ -n "$ps" ]]; then
+    MSYS2_ARG_CONV_EXCL= "$ps" -NoProfile -ExecutionPolicy Bypass -File "$REPO/scripts/wsl2/Install-WslHostConfig.ps1" -RepoRoot "$REPO" && return 0
+  fi
+  echo "-> WslConfig: run on Windows: $REPO/scripts/wsl2/Install-WslHostConfig.ps1" >&2
+  return 1
+}
+
 step_ShowGui() {
   local ps; ps=$(_powershell || true)
   if [[ -n "$ps" ]]; then
@@ -145,6 +154,7 @@ invoke() {
   local n=$1
   case "$n" in
   Import)       step_Import ;;
+  WslConfig)    step_WslConfig ;;
   ShowGui)      step_ShowGui ;;
   FocusGui)     step_FocusGui ;;
   LogonReg)     step_LogonReg ;;
@@ -167,6 +177,7 @@ resolve() {
   local k="${1,,}"; k="${k// /}"
   case "$k" in
   import|rootfs) echo Import ;;
+  wslconfig|wslhost|hostwsl|dotwslconfig) echo WslConfig ;;
   showgui|launch|plasma|gui) echo ShowGui ;;
   focus|focusgui) echo FocusGui ;;
   logonreg|logonregister|plasmalogon) echo LogonReg ;;
@@ -180,7 +191,7 @@ resolve() {
   md|links|mdlinks) echo MdLinks ;;
   bootstrap|boot) echo Bootstrap ;;
   apply|provision) echo Apply ;;
-  *) for id in Import ShowGui FocusGui LogonReg LogonRun WikiMenu WikiSync WikiInit WikiGen Inv MdLinks Safe Bootstrap Apply; do
+  *) for id in Import WslConfig ShowGui FocusGui LogonReg LogonRun WikiMenu WikiSync WikiInit WikiGen Inv MdLinks Safe Bootstrap Apply; do
       [[ ${id,,} == "$k" ]] && { echo "$id"; return; }
     done; echo "" ;;
   esac
@@ -205,26 +216,27 @@ run_list() {
 
 MENU() {
   BANNER
-  echo "1 Import 2 ShowGui 3 Focus 4 LogonReg 5 LogonRun 6 WikiMenu 7 WikiSync 8 Inv 9 MdLinks 10 Safe 11 Bootstrap 12 Apply 0 exit  H help  R run list"
-  read -r -p "Choice (default 6=WikiMenu): " c || c=
-  c=${c:-6}
+  echo "1 Import 2 WslConfig 3 ShowGui 4 Focus 5 LogonReg 6 LogonRun 7 WikiMenu 8 WikiSync 9 Inv 10 MdLinks 11 Safe 12 Bootstrap 13 Apply 0 exit  H help  R run list"
+  read -r -p "Choice (default 7=WikiMenu): " c || c=
+  c=${c:-7}
   case "$c" in
   0) exit 0 ;;
   1) invoke Import ;;
-  2) step_ShowGui ;;
-  3) step_FocusGui ;;
-  4) step_LogonReg ;;
-  5) step_LogonRun ;;
-  6) step_WikiMenu ;;
-  7) step_WikiSync ;;
-  8) step_Inv ;;
-  9) step_MdLinks ;;
-  10) step_Safe ;;
-  11) step_Bootstrap ;;
-  12) step_Apply ;;
+  2) step_WslConfig ;;
+  3) step_ShowGui ;;
+  4) step_FocusGui ;;
+  5) step_LogonReg ;;
+  6) step_LogonRun ;;
+  7) step_WikiMenu ;;
+  8) step_WikiSync ;;
+  9) step_Inv ;;
+  10) step_MdLinks ;;
+  11) step_Safe ;;
+  12) step_Bootstrap ;;
+  13) step_Apply ;;
   h|H) BANNER; echo "Run:  $0 -Run MdLinks,Inv  or  KINOITE_AIO_RUN=Bootstrap,Apply" ;;
   r|R) read -r -p "Comma list: " L; run_list "$L" ;;
-  *) rid=$(resolve "$c"); if [[ -n "$rid" ]]; then invoke "$rid"; else echo "1-12 or name"; fi ;;
+  *) rid=$(resolve "$c"); if [[ -n "$rid" ]]; then invoke "$rid"; else echo "1-13 or name"; fi ;;
   esac
 }
 

@@ -22,7 +22,7 @@ Optional boot-time layers-only service: **`sudo ./scripts/apply-atomic-provision
 
 ## Host side: `%UserProfile%\.wslconfig` (Windows)
 
-**WSL2:** copy the **example block below** into **`%UserProfile%\.wslconfig`** (this controls the WSL2 VM: memory, swap, processors, GUI, networking knobs). Run `wsl --shutdown` after changes.
+**WSL2:** install the same template **automatically** from this file: from Windows PowerShell, repo root: **`.\scripts\wsl2\Install-WslHostConfig.ps1`** (writes only if `.wslconfig` is missing; **`-Force`** backs up the existing file and replaces). Or copy the **example block below** manually into **`%UserProfile%\.wslconfig`**. In both cases, run **`wsl --shutdown`** after changes (this controls the WSL2 VM: memory, swap, processors, GUI, networking knobs).
 
 **If you are not using WSL2:** there is **no** `.wslconfig`. Tune RAM, CPU, and power the usual way: firmware, hypervisor settings for VMs, or OS power profiles — not this repo’s WSL templates.
 
@@ -55,6 +55,8 @@ These exist **only** for the Windows + WSL2 + WSLg combo. They are **not** the p
 **[`../../scripts/wsl2/launch-kde-gui-wslg.sh`](../../scripts/wsl2/launch-kde-gui-wslg.sh)** — Plasma (WSLg, optional **VcXsrv** `WSLG_GUI_BACKEND=vcxsrv`); first argument: **`menu`**, **`hints`**, **`plasma`**, **`launch`**, **`smoke`**, **`verify`**, **`install-check`**, **`sddm-note`**, **`wslg-config`**, **`vcxsrv-hints`**. TTY + **`KINOITE_INTERACTIVE=1`** (no first arg) opens a menu. Defaults to **X11 (`:0`, `xcb`)**.
 
 **[`../../scripts/wsl2/Show-Kinoite-Gui.ps1`](../../scripts/wsl2/Show-Kinoite-Gui.ps1)** — **`wsl.exe`** from the desktop session; **`-Focus`**, **`-Action` Menu\|Focus\|Launch**; `KINOITE_WSL_BASH_INIT` for env passed into WSL. Does not call other **`.ps1`**.
+
+**[`../../scripts/wsl2/Install-WslHostConfig.ps1`](../../scripts/wsl2/Install-WslHostConfig.ps1)** — **`%UserProfile%\.wslconfig`** from the fenced `ini` in this file (AIO step **`WslConfig`**); **`-WhatIf`**, **`-Force`**.
 
 **[`../../scripts/wsl2/Kinoite-WindowsPlasmaLogon.ps1`](../../scripts/wsl2/Kinoite-WindowsPlasmaLogon.ps1)** — Task Scheduler **`-Register`** / **`-RunSession`**; optional **`-StopExplorer`** (admin; risky). **Native KDE cannot replace the Windows shell**; this only starts the WSL GUI session after logon.
 

@@ -13,7 +13,8 @@ WSL2 narrative and troubleshooting: **[config/wsl2/README.md](../config/wsl2/REA
 | **Import / WSL bootstrap** | [import-kinoite-rootfs-to-wsl.ps1](import-kinoite-rootfs-to-wsl.ps1) | Podman → rootfs tar; optional `wsl --import`. **`-Interactive`**; env: `KINOITE_OCI_IMAGE`, `KINOITE_WSL_DO_IMPORT`, `KINOITE_WSL_INSTALL_DIR` |
 | | [bootstrap-kinoite-wsl2.sh](bootstrap-kinoite-wsl2.sh) | Inside distro: Flathub, optional WSLg `profile.d`, points at apply. `menu` / `KINOITE_TUI_CHOICE` / `KINOITE_INTERACTIVE` |
 | **Provision (Linux)** | [apply-atomic-provision.sh](apply-atomic-provision.sh) | Main declarative apply; helpers + **`menu`**. `KINOITE_INTERACTIVE=1` → menu. [provision.d](provision.d/) hooks. |
-| **WSL2 / WSLg** | [wsl2/launch-kde-gui-wslg.sh](wsl2/launch-kde-gui-wslg.sh) | Plasma: WSLg, **VcXsrv** (`WSLG_GUI_BACKEND=vcxsrv`), `install-check`, `sddm-note`, TUI `menu` |
+| **WSL2 / WSLg** | [wsl2/Install-WslHostConfig.ps1](wsl2/Install-WslHostConfig.ps1) | Windows host: writes `%UserProfile%\.wslconfig` from [config/wsl2/README.md](../config/wsl2/README.md) fenced `ini` (default if missing; **`-Force`** + backup). AIO: **`WslConfig`** / **`wslconfig`** |
+| | [wsl2/launch-kde-gui-wslg.sh](wsl2/launch-kde-gui-wslg.sh) | Plasma: WSLg, **VcXsrv** (`WSLG_GUI_BACKEND=vcxsrv`), `install-check`, `sddm-note`, TUI `menu` |
 | | [wsl2/Show-Kinoite-Gui.ps1](wsl2/Show-Kinoite-Gui.ps1) | `wsl.exe` + launch script only. **`-Focus`**, **`-Action` Menu\|Focus\|Launch**, `KINOITE_WSL_BASH_INIT` |
 | | [wsl2/Kinoite-WindowsPlasmaLogon.ps1](wsl2/Kinoite-WindowsPlasmaLogon.ps1) | Task Scheduler: **`-Register`**, **`-RunSession`**, **`-StopExplorer`** (optional, dangerous) |
 | **Windows inventory** | [windows-inventory.ps1](windows-inventory.ps1) | **`-Interactive`** or **`KINOITE_INVENTORY_MODE`**; subsets **`-Winget`**, **`-CimWsl`**, **`-StartMenu`**, **`-Dism`**. UAC: child PS for DISM. |
