@@ -24,7 +24,8 @@ param(
   [switch] $Dism,
   [string] $DismOutputPath = "",
   [string] $StartMenuOutFile = "",
-  [switch] $DismPassThru
+  [switch] $DismPassThru,
+  [switch] $Interactive
 )
 
 $ErrorActionPreference = "Stop"
@@ -34,8 +35,43 @@ if ($machinePath -or $userPath) {
   $env:Path = @($env:Path, $machinePath, $userPath) -join ";" 2>$null
 }
 
-$doAll = -not ($Winget -or $CimWsl -or $StartMenu -or $Dism)
-if ($doAll) { $Winget = $CimWsl = $StartMenu = $Dism = $true }
+# TUI: same as passing -Winget / -CimWsl / -StartMenu / -Dism. Env: KINOITE_INVENTORY_MODE (all, winget, cim, start, dism, or comma e.g. winget,dism)
+$anyFlag = $Winget -or $CimWsl -or $StartMenu -or $Dism
+if ($Interactive -and -not $anyFlag) {
+  Write-Host "=== Kinoite windows-inventory (menu) ===" -ForegroundColor Cyan
+  Write-Host "  0) All (default)  1) -Winget  2) -CimWsl  3) -StartMenu  4) -Dism  5) 1+2+3+4 in order (same as 0 for output set)"
+  $c = Read-Host "Choice (0-5, default 0)"
+  if ([string]::IsNullOrWhiteSpace($c)) { $c = "0" }
+  switch -Regex $c) {
+    '^\s*1\s*$' { $Winget = $true }
+    '^\s*2\s*$' { $CimWsl = $true }
+    '^\s*3\s*$' { $StartMenu = $true }
+    '^\s*4\s*$' { $Dism = $true }
+    '^\s*0\s*$|^\s*5\s*$' { $Winget = $CimWsl = $StartMenu = $Dism = $true }
+    default { $Winget = $CimWsl = $StartMenu = $Dism = $true }
+  }
+} elseif ($env:KINOITE_INVENTORY_MODE) {
+  $Winget = $CimWsl = $StartMenu = $Dism = $false
+  $km = $env:KINOITE_INVENTORY_MODE.ToLowerInvariant().Trim()
+  if ($km -in @('0', 'all', 'full', '')) { $Winget = $CimWsl = $StartMenu = $Dism = $true }
+  else {
+    foreach ($tok in ($km -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ })) {
+      switch -Regex $tok) {
+        '^winget$' { $Winget = $true }
+        '^cim|cimwsl|wsl$' { $CimWsl = $true }
+        '^start(menu)?$' { $StartMenu = $true }
+        '^dism$' { $Dism = $true }
+        default { Write-Warning "Unknown KINOITE_INVENTORY_MODE token: $tok" }
+      }
+    }
+    if (-not ($Winget -or $CimWsl -or $StartMenu -or $Dism)) {
+      $Winget = $CimWsl = $StartMenu = $Dism = $true
+    }
+  }
+} else {
+  $doAll = -not $anyFlag
+  if ($doAll) { $Winget = $CimWsl = $StartMenu = $Dism = $true }
+}
 
 $null = New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 
@@ -210,6 +246,7 @@ Set-Content -LiteralPath $path -Value $out -Encoding utf8
 exit $dismExit
 '@
   $raw = $raw.Replace("B64_DISM", $b64Dism).Replace("B64_PATH", $b64Path)
+  # Child .ps1 is only for UAC elevation of dism (AGENTS.md: capture output; not repo script orchestration).
   $child = Join-Path $env:TEMP "kinoite-dism-$(New-Guid).ps1"
   Set-Content -LiteralPath $child -Value $raw -Encoding utf8
   $exe = Get-LauncherExe

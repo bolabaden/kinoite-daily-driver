@@ -1,8 +1,18 @@
+#Requires -Version 5.1
 # Scans repo *.md for relative file links; reports targets that do not exist.
 # Excludes: .git, .history, .cursor, .firecrawl (editor / scratch trees).
+# -Interactive: choose scan root. Env: KINOITE_MD_LINK_ROOT
 param(
-  [string]$Root = (Split-Path -Parent $PSScriptRoot)
+  [string]$Root = $(if ($env:KINOITE_MD_LINK_ROOT) { $env:KINOITE_MD_LINK_ROOT } else { (Split-Path -Parent $PSScriptRoot) }),
+  [switch]$Interactive
 )
+if ($Interactive) {
+  $def = (Split-Path -Parent $PSScriptRoot)
+  Write-Host "Default scan root: $def"
+  $r = Read-Host "Path to scan (Enter for default)"
+  if ($r) { $Root = $r }
+  if (-not (Test-Path -LiteralPath $Root)) { throw "Not found: $Root" }
+}
 $skipSegment = { param($p)
   if ($p -match '(\\|/)wiki(\\|/)' -or $p -match '(\\|/)wiki-source(\\|/)') { return $true }
   $parts = $p -split [regex]::Escape([IO.Path]::DirectorySeparatorChar)

@@ -34,7 +34,7 @@ __pycache__/
 
 # Agent / web scratch (do not commit)
 .firecrawl/
-.cursor/hooks/state/
+.cursor/
 research/
 
 # Provisional host secrets + machine-local NM profiles (never commit)

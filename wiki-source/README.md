@@ -14,12 +14,13 @@ Open `http://127.0.0.1:4000`.
 
 ## Regenerate mirrored docs from the main repo
 
-From **wiki-source/** (or let the root `scripts/Sync-WikiSubmodule.ps1` run this for you):
+From the **Kinoite repo root**:
 
 ```powershell
-.\sync-docs-from-parent.ps1 -RepoRoot G:\path\to\Kinoite
+.\scripts\Kinoite-Wiki.ps1 -Action GenerateDocs
+.\scripts\Kinoite-Wiki.ps1 -Action Sync
 ```
 
 ## GitHub Wiki bootstrap
 
-The wiki remote does not exist until **one page** is created on GitHub: open [the wiki](https://github.com/bolabaden/kinoite-daily-driver/wiki), click **Create the first page**, save, then run `git submodule update --init` from the main repo and `.\scripts\Sync-WikiSubmodule.ps1`.
+The wiki remote does not exist until **one page** is created on GitHub: open [the wiki](https://github.com/bolabaden/kinoite-daily-driver/wiki), click **Create the first page**, save, then run `git submodule update --init` from the main repo and `.\scripts\Kinoite-Wiki.ps1 -Action Sync`.

@@ -4,6 +4,6 @@ Documentation for **[bolabaden/kinoite-daily-driver](https://github.com/bolabade
 
 - **Repository** — [github.com/bolabaden/kinoite-daily-driver](https://github.com/bolabaden/kinoite-daily-driver)
 - **Jekyll sources** — live in this wiki clone (`index.md`, `_docs/`, `_config.yml`). Run `bundle install` then `bundle exec jekyll serve` locally.
-- **Sync from main repo** — in the main checkout run `.\scripts\Sync-WikiSubmodule.ps1` to refresh mirrored pages and push.
+- **Sync from main repo** — in the main checkout run `.\scripts\Kinoite-Wiki.ps1 -Action Sync` to refresh mirrored pages and push.
 
 After enabling **GitHub Pages** on this wiki repository, the built site URL will appear under repository **Settings → Pages**.

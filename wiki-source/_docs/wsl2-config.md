@@ -59,9 +59,11 @@ These exist **only** for the Windows + WSL2 + WSLg combo. They are **not** the p
 
 **WSLg and “where did my window go?”** Linux GUIs often show up in a **Remote Desktop** (`msrdc`) window whose title may mention your distro (e.g. `… (Kinoite-WS2)`). It can sit minimized or behind other windows — try **Alt+Tab**, or from Windows run **`scripts/wsl2/Show-Kinoite-Gui.ps1 -Focus`** to bring that window forward.
 
-**[`../../scripts/wsl2/launch-kde-gui-wslg.sh`](../../scripts/wsl2/launch-kde-gui-wslg.sh)** — Plasma on WSLg; first argument optional: **`hints`**, **`plasma`** (shell only), **`launch`** (default), **`smoke`** (`kdialog` test), **`verify`** (DISPLAY/WAYLAND + `plasmashell`, non-root; exit 0/1). Defaults to **X11 (`:0`, `xcb`)**.
+**[`../../scripts/wsl2/launch-kde-gui-wslg.sh`](../../scripts/wsl2/launch-kde-gui-wslg.sh)** — Plasma (WSLg, optional **VcXsrv** `WSLG_GUI_BACKEND=vcxsrv`); first argument: **`menu`**, **`hints`**, **`plasma`**, **`launch`**, **`smoke`**, **`verify`**, **`install-check`**, **`sddm-note`**, **`wslg-config`**, **`vcxsrv-hints`**. TTY + **`KINOITE_INTERACTIVE=1`** (no first arg) opens a menu. Defaults to **X11 (`:0`, `xcb`)**.
 
-**[`../../scripts/wsl2/Show-Kinoite-Gui.ps1`](../../scripts/wsl2/Show-Kinoite-Gui.ps1)** — **`Start-Process`**’es `wsl.exe` from the desktop session; **`-Focus`** foregrounds the **msrdc** window instead of launching.
+**[`../../scripts/wsl2/Show-Kinoite-Gui.ps1`](../../scripts/wsl2/Show-Kinoite-Gui.ps1)** — **`wsl.exe`** from the desktop session; **`-Focus`**, **`-Action` Menu\|Focus\|Launch**; `KINOITE_WSL_BASH_INIT` for env passed into WSL. Does not call other **`.ps1`**.
+
+**[`../../scripts/wsl2/Kinoite-WindowsPlasmaLogon.ps1`](../../scripts/wsl2/Kinoite-WindowsPlasmaLogon.ps1)** — Task Scheduler **`-Register`** / **`-RunSession`**; optional **`-StopExplorer`** (admin; risky). **Native KDE cannot replace the Windows shell**; this only starts the WSL GUI session after logon.
 
 If **`[interop] appendWindowsPath=false`** is set in `wsl.conf`, **`cmd.exe` is not on PATH inside WSL** — that is intentional, not a sign that GUI failed.
 

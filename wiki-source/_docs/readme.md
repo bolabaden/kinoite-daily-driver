@@ -28,6 +28,8 @@ title: README - workspace hub
 
 **Repo checks:** [scripts/check-md-links.ps1](scripts/check-md-links.ps1) (*Run Task* in [.vscode/tasks.json](.vscode/tasks.json)). **CI:** [.github/workflows/markdown-link-check.yml](.github/workflows/markdown-link-check.yml).
 
+**GitHub Wiki + Jekyll:** the [wiki](https://github.com/bolabaden/kinoite-daily-driver/wiki) is a **git submodule** at [`wiki/`](wiki/) (see [`.gitmodules`](.gitmodules)). Sources you edit in this repo live in **[`wiki-source/`](wiki-source/)** (Minima theme, mirrored pages under `_docs/`). After changing docs, run **`.\scripts\Kinoite-Wiki.ps1 -Action Sync`** (and `git -C wiki push`, then commit the bumped submodule in the parent). New clone: **`git submodule update --init --recursive`**. First-time wiki remote: create a page on GitHub, then **`.\scripts\Kinoite-Wiki.ps1 -Action Init`** or **`git submodule add https://github.com/bolabaden/kinoite-daily-driver.wiki.git wiki`**.
+
 ## Quick links
 
 | Doc | Purpose |

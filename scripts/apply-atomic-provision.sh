@@ -15,6 +15,7 @@ REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 _subcmd_usage() {
   cat <<'EOF'
 Optional first-argument subcommands (merged helpers):
+  menu|tui                 interactive pick (not in CI; same as KINOITE_INTERACTIVE=1 with no subcmd)
   kde-night-light          KDE Night Color + schedule (desktop user; not sudo)
   appimage-check           FUSE / fuse3 hints for AppImages
   appimage-run <AppImage> [-- <app args...>]   extract-and-run (no FUSE mount)
@@ -23,7 +24,28 @@ Optional first-argument subcommands (merged helpers):
   help                     List subcommands
 
 No arguments: normal Flatpak + rpm-ostree provision pass.
+  KINOITE_INTERACTIVE=1 (and TTY, not CI) shows menu before main provision.
 EOF
+}
+
+_cmd_menu() {
+  if [ -n "${CI:-}" ] || [ ! -t 0 ]; then
+    echo "apply-atomic-provision: menu requires a TTY; set subcommand or CI=0" >&2
+    return 1
+  fi
+  echo "=== apply-atomic-provision (menu) ==="
+  echo "1) main provision  2) kde-night-light  3) appimage-check  4) appimage-run (needs path)  5) install-service  6) provision-locale  7) help"
+  read -r -p "Choice [1-7]: " n
+  case "$n" in
+  1) exec env KINOITE_INTERACTIVE=0 "$0" ;;
+  2) exec env KINOITE_INTERACTIVE=0 "$0" kde-night-light ;;
+  3) exec env KINOITE_INTERACTIVE=0 "$0" appimage-check ;;
+  4) read -r -p "AppImage path: " ap; exec env KINOITE_INTERACTIVE=0 "$0" appimage-run "$ap" ;;
+  5) read -r -p "User for install-service (optional): " u; exec env KINOITE_INTERACTIVE=0 "$0" install-service ${u:+"$u"} ;;
+  6) exec env KINOITE_INTERACTIVE=0 "$0" provision-locale ;;
+  7) _subcmd_usage; exit 0 ;;
+  *) exec env KINOITE_INTERACTIVE=0 "$0" ;;
+  esac
 }
 
 _cmd_kde_night_light() {
@@ -154,6 +176,11 @@ _cmd_provision_locale() {
 }
 
 case "${1:-}" in
+  menu|tui|interactive)
+    shift || true
+    _cmd_menu
+    exit $?
+    ;;
   kde-night-light | night-light)
     shift || true
     _cmd_kde_night_light "$@"
@@ -182,6 +209,9 @@ case "${1:-}" in
     exit 0
     ;;
   "")
+    if [ "${KINOITE_INTERACTIVE:-0}" = 1 ] && [ -z "${CI:-}" ] && [ -t 0 ]; then
+      exec "$0" menu
+    fi
     ;;
   *)
     echo "apply-atomic-provision: unknown command: $1" >&2
@@ -324,7 +354,7 @@ if command -v systemctl &>/dev/null; then
   fi
 fi
 
-# --- Optional provision.d hooks (executable NN-name.sh only; see scripts/README.md#post-provision-hooks) ---
+# --- Optional provision.d hooks (documented extension point: runs sibling NN-*.sh; not a call into other top-level repo scripts) ---
 if [ "${KINOITE_SKIP_PROVISION_HOOKS:-0}" != 1 ]; then
   HOOK_DIR="$SCRIPT_DIR/provision.d"
   if [ -d "$HOOK_DIR" ]; then

@@ -26,11 +26,12 @@
   Optional: KINOITE_WORKSPACE_ROOT (see config/README.md — workspace + locale) for default TarPath.
 #>
 param(
-  [string]$Image = "quay.io/fedora-ostree-desktops/kinoite:43",
+  [string]$Image = $(if ($env:KINOITE_OCI_IMAGE) { $env:KINOITE_OCI_IMAGE } else { "quay.io/fedora-ostree-desktops/kinoite:43" }),
   [string]$TarPath = "",
-  [string]$DistroName = "Kinoite-WS2",
+  [string]$DistroName = $(if ($env:KINOITE_WSL_DISTRO) { $env:KINOITE_WSL_DISTRO } else { "Kinoite-WS2" }),
   [string]$InstallLocation = $env:KINOITE_WSL_INSTALL_DIR,
-  [switch]$DoImport
+  [switch]$DoImport = ($env:KINOITE_WSL_DO_IMPORT -eq "1"),
+  [switch]$Interactive
 )
 
 $ErrorActionPreference = "Stop"
@@ -42,6 +43,26 @@ $repoRoot = if (-not [string]::IsNullOrWhiteSpace($env:KINOITE_WORKSPACE_ROOT)) 
 }
 if ([string]::IsNullOrWhiteSpace($TarPath)) {
   $TarPath = Join-Path $repoRoot "scratch\kinoite-wsl-rootfs.tar"
+}
+if ($Interactive) {
+  Write-Host "=== Kinoite: import rootfs (TUI) ===" -ForegroundColor Cyan
+  $i = Read-Host "OCI image [$Image]"
+  if ($i) { $Image = $i }
+  $t = Read-Host "Tar out path [$TarPath]"
+  if ($t) { $TarPath = $t }
+  $d = Read-Host "Distro name [$DistroName]"
+  if ($d) { $DistroName = $d }
+  $di = Read-Host "Run wsl --import after export? (y/N)"
+  if ($di -match '^[yY]') {
+    $DoImport = $true
+    if ([string]::IsNullOrWhiteSpace($InstallLocation)) {
+      $il = Read-Host "Install location (NTFS path, required)"
+      $InstallLocation = $il
+    } else {
+      $il2 = Read-Host "Install location [$InstallLocation]"
+      if ($il2) { $InstallLocation = $il2 }
+    }
+  }
 }
 
 if ($DoImport) {

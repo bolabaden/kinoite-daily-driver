@@ -3,7 +3,7 @@ layout: page
 title: Documentation hub
 ---
 
-Welcome to the **Kinoite daily driver** documentation site. Pages under **Docs** are mirrored from the main repository and regenerated when you run `scripts/Sync-WikiSubmodule.ps1`.
+Welcome to the **Kinoite daily driver** documentation site. Pages under **Docs** are mirrored from the main repository and regenerated when you run `scripts/Kinoite-Wiki.ps1` (`-Action Sync` or `GenerateDocs`).
 
 | Guide | Description |
 |------|-------------|

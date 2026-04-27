@@ -40,5 +40,4 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - vendor
-  - sync-docs-from-parent.ps1
   - README.md
