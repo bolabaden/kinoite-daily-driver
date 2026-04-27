@@ -1,18 +1,24 @@
 # Scripts index
 
+**All-in-one menu / chain:** [Kinoite-AIO.ps1](Kinoite-AIO.ps1) (Windows PowerShell) and [kinoite-aio.sh](kinoite-aio.sh) (WSL / Git Bash / native Linux) — same ideas: `-Run Step1,Step2`, env `KINOITE_AIO_RUN`, aliases per [COVERAGE.md](COVERAGE.md).
+
+**`uv` entry (repo root, [pyproject.toml](../pyproject.toml)):** `uv run kinoite-bootstrap-init` — thin wrapper that calls `Kinoite-AIO.ps1` on Windows or `kinoite-aio.sh` elsewhere; extra args pass through. Isolated install: `uvx --refresh --from git+https://github.com/bolabaden/kinoite-daily-driver kinoite-bootstrap-init` — you **must** set `KINOITE_WORKSPACE_ROOT` to a full clone of this repository (so `scripts/` and the AIO scripts exist).
+
+**Doc → automation table:** [COVERAGE.md](COVERAGE.md) (env names, TUI, CI).
+
 WSL2 narrative and troubleshooting: **[config/wsl2/README.md](../config/wsl2/README.md)**. **Install path + topic hub:** **[README.md](../README.md#getting-started-full-install-path)** and **[#topic-docs-and-provisioning-plane](../README.md#topic-docs-and-provisioning-plane)**.
 
 | Group | Script | Role |
 |-------|--------|------|
-| **Import / WSL bootstrap** | [import-kinoite-rootfs-to-wsl.ps1](import-kinoite-rootfs-to-wsl.ps1) | Podman → rootfs tar; optional `wsl --import` |
-| | [bootstrap-kinoite-wsl2.sh](bootstrap-kinoite-wsl2.sh) | Inside distro: Flathub, optional WSLg `profile.d`, points at apply |
-| **Provision (Linux)** | [apply-atomic-provision.sh](apply-atomic-provision.sh) | Main declarative apply (`sudo` from repo root). First-arg helpers: **`install-service`**, **`provision-locale`** (root), **`kde-night-light`** (desktop user, not root), **`appimage-check`** / **`appimage-run`**, **`help`**. [provision.d](provision.d/) hooks unchanged. |
-| **WSL2 / WSLg** | [wsl2/launch-kde-gui-wslg.sh](wsl2/launch-kde-gui-wslg.sh) | Plasma on WSLg; subcommands: `hints`, `plasma`, `launch`, `smoke`, **`verify`** (DISPLAY/WAYLAND + `plasmashell`; see [kinoite-wsl2](../docs/kinoite-wsl2.md)) |
-| | [wsl2/Show-Kinoite-Gui.ps1](wsl2/Show-Kinoite-Gui.ps1) | Start GUI from Windows; **`-Focus`** brings msrdc window forward |
-| **Windows inventory** | [windows-inventory.ps1](windows-inventory.ps1) | All-in-one: **winget** export, CIM+WSL inventory, Start Menu list, `dism /Get-Features` (default: run all; use **`-Winget`**, **`-CimWsl`**, **`-StartMenu`**, or **`-Dism`** for subsets; **`-DismPassThru`**; **`-OutDir`**) |
-| **CI / docs** | [check-md-links.ps1](check-md-links.ps1) | Broken relative links in `*.md` — **exit 1** if any missing |
-| **Wiki / Jekyll** | [Init-WikiSubmodule.ps1](Init-WikiSubmodule.ps1) | Poll until `*.wiki.git` exists, then **`git submodule add`** `wiki/` |
-| | [Sync-WikiSubmodule.ps1](Sync-WikiSubmodule.ps1) | Refresh `_docs/` from repo, **robocopy** `wiki-source/` → `wiki/`, commit (optional **`-Push`**) |
+| **Import / WSL bootstrap** | [import-kinoite-rootfs-to-wsl.ps1](import-kinoite-rootfs-to-wsl.ps1) | Podman → rootfs tar; optional `wsl --import`. **`-Interactive`**; env: `KINOITE_OCI_IMAGE`, `KINOITE_WSL_DO_IMPORT`, `KINOITE_WSL_INSTALL_DIR` |
+| | [bootstrap-kinoite-wsl2.sh](bootstrap-kinoite-wsl2.sh) | Inside distro: Flathub, optional WSLg `profile.d`, points at apply. `menu` / `KINOITE_TUI_CHOICE` / `KINOITE_INTERACTIVE` |
+| **Provision (Linux)** | [apply-atomic-provision.sh](apply-atomic-provision.sh) | Main declarative apply; helpers + **`menu`**. `KINOITE_INTERACTIVE=1` → menu. [provision.d](provision.d/) hooks. |
+| **WSL2 / WSLg** | [wsl2/launch-kde-gui-wslg.sh](wsl2/launch-kde-gui-wslg.sh) | Plasma: WSLg, **VcXsrv** (`WSLG_GUI_BACKEND=vcxsrv`), `install-check`, `sddm-note`, TUI `menu` |
+| | [wsl2/Show-Kinoite-Gui.ps1](wsl2/Show-Kinoite-Gui.ps1) | `wsl.exe` + launch script only. **`-Focus`**, **`-Action` Menu\|Focus\|Launch**, `KINOITE_WSL_BASH_INIT` |
+| | [wsl2/Kinoite-WindowsPlasmaLogon.ps1](wsl2/Kinoite-WindowsPlasmaLogon.ps1) | Task Scheduler: **`-Register`**, **`-RunSession`**, **`-StopExplorer`** (optional, dangerous) |
+| **Windows inventory** | [windows-inventory.ps1](windows-inventory.ps1) | **`-Interactive`** or **`KINOITE_INVENTORY_MODE`**; subsets **`-Winget`**, **`-CimWsl`**, **`-StartMenu`**, **`-Dism`**. UAC: child PS for DISM. |
+| **CI / docs** | [check-md-links.ps1](check-md-links.ps1) | Broken relative links. **`-Interactive`**, `KINOITE_MD_LINK_ROOT` (PowerShell 5.1+ in GitHub Actions) |
+| **Wiki / Jekyll** | [Kinoite-Wiki.ps1](Kinoite-Wiki.ps1) | **`-Action` Init, GenerateDocs, Sync**; **`-Push`**; no chained `.ps1` |
 
 **Default user after `wsl --import`:** run as **root** once: `useradd -m -s /bin/bash -G wheel YOURNAME` → `passwd YOURNAME` → set `[user] default=YOURNAME` in `/etc/wsl.conf` → `wsl --shutdown`. See [docs/kinoite-wsl2.md](../docs/kinoite-wsl2.md#runtime-completion-bar-kde-and-wslg).
 

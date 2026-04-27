@@ -27,6 +27,11 @@ Desktop.ini
 .gitleaks-cache/
 .history/
 
+# Python / uv (kinoite-bootstrap-init)
+.venv/
+__pycache__/
+*.py[cod]
+
 # Agent / web scratch (do not commit)
 .firecrawl/
 .cursor/hooks/state/
