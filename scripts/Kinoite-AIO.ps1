@@ -29,6 +29,7 @@ $WslRoot = Get-WslPath -Win $RepoRoot
 function Get-StepList {
   @(
     @{ Id = "Import"       ; T = "Windows: import rootfs (podman to tar, optional wsl --import)"; Admin = $false }
+    @{ Id = "WslConfig"    ; T = "Windows: install %UserProfile%\.wslconfig from config/wsl2/README template"; Admin = $false }
     @{ Id = "ShowGui"      ; T = "Windows: start Plasma in WSL (Show-Kinoite-Gui -Action Launch)"; Admin = $false }
     @{ Id = "FocusGui"     ; T = "Windows: focus WSLg (Show-Kinoite-Gui -Action Focus)"; Admin = $false }
     @{ Id = "LogonReg"     ; T = "Windows: register logon task (Kinoite-WindowsPlasmaLogon -Register, admin)"; Admin = $true }
@@ -54,9 +55,11 @@ function Invoke-Step {
   $wki = Join-Path $Here "Kinoite-Wiki.ps1"
   $wiv = Join-Path $Here "windows-inventory.ps1"
   $md  = Join-Path $Here "check-md-links.ps1"
+  $wslHostCfg = Join-Path $Here "wsl2\Install-WslHostConfig.ps1"
   Write-Host "=== AIO: $Name ===" -ForegroundColor Cyan
   switch ($Name) {
   "Import"   { & $imp; break }
+  "WslConfig" { & $wslHostCfg -RepoRoot $RepoRoot; break }
   "ShowGui"  { & $sh -Distro $Distro -Action Launch; break }
   "FocusGui" { & $sh -Distro $Distro -Action Focus; break }
   "LogonReg" { if (-not (Test-IsAdmin)) { Write-Error "Run elevated for LogonReg."; break }; & $log -Register -Distro $Distro -WorkspaceRoot $RepoRoot; break }
@@ -102,6 +105,7 @@ function Show-Banner {
 $steps = @((Get-StepList))
 $map = @{
   import = "Import" ; rootfs = "Import"
+  wslconfig = "WslConfig" ; wslhost = "WslConfig" ; hostwsl = "WslConfig" ; dotwslconfig = "WslConfig"
   showgui = "ShowGui" ; launch = "ShowGui" ; plasma = "ShowGui" ; gui = "ShowGui"
   focus = "FocusGui" ; focusgui = "FocusGui"
   logonreg = "LogonReg" ; logonregister = "LogonReg" ; plasmalogon = "LogonReg"
@@ -138,7 +142,7 @@ Write-Host ""
 $i = 0
 foreach ($s in $steps) { $i++; Write-Host "  $i) $($s.Id) - $($s.T)" }
 Write-Host "  0) Exit`n  R) run multiple (comma list, e.g. MdLinks,Inv)  H) help"
-$choice = Read-Host "Choice (empty = wiki menu [6])"
+$choice = Read-Host "Choice (empty = wiki menu [7])"
 $choice = $choice.Trim()
 if ([string]::IsNullOrWhiteSpace($choice)) { Invoke-Step -Name "WikiMenu"; exit 0 }
 if ($choice -eq "0" -or $choice -ieq "q") { exit 0 }
@@ -149,9 +153,9 @@ Run non-interactive:
   .\Kinoite-AIO.ps1 -Run MdLinks,Inv,WikiGen
   `$env:KINOITE_AIO_RUN='Bootstrap,Apply'   # WSL: order matters; Apply needs sudo
 
-Steps: Import, ShowGui, FocusGui, LogonReg, LogonRun, WikiMenu, WikiSync, Inv, MdLinks, Safe, Bootstrap, Apply
+Steps: Import, WslConfig, ShowGui, FocusGui, LogonReg, LogonRun, WikiMenu, WikiSync, Inv, MdLinks, Safe, Bootstrap, Apply
   WikiInit / WikiGen: use -Run wikiinit  or  wikigen
-Aliases: safe, devcheck, mdlinks, inv, wikisync, plasma, import, apply, …
+Aliases: wslconfig, wslhost, safe, devcheck, mdlinks, inv, wikisync, plasma, import, apply, …
 "@
   exit 0
 }
