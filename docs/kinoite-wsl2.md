@@ -77,6 +77,14 @@ This workspace documents the same path in **[Kinoite guest VM (Phase B or C)](#k
 - Treat **[Fedora Kinoite](https://docs.fedoraproject.org/en-US/fedora-kinoite/)**, **[rpm-ostree](https://coreos.github.io/rpm-ostree/)**, **[ostree](https://ostreedev.github.io/ostree/)**, and **[WSL](https://learn.microsoft.com/en-us/windows/wsl/)** docs as the sources of truth when versions or behavior change.
 - **Container-export → `wsl --import`** is convenient for Phase A, but it is **not** the same boot path as an ISO-installed atomic host. If upstream ever documents a **full OSTree-in-WSL** flow, re-validate this guide against release notes before relying on it.
 
+## `layers.list` vs `/etc/rpm-ostree/origin.d` and `rpm-ostree ex rebuild` (this repo)
+
+**What we use:** [`config/rpm-ostree/layers.list`](../config/rpm-ostree/layers.list) — one package per line — applied by [`scripts/apply-atomic-provision.sh`](../scripts/apply-atomic-provision.sh) with `rpm-ostree install`. It is easy to review in git and matches the “versioned data + thin glue” model in [config/README.md](../config/README.md).
+
+**What exists upstream:** `rpm-ostree` can also consume **drop-in origin** fragments under **`/etc/rpm-ostree/origin.d/`**, and **experimental** workflows such as **`rpm-ostree ex rebuild`** rebuild a bootable tree from the current deployment plus changes. Those are appropriate when you want **compose-style** workflows or tighter alignment with image-based Atomic releases, but they add **surface area** and **version-specific** behavior.
+
+**Decision for this workspace:** the documented path **standardizes on `layers.list`**. We do **not** require `origin.d` or `ex rebuild` for the WSL2 lab or the apply-script flow. If you adopt either, treat it as a **deliberate migration** (validate on a **VM** or bare metal, keep the same package *intent*, and update your own notes). See the [rpm-ostree documentation](https://coreos.github.io/rpm-ostree/) for current syntax and support status of experimental commands.
+
 ## Repo scope
 
 This repository is **self-contained documentation and scripts** for provisioning Fedora Kinoite (WSL2 and bare metal). **Markdown completeness** does not prove a working desktop; validate with the steps in [runtime completion bar](#runtime-completion-bar-kde-and-wslg) and your own notes (see [README.md — Where to start](../README.md#where-to-start)).
