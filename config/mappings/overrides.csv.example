@@ -1,0 +1,2 @@
+source_id,disposition,flatpak_id,rpm_packages,vendor_install_kind,requires_credentials,native_replacement_summary,toolbox_notes
+# Copy to config/mappings/overrides.csv (gitignored) to override rows from sync_imports_to_provision.py defaults.

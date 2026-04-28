@@ -72,7 +72,7 @@ wsl_bootstrap_apply() {
 
 BANNER() {
   echo ""
-  echo "  Kinoite AIO (bash) - dispatches to repo scripts. See scripts/COVERAGE.md."
+  echo "  Kinoite AIO (bash) - dispatches to repo scripts. See scripts/COVERAGE.md. MapImports: sync Windows winget → host-local flatpak list."
   echo "  Windows: prefer PowerShell Kinoite-AIO.ps1 (used by: uv run kinoite-bootstrap-init on Windows)"
   echo ""
 }
@@ -149,6 +149,33 @@ step_Safe() {
 step_Bootstrap() { wsl_bootstrap_apply boot; }
 step_Apply()     { wsl_bootstrap_apply apply; }
 
+step_MapImports() {
+  if command -v python3 &>/dev/null; then
+    python3 "$REPO/scripts/sync_imports_to_provision.py" --repo "$REPO" "$@"
+    return $?
+  fi
+  if command -v python &>/dev/null; then
+    python "$REPO/scripts/sync_imports_to_provision.py" --repo "$REPO" "$@"
+    return $?
+  fi
+  echo "MapImports: install Python 3 and run: python3 $REPO/scripts/sync_imports_to_provision.py --repo $REPO" >&2
+  return 1
+}
+
+step_MigrateAppConfigs() {
+  chmod +x "$REPO/scripts/migrate-app-config.sh" 2>/dev/null || true
+  if _in_wsl || [[ "$(uname -s 2>/dev/null)" == Linux ]]; then
+    env KINOITE_REPO_ROOT="$REPO" bash "$REPO/scripts/migrate-app-config.sh" run
+    return $?
+  fi
+  if _win_git_bash && command -v wsl.exe &>/dev/null; then
+    wsl.exe -d "$DISTRO" -e bash -lc "set -e; cd '$WSL_ROOT' && chmod +x scripts/migrate-app-config.sh && env KINOITE_REPO_ROOT='$WSL_ROOT' bash ./scripts/migrate-app-config.sh run"
+    return $?
+  fi
+  echo "MigrateAppConfigs: run inside WSL or Linux with repo at $REPO" >&2
+  return 1
+}
+
 # Single invoke by canonical id
 invoke() {
   local n=$1
@@ -166,8 +193,10 @@ invoke() {
   Inv)          step_Inv ;;
   MdLinks)      step_MdLinks ;;
   Safe)         step_Safe ;;
+  MapImports)   step_MapImports ;;
   Bootstrap)    step_Bootstrap ;;
   Apply)        step_Apply ;;
+  MigrateAppConfigs) step_MigrateAppConfigs ;;
   *)            echo "Unknown: $n" >&2; return 1 ;;
   esac
 }
@@ -189,9 +218,11 @@ resolve() {
   inv|inventory|host) echo Inv ;;
   safe|devcheck) echo Safe ;;
   md|links|mdlinks) echo MdLinks ;;
+  mapimports|syncprovision) echo MapImports ;;
   bootstrap|boot) echo Bootstrap ;;
   apply|provision) echo Apply ;;
-  *) for id in Import WslConfig ShowGui FocusGui LogonReg LogonRun WikiMenu WikiSync WikiInit WikiGen Inv MdLinks Safe Bootstrap Apply; do
+  migrateappconfigs|migrateconfigs|appconfigs) echo MigrateAppConfigs ;;
+  *) for id in Import WslConfig ShowGui FocusGui LogonReg LogonRun WikiMenu WikiSync WikiInit WikiGen Inv MdLinks Safe MapImports Bootstrap Apply MigrateAppConfigs; do
       [[ ${id,,} == "$k" ]] && { echo "$id"; return; }
     done; echo "" ;;
   esac
@@ -216,7 +247,7 @@ run_list() {
 
 MENU() {
   BANNER
-  echo "1 Import 2 WslConfig 3 ShowGui 4 Focus 5 LogonReg 6 LogonRun 7 WikiMenu 8 WikiSync 9 Inv 10 MdLinks 11 Safe 12 Bootstrap 13 Apply 0 exit  H help  R run list"
+  echo "1 Import 2 WslConfig 3 ShowGui 4 Focus 5 LogonReg 6 LogonRun 7 WikiMenu 8 WikiSync 9 Inv 10 MdLinks 11 Safe 12 MapImports 13 Bootstrap 14 Apply 15 MigrateAppConfigs 0 exit  H help  R run list"
   read -r -p "Choice (default 7=WikiMenu): " c || c=
   c=${c:-7}
   case "$c" in
@@ -232,11 +263,13 @@ MENU() {
   9) step_Inv ;;
   10) step_MdLinks ;;
   11) step_Safe ;;
-  12) step_Bootstrap ;;
-  13) step_Apply ;;
-  h|H) BANNER; echo "Run:  $0 -Run MdLinks,Inv  or  KINOITE_AIO_RUN=Bootstrap,Apply" ;;
+  12) step_MapImports ;;
+  13) step_Bootstrap ;;
+  14) step_Apply ;;
+  15) step_MigrateAppConfigs ;;
+  h|H) BANNER; echo "Run:  $0 -Run MdLinks,Inv  or  KINOITE_AIO_RUN=MapImports,Bootstrap,Apply,MigrateAppConfigs" ;;
   r|R) read -r -p "Comma list: " L; run_list "$L" ;;
-  *) rid=$(resolve "$c"); if [[ -n "$rid" ]]; then invoke "$rid"; else echo "1-13 or name"; fi ;;
+  *) rid=$(resolve "$c"); if [[ -n "$rid" ]]; then invoke "$rid"; else echo "1-15 or name"; fi ;;
   esac
 }
 
