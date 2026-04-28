@@ -39,8 +39,10 @@ function Get-StepList {
     @{ Id = "Inv"          ; T = "Windows: host inventory (winget, CIM, start menu, DISM, ...)"; Admin = $false }
     @{ Id = "MdLinks"      ; T = "Windows: verify markdown links (check-md-links.ps1)"; Admin = $false }
     @{ Id = "Safe"         ; T = "Windows: bundle: MdLinks, WikiGen, full inventory (DISM may UAC)"; Admin = $false }
+    @{ Id = "MapImports"   ; T = "Generate host-local flatpak lists from imports/ + native-first mapping (Python)"; Admin = $false }
     @{ Id = "Bootstrap"    ; T = "WSL: bootstrap: Flathub, optional WSLg profile, inside distro"; Admin = $false }
     @{ Id = "Apply"        ; T = "WSL: apply-atomic-provision (sudo) inside distro"; Admin = $false }
+    @{ Id = "MigrateAppConfigs" ; T = "WSL: migrate-app-config.sh (qBit/Firefox/Thunderbird/VS Code/Syncthing from Windows paths)"; Admin = $false }
   )
 }
 function Test-IsAdmin { ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole( [Security.Principal.WindowsBuiltInRole]::Administrator) }
@@ -90,6 +92,17 @@ function Invoke-Step {
     $env:KINOITE_INVENTORY_MODE = $null
     break
   }
+  "MapImports" {
+    $sync = Join-Path $Here "sync-imports-to-provision.ps1"
+    & $sync -RepoRoot $RepoRoot
+    break
+  }
+  "MigrateAppConfigs" {
+    Write-Host "MigrateAppConfigs: chmod + migrate-app-config.sh inside distro $Distro"
+    $c = "set -e; cd '" + $WslRoot + "' && chmod +x scripts/migrate-app-config.sh 2>/dev/null; bash ./scripts/migrate-app-config.sh run"
+    wsl.exe -d $Distro -e bash -lc $c
+    break
+  }
   default { Write-Error "Unknown step: $Name" }
   }
 }
@@ -119,6 +132,8 @@ $map = @{
   md = "MdLinks" ; links = "MdLinks" ; mdlinks = "MdLinks"
   bootstrap = "Bootstrap" ; boot = "Bootstrap"
   apply = "Apply" ; provision = "Apply"
+  mapimports = "MapImports" ; syncprovision = "MapImports"
+  migrateappconfigs = "MigrateAppConfigs" ; migrateconfigs = "MigrateAppConfigs" ; appconfigs = "MigrateAppConfigs"
 }
 function Resolve-Name {
   param($Token)
@@ -153,7 +168,7 @@ Run non-interactive:
   .\Kinoite-AIO.ps1 -Run MdLinks,Inv,WikiGen
   `$env:KINOITE_AIO_RUN='Bootstrap,Apply'   # WSL: order matters; Apply needs sudo
 
-Steps: Import, WslConfig, ShowGui, FocusGui, LogonReg, LogonRun, WikiMenu, WikiSync, Inv, MdLinks, Safe, Bootstrap, Apply
+Steps: Import, WslConfig, ShowGui, FocusGui, LogonReg, LogonRun, WikiMenu, WikiSync, Inv, MdLinks, Safe, MapImports, Bootstrap, Apply, MigrateAppConfigs
   WikiInit / WikiGen: use -Run wikiinit  or  wikigen
 Aliases: wslconfig, wslhost, safe, devcheck, mdlinks, inv, wikisync, plasma, import, apply, …
 "@

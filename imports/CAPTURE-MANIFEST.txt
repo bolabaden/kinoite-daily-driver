@@ -2,7 +2,8 @@
 #
 # Bulk exports are gitignored (*.txt, *.json, *winget*, etc.) except this file. Edit after each run:
 #  - scripts/windows-inventory.ps1
-#        (default: all — winget, CIM+WSL, start menu, DISM; or -Winget / -CimWsl / -StartMenu / -Dism; -Dism may UAC/740; -DismPassThru)
+#        (default four — winget, CIM+WSL, start menu, DISM; optional -RunKeys -Appx -Pnputil -WingetListText -ScoopList -ReliabilitySample;
+#         or KINOITE_INVENTORY_MODE=runkeys,appx,...; -Dism may UAC/740; -DismPassThru)
 #        (e.g. -StartMenuOutFile imports\start-menu-shortcuts.txt)
 #
 # Example line per artifact:

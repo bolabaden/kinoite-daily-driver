@@ -5,7 +5,9 @@
   Start Menu shortcuts, and optional DISM /Get-Features (UAC on 740). See scripts/README.md and
   docs/windows-migration.md.
 .DESCRIPTION
-  If you pass none of -Winget, -CimWsl, -StartMenu, or -Dism, all four run. -Dism may prompt UAC
+  If you pass none of the capture switches, the default four run (-Winget, -CimWsl, -StartMenu, -Dism).
+  Optional: -RunKeys, -Appx, -Pnputil, -WingetListText, -ScoopList, -ReliabilitySample.
+  -Dism may prompt UAC
   for elevation when the shell is not admin. -DismPassThru returns the DISM import document text
   when the DISM step runs (not when DISM is skipped by selective flags without -Dism).
 .EXAMPLE
@@ -22,6 +24,12 @@ param(
   [switch] $CimWsl,
   [switch] $StartMenu,
   [switch] $Dism,
+  [switch] $RunKeys,
+  [switch] $Appx,
+  [switch] $Pnputil,
+  [switch] $WingetListText,
+  [switch] $ScoopList,
+  [switch] $ReliabilitySample,
   [string] $DismOutputPath = "",
   [string] $StartMenuOutFile = "",
   [switch] $DismPassThru,
@@ -36,7 +44,7 @@ if ($machinePath -or $userPath) {
 }
 
 # TUI: same as passing -Winget / -CimWsl / -StartMenu / -Dism. Env: KINOITE_INVENTORY_MODE (all, winget, cim, start, dism, or comma e.g. winget,dism)
-$anyFlag = $Winget -or $CimWsl -or $StartMenu -or $Dism
+$anyFlag = $Winget -or $CimWsl -or $StartMenu -or $Dism -or $RunKeys -or $Appx -or $Pnputil -or $WingetListText -or $ScoopList -or $ReliabilitySample
 if ($Interactive -and -not $anyFlag) {
   Write-Host "=== Kinoite windows-inventory (menu) ===" -ForegroundColor Cyan
   Write-Host "  0) All (default)  1) -Winget  2) -CimWsl  3) -StartMenu  4) -Dism  5) 1+2+3+4 in order (same as 0 for output set)"
@@ -61,10 +69,16 @@ if ($Interactive -and -not $anyFlag) {
         '^cim|cimwsl|wsl$' { $CimWsl = $true }
         '^start(menu)?$' { $StartMenu = $true }
         '^dism$' { $Dism = $true }
+        '^runkeys|run$' { $RunKeys = $true }
+        '^appx$' { $Appx = $true }
+        '^pnputil$' { $Pnputil = $true }
+        '^wingetlist|winget-list|wingettext$' { $WingetListText = $true }
+        '^scoop$' { $ScoopList = $true }
+        '^reliability|wer$' { $ReliabilitySample = $true }
         default { Write-Warning "Unknown KINOITE_INVENTORY_MODE token: $tok" }
       }
     }
-    if (-not ($Winget -or $CimWsl -or $StartMenu -or $Dism)) {
+    if (-not ($Winget -or $CimWsl -or $StartMenu -or $Dism -or $RunKeys -or $Appx -or $Pnputil -or $WingetListText -or $ScoopList -or $ReliabilitySample)) {
       $Winget = $CimWsl = $StartMenu = $Dism = $true
     }
   }
@@ -135,6 +149,86 @@ if ($StartMenu) {
   Set-Content -Path $outFile -Value $text -Encoding utf8
   $ErrorActionPreference = $eap0
   Write-Output "Wrote $($lineList.Count) lines to $outFile"
+}
+
+if ($RunKeys) {
+  $out = Join-Path $OutDir "run-keys.txt"
+  $sb = [System.Text.StringBuilder]::new()
+  foreach ($rp in @(
+    'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run',
+    'Registry::HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\RunOnce',
+    'Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Run',
+    'Registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\RunOnce'
+  )) {
+    if (Test-Path -LiteralPath $rp) {
+      [void]$sb.AppendLine("=== $rp ===")
+      Get-ItemProperty -LiteralPath $rp -ErrorAction SilentlyContinue |
+      Format-List | Out-String | ForEach-Object { [void]$sb.AppendLine($_) }
+    }
+  }
+  Set-Content -Path $out -Value $sb.ToString() -Encoding utf8
+  Write-Host "Wrote $out"
+}
+
+if ($Appx) {
+  $out = Join-Path $OutDir "appx-packages.csv"
+  Get-AppxPackage | Export-Csv -Path $out -NoTypeInformation -Encoding utf8
+  Write-Host "Wrote $out"
+}
+
+if ($Pnputil) {
+  $out = Join-Path $OutDir "pnputil-drivers.txt"
+  $pn = Join-Path $env:WINDIR 'System32\pnputil.exe'
+  if (Test-Path -LiteralPath $pn) {
+    & $pn /enum-drivers 2>&1 | Set-Content -Path $out -Encoding utf8
+    Write-Host "Wrote $out"
+  } else {
+    Write-Warning "pnputil.exe not found"
+  }
+}
+
+if ($WingetListText) {
+  $wingetExe = $null
+  if (Get-Command winget -ErrorAction SilentlyContinue) { $wingetExe = (Get-Command winget).Source } elseif (Test-Path "$env:LocalAppData\Microsoft\WindowsApps\winget.exe") {
+    $wingetExe = "$env:LocalAppData\Microsoft\WindowsApps\winget.exe"
+  }
+  if ($wingetExe) {
+    $out = Join-Path $OutDir "winget-list.txt"
+    & $wingetExe list 2>&1 | Set-Content -Path $out -Encoding utf8
+    Write-Host "Wrote $out"
+  } else {
+    Write-Warning "winget not found; skipped winget-list.txt"
+  }
+}
+
+if ($ScoopList) {
+  $out = Join-Path $OutDir "scoop-list.txt"
+  if (Get-Command scoop -ErrorAction SilentlyContinue) {
+    scoop list 2>&1 | Set-Content -Path $out -Encoding utf8
+    Write-Host "Wrote $out"
+  } else {
+    "(scoop not on PATH)" | Set-Content -Path $out -Encoding utf8
+    Write-Host "Wrote $out (placeholder)"
+  }
+}
+
+if ($ReliabilitySample) {
+  $out = Join-Path $OutDir "reliability-events-sample.txt"
+  $lines = [System.Collections.Generic.List[string]]::new()
+  try {
+    Get-WinEvent -LogName Application -MaxEvents 50 -ErrorAction SilentlyContinue |
+    Where-Object { $_.Level -in 2, 3 } |
+    Select-Object -First 25 |
+    ForEach-Object {
+      [void]$lines.Add("--- $($_.TimeCreated) $($_.ProviderName) $($_.Id) ---")
+      [void]$lines.Add($_.Message)
+      [void]$lines.Add('')
+    }
+  } catch {
+    [void]$lines.Add("(Get-WinEvent failed: $($_.Exception.Message))")
+  }
+  ($lines -join [Environment]::NewLine) | Set-Content -Path $out -Encoding utf8
+  Write-Host "Wrote $out"
 }
 
 $DismExe = Join-Path $env:WINDIR "System32\dism.exe"

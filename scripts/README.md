@@ -12,7 +12,9 @@ WSL2 narrative and troubleshooting: **[config/wsl2/README.md](../config/wsl2/REA
 |-------|--------|------|
 | **Import / WSL bootstrap** | [import-kinoite-rootfs-to-wsl.ps1](import-kinoite-rootfs-to-wsl.ps1) | Podman → rootfs tar; optional `wsl --import`. **`-Interactive`**; env: `KINOITE_OCI_IMAGE`, `KINOITE_WSL_DO_IMPORT`, `KINOITE_WSL_INSTALL_DIR` |
 | | [bootstrap-kinoite-wsl2.sh](bootstrap-kinoite-wsl2.sh) | Inside distro: Flathub, optional WSLg `profile.d`, points at apply. `menu` / `KINOITE_TUI_CHOICE` / `KINOITE_INTERACTIVE` |
-| **Provision (Linux)** | [apply-atomic-provision.sh](apply-atomic-provision.sh) | Main declarative apply; helpers + **`menu`**. `KINOITE_INTERACTIVE=1` → menu. [provision.d](provision.d/) hooks. |
+| **Map imports → lists (Windows or Linux)** | [sync_imports_to_provision.py](sync_imports_to_provision.py) | Native-first Flathub list from `imports/winget-export.json` → `host-local/flatpak/kinoite.generated.list`. [sync-imports-to-provision.ps1](sync-imports-to-provision.ps1) wrapper. AIO: **MapImports**. |
+| **App config migration (Linux user)** | [migrate-app-config.sh](migrate-app-config.sh) | qBittorrent Flatpak: copy `BT_backup` from Windows paths under WSL. Invoked from [provision.d/40-kinoite-app-config.sh](provision.d/40-kinoite-app-config.sh) after apply. |
+| **Provision (Linux)** | [apply-atomic-provision.sh](apply-atomic-provision.sh) | Main declarative apply; merges `host-local/flatpak/*.list`; helpers + **`menu`**. `KINOITE_INTERACTIVE=1` → menu. [provision.d](provision.d/) hooks. |
 | **WSL2 / WSLg** | [wsl2/Install-WslHostConfig.ps1](wsl2/Install-WslHostConfig.ps1) | Windows host: writes `%UserProfile%\.wslconfig` from [config/wsl2/README.md](../config/wsl2/README.md) fenced `ini` (default if missing; **`-Force`** + backup). AIO: **`WslConfig`** / **`wslconfig`** |
 | | [wsl2/launch-kde-gui-wslg.sh](wsl2/launch-kde-gui-wslg.sh) | Plasma: WSLg, **VcXsrv** (`WSLG_GUI_BACKEND=vcxsrv`), `install-check`, `sddm-note`, TUI `menu` |
 | | [wsl2/Show-Kinoite-Gui.ps1](wsl2/Show-Kinoite-Gui.ps1) | `wsl.exe` + launch script only. **`-Focus`**, **`-Action` Menu\|Focus\|Launch**, `KINOITE_WSL_BASH_INIT` |

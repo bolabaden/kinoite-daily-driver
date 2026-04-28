@@ -2,7 +2,8 @@
 Entry: ``uv run kinoite-bootstrap-init`` or
 ``uvx --refresh --from git+https://github.com/bolabaden/kinoite-daily-driver kinoite-bootstrap-init``.
 
-Extra CLI args are forwarded to ``Kinoite-AIO.ps1`` (Windows) or ``kinoite-aio.sh`` (other OS).
+Extra CLI args are forwarded to ``Kinoite-AIO.ps1`` (Windows) or ``kinoite-aio.sh`` (other OS); examples:
+``-Run MapImports,Bootstrap,Apply`` or ``-Run MigrateAppConfigs``.
 When installed from an isolated venv (uvx), set ``KINOITE_WORKSPACE_ROOT`` to a full git clone
 of this repository (the directory that contains ``scripts/``).
 """

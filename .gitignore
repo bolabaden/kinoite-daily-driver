@@ -42,3 +42,6 @@ host-local/
 **/host-local/
 *.secrets.env
 config/network/*.local.nmconnection
+
+# Optional winget mapping overrides (machine-specific)
+config/mappings/overrides.csv

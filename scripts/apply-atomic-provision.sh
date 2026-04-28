@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Declarative provisional configuration for rpm-ostree (Kinoite) + user Flatpaks.
 # Run INSIDE the Kinoite system (WSL2 import or bare metal) from repo root: sudo ./scripts/apply-atomic-provision.sh
-# - Reads: config/flatpak/*.list (e.g. kinoite.list; excludes overrides.list) and config/rpm-ostree/layers.list (or /etc/kinoite-provision after install-service)
+# - Reads: config/flatpak/*.list (e.g. kinoite.list; install lists skip overrides.list), optional host-local/flatpak/*.list (gitignored),
+#   config/rpm-ostree/layers.list merged with host-local/rpm-ostree/layers.fragment.list (from sync_imports_to_provision.py)
+#   (or /etc/kinoite-provision after install-service)
 # - flatpak: config/flatpak/overrides.list → flatpak override --user (after install/update)
 # - KDE: config/kde/night-color.list (see kde-night-light subcommand)
 # - Runs optional executable scripts/provision.d/NN-*.sh unless KINOITE_SKIP_PROVISION_HOOKS=1
@@ -360,7 +362,13 @@ if [ "${KINOITE_OSTREE_ONLY:-0}" != 1 ] && [ "${KINOITE_SKIP_FLATPAK:-0}" != 1 ]
     _flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo 2>/dev/null || true
   fi
   shopt -s nullglob
-  _fp=("$CFG_ROOT/flatpak"/*.list)
+  _fp=( "$CFG_ROOT/flatpak"/*.list )
+  if [[ -d "$REPO_ROOT/host-local/flatpak" ]]; then
+    _fp+=( "$REPO_ROOT/host-local/flatpak"/*.list )
+  fi
+  if [[ -n "${KINOITE_FLATPAK_EXTRA_LIST_DIR:-}" ]] && [[ -d "${KINOITE_FLATPAK_EXTRA_LIST_DIR}" ]]; then
+    _fp+=( "${KINOITE_FLATPAK_EXTRA_LIST_DIR}"/*.list )
+  fi
   shopt -u nullglob
   readarray -t lists < <(printf '%s\n' "${_fp[@]:-}" | sort -u)
   if ((${#lists[@]} > 0)); then
@@ -393,12 +401,23 @@ elif ! command -v flatpak &>/dev/null; then
   echo "==> flatpak not found; install it on the image or apply only rpm-ostree layers."
 fi
 
-# --- rpm-ostree: layered packages from layers.list ---
+# --- rpm-ostree: layered packages from layers.list + host-local fragment (deduped) ---
 LAYERS_FILE="$CFG_ROOT/rpm-ostree/layers.list"
-if [ ! -f "$LAYERS_FILE" ]; then
-  echo "==> No $LAYERS_FILE; skipped rpm-ostree layers."
+LAYERS_FRAG="${KINOITE_RPM_OSTREE_FRAGMENT:-$REPO_ROOT/host-local/rpm-ostree/layers.fragment.list}"
+_kinoite_layer_lines() {
+  local f="$1"
+  [ ! -f "$f" ] && return 0
+  grep -v '^\s*#' "$f" 2>/dev/null | sed '/^\s*$/d' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$' || true
+}
+if [ ! -f "$LAYERS_FILE" ] && [ ! -f "$LAYERS_FRAG" ]; then
+  echo "==> No $LAYERS_FILE and no $LAYERS_FRAG; skipped rpm-ostree layers."
 else
-  mapfile -t pkgs < <(grep -v '^\s*#' "$LAYERS_FILE" 2>/dev/null | sed '/^\s*$/d' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | grep -v '^$' || true)
+  mapfile -t pkgs < <(
+    {
+      _kinoite_layer_lines "$LAYERS_FILE"
+      _kinoite_layer_lines "$LAYERS_FRAG"
+    } | sort -u
+  )
   if ((${#pkgs[@]})); then
     if ! command -v rpm-ostree &>/dev/null; then
       echo "==> rpm-ostree not available; cannot layer: ${pkgs[*]}"
@@ -414,11 +433,11 @@ else
         touch "$MARKER_DIR/rpm-ostree-layers-applied" 2>/dev/null || true
         echo "==> rpm-ostree: layers staged. Reboot the deployment (on bare metal) or: wsl --shutdown (WSL) then re-enter."
       else
-        echo "==> rpm-ostree install failed (expected on some WSL imports). Edit $LAYERS_FILE and retry after ostree is healthy per docs."
+        echo "==> rpm-ostree install failed (expected on some WSL imports). Edit $LAYERS_FILE or $LAYERS_FRAG and retry after ostree is healthy per docs."
       fi
     fi
   else
-    echo "==> No uncommented entries in $LAYERS_FILE; skipped layering."
+    echo "==> No uncommented package lines in layers.list / layers.fragment.list; skipped layering."
   fi
 fi
 
