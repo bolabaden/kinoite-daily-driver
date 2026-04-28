@@ -26,6 +26,7 @@ com.usebottles.bottles
 org.gimp.GIMP
 org.blender.Blender
 com.obsproject.Studio
+io.github.seadve.Kooha
 org.videolan.VLC
 io.github.celluloid_player.Celluloid
 org.kde.filelight

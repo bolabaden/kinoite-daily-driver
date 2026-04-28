@@ -1,0 +1,15 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kinoite.local/schemas/linux-map-row",
+  "title": "Kinoite linux-map row (optional TSV/CSV under host-local)",
+  "description": "One row of an app or workload mapping from Windows evidence to a Linux or repo disposition. Use in host-local only; this schema is for shape validation, not committed data.",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "name_or_title": { "type": "string", "description": "Windows app name, shortcut, or short title" },
+    "windows_evidence": { "type": "string", "description": "Winget id, path, or pointer into imports/" },
+    "kinoite_path": { "type": "string", "description": "Target: Flatpak id, doc section, N/A, VM-only, or blocked" },
+    "notes": { "type": "string", "description": "Free text" },
+    "status": { "type": "string", "description": "e.g. done | backlog | blocked" }
+  }
+}

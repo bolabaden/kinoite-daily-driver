@@ -18,6 +18,8 @@
 | Optional Windows inventory | [scripts/README.md — imports](scripts/README.md#the-imports-directory) |
 | VM / bare metal phases | [docs/kinoite-wsl2.md — migration](docs/kinoite-wsl2.md#migration-checklist-wsl-lab--bare-metal-kinoite) |
 | Doc index | [Documentation hub](#topic-docs-and-provisioning-plane) (below) |
+| Declarative surface (config vs `host-local`) | [config/README.md — Declarative surface](config/README.md#declarative-surface-versioned-in-git) |
+| Migration doc ↔ `kinoite.list` / `layers.list` | [config/declarative-parity.md](config/declarative-parity.md) |
 
 **Repo checks:** [scripts/check-md-links.ps1](scripts/check-md-links.ps1) (*Run Task* in [.vscode/tasks.json](.vscode/tasks.json)). **CI:** [.github/workflows/markdown-link-check.yml](.github/workflows/markdown-link-check.yml).
 

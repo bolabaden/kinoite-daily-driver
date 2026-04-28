@@ -37,6 +37,8 @@ Category narrative and the long-tail **TSV** are **below** on this page (no sepa
 
 **Machine-specific** table rows belong in **`host-local/linux-map.csv`** and the [TSV](#tsv-plan-master-table--import-into-a-spreadsheet) below. **PUP/junk ARP** strings stay out of committed **prose** — evidence stays in local exports.
 
+**Optional row shape (JSON):** a minimal schema for a single row or document object (for tools or IDEs) lives at [`config/schemas/linux-map-row.schema.json`](../config/schemas/linux-map-row.schema.json). It does **not** require committing your CSV; it only standardizes field names if you want validation. Real data stays in **`host-local/`**, not in git.
+
 **Disposition** for migration: [When to keep Windows or a VM](#when-to-keep-windows-or-a-vm-for-these-workloads) and [Linux-map](#linux-map-row-level-map) below.
 
 ### This PC quick template

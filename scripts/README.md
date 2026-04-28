@@ -21,6 +21,7 @@ WSL2 narrative and troubleshooting: **[config/wsl2/README.md](../config/wsl2/REA
 | | [wsl2/Kinoite-WindowsPlasmaLogon.ps1](wsl2/Kinoite-WindowsPlasmaLogon.ps1) | Task Scheduler: **`-Register`**, **`-RunSession`**, **`-StopExplorer`** (optional, dangerous) |
 | **Windows inventory** | [windows-inventory.ps1](windows-inventory.ps1) | **`-Interactive`** or **`KINOITE_INVENTORY_MODE`**; subsets **`-Winget`**, **`-CimWsl`**, **`-StartMenu`**, **`-Dism`**. UAC: child PS for DISM. |
 | **CI / docs** | [check-md-links.ps1](check-md-links.ps1) | Broken relative links. **`-Interactive`**, `KINOITE_MD_LINK_ROOT` (PowerShell 5.1+ in GitHub Actions) |
+| | [validate-provision-lists.sh](validate-provision-lists.sh) | `layers.list` + `kinoite.list` line shape (no network; [workflow](../.github/workflows/validate-provision-lists.yml)) |
 | **Wiki / Jekyll** | [Kinoite-Wiki.ps1](Kinoite-Wiki.ps1) | **`-Action` Init, GenerateDocs, Sync**; **`-Push`**; no chained `.ps1` |
 
 **Default user after `wsl --import`:** run as **root** once: `useradd -m -s /bin/bash -G wheel YOURNAME` → `passwd YOURNAME` → set `[user] default=YOURNAME` in `/etc/wsl.conf` → `wsl --shutdown`. See [docs/kinoite-wsl2.md](../docs/kinoite-wsl2.md#runtime-completion-bar-kde-and-wslg).

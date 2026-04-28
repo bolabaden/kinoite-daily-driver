@@ -1,0 +1,25 @@
+# Validates config/rpm-ostree/layers.list and config/flatpak/kinoite.list (line shape only; no network).
+name: Validate provision lists
+
+on:
+  push:
+    paths:
+      - "config/rpm-ostree/layers.list"
+      - "config/flatpak/kinoite.list"
+      - "scripts/validate-provision-lists.sh"
+      - ".github/workflows/validate-provision-lists.yml"
+  pull_request:
+    paths:
+      - "config/rpm-ostree/layers.list"
+      - "config/flatpak/kinoite.list"
+      - "scripts/validate-provision-lists.sh"
+      - ".github/workflows/validate-provision-lists.yml"
+  workflow_dispatch: {}
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check layers + flatpak list line format
+        run: bash ./scripts/validate-provision-lists.sh
