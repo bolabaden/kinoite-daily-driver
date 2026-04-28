@@ -20,6 +20,8 @@ User-facing **source** documentation for this project is the Markdown in the **r
 
 List shape checks (no network): [`validate-provision-lists.sh`](../scripts/validate-provision-lists.sh) and [`.github/workflows/validate-provision-lists.yml`](../.github/workflows/validate-provision-lists.yml).
 
+**Migration ↔ lists traceability (ShareX stack, TSV rows, remaining gaps):** [declarative-parity.md](declarative-parity.md).
+
 **`rpm-ostree`** — [`config/rpm-ostree/layers.list`](rpm-ostree/layers.list).
 
 **Secrets and network (never commit real credentials)** — this repo is templates only. See also [README — optional gitleaks](../README.md#optional-gitleaks).
