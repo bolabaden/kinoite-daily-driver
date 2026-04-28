@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 # Declarative provisional configuration for rpm-ostree (Kinoite) + user Flatpaks.
 # Run INSIDE the Kinoite system (WSL2 import or bare metal) from repo root: sudo ./scripts/apply-atomic-provision.sh
-# - Reads: config/flatpak/*.list (e.g. kinoite.list) and config/rpm-ostree/layers.list (or /etc/kinoite-provision after install-service)
+# - Reads: config/flatpak/*.list (e.g. kinoite.list; excludes overrides.list) and config/rpm-ostree/layers.list (or /etc/kinoite-provision after install-service)
+# - flatpak: config/flatpak/overrides.list → flatpak override --user (after install/update)
+# - KDE: config/kde/night-color.list (see kde-night-light subcommand)
 # - Runs optional executable scripts/provision.d/NN-*.sh unless KINOITE_SKIP_PROVISION_HOOKS=1
 # - Idempotent: safe to re-run. rpm-ostree will no-op for already-layered packages.
 # - WSL2: if rpm-ostree install fails, fix rootfs/upgrade per docs; Flatpaks still apply.
@@ -62,16 +64,31 @@ _cmd_kde_night_light() {
       printf '%s' "$HOME/.config"
     fi
   }
-  local CFG
+  local CFG LIST
   CFG="$(_cfg_home)"
   mkdir -p "$CFG"
-  echo "==> Night Light (kwinrc [NightColor]) + schedule (knighttimerc) -> $CFG"
-  kwriteconfig6 --file "$CFG/kwinrc" --group NightColor --key Active true
-  kwriteconfig6 --file "$CFG/kwinrc" --group NightColor --key Mode DarkLight
-  kwriteconfig6 --file "$CFG/kwinrc" --group NightColor --key DayTemperature 6500
-  kwriteconfig6 --file "$CFG/kwinrc" --group NightColor --key NightTemperature 4500
-  kwriteconfig6 --file "$CFG/knighttimerc" --group General --key Source Location
-  kwriteconfig6 --file "$CFG/knighttimerc" --group Location --key Automatic true
+  LIST="${KINOITE_NIGHT_COLOR_LIST:-}"
+  if [ -z "$LIST" ] && [ -f "$REPO_ROOT/config/kde/night-color.list" ]; then
+    LIST="$REPO_ROOT/config/kde/night-color.list"
+  elif [ -z "$LIST" ] && [ -f /etc/kinoite-provision/kde/night-color.list ]; then
+    LIST=/etc/kinoite-provision/kde/night-color.list
+  fi
+  if [ -z "$LIST" ] || [ ! -f "$LIST" ]; then
+    echo "apply-atomic-provision: no night-color list (set KINOITE_NIGHT_COLOR_LIST or add config/kde/night-color.list)." >&2
+    return 1
+  fi
+  echo "==> Night Color from $LIST -> $CFG"
+  while IFS= read -r _line || [ -n "$_line" ]; do
+    _line="${_line//$'\r'/}"
+    [[ -z "${_line// }" || "$_line" =~ ^[[:space:]]*# ]] && continue
+    IFS='|' read -r _fn _grp _key _val <<<"$_line"
+    _fn="${_fn#"${_fn%%[![:space:]]*}"}"; _fn="${_fn%"${_fn##*[![:space:]]}"}"
+    _grp="${_grp#"${_grp%%[![:space:]]*}"}"; _grp="${_grp%"${_grp##*[![:space:]]}"}"
+    _key="${_key#"${_key%%[![:space:]]*}"}"; _key="${_key%"${_key##*[![:space:]]}"}"
+    _val="${_val#"${_val%%[![:space:]]*}"}"; _val="${_val%"${_val##*[![:space:]]}"}"
+    [ -z "$_fn" ] && continue
+    kwriteconfig6 --file "$CFG/$_fn" --group "$_grp" --key "$_key" "$_val"
+  done <"$LIST"
   echo "==> Done. Log out/in or restart KWin for all effects to apply."
 }
 
@@ -121,6 +138,9 @@ _cmd_install_service() {
   local TARGET_USER="${1:-}"
   install -d -m 0755 /etc/kinoite-provision
   cp -a "$REPO_ROOT/config/flatpak" /etc/kinoite-provision/
+  if [ -d "$REPO_ROOT/config/kde" ]; then
+    cp -a "$REPO_ROOT/config/kde" /etc/kinoite-provision/
+  fi
   cp -a "$REPO_ROOT/config/rpm-ostree" /etc/kinoite-provision/
   install -m 0755 "$REPO_ROOT/scripts/apply-atomic-provision.sh" /etc/kinoite-provision/apply-atomic-provision.sh
   if [ -n "$TARGET_USER" ]; then
@@ -281,6 +301,58 @@ _flatpak() {
   fi
 }
 
+# flatpak with --user (override, etc.) using same runuser / dbus as install path
+_flatpak_user_cmd() {
+  if [ "${EUID:-0}" -eq 0 ] && command -v runuser &>/dev/null; then
+    u="$(_provision_user || true)"
+    if [ -n "$u" ] && id -u "$u" &>/dev/null; then
+      local uid rtdir
+      uid=$(id -u "$u")
+      rtdir="/run/user/${uid}"
+      if [ ! -d "$rtdir" ]; then
+        if command -v dbus-run-session &>/dev/null; then
+          runuser -u "$u" -- dbus-run-session -- /usr/bin/flatpak --user "$@"
+          return
+        fi
+        echo "==> (flatpak) $rtdir missing; log in once or: loginctl enable-linger $u" >&2
+        return 1
+      fi
+      runuser -u "$u" -- env "XDG_RUNTIME_DIR=$rtdir" /usr/bin/flatpak --user "$@"
+      return
+    fi
+  fi
+  if [ "${EUID:-0}" -ne 0 ]; then
+    /usr/bin/flatpak --user "$@"
+  else
+    echo "==> (flatpak) no target user; cannot run override" >&2
+    return 1
+  fi
+}
+
+_apply_flatpak_overrides() {
+  local ovf line ref
+  ovf="$CFG_ROOT/flatpak/overrides.list"
+  if [ ! -f "$ovf" ]; then
+    return 0
+  fi
+  echo "==> Flatpak overrides: $ovf"
+  while IFS= read -r line || [ -n "$line" ]; do
+    line="${line//$'\r'/}"
+    [[ -z "${line// }" || "$line" =~ ^[[:space:]]*# ]] && continue
+    # shellcheck disable=SC2206
+    read -r -a toks <<<"$line"
+    ((${#toks[@]} < 2)) && continue
+    ref="${toks[0]}"
+    unset "toks[0]"
+    echo "  -> flatpak override $ref${toks[*]:+ ${toks[*]}}"
+    if _flatpak_user_cmd override "$ref" "${toks[@]}"; then
+      : ok
+    else
+      echo "  (override skip or error: $ref)" >&2
+    fi
+  done <"$ovf"
+}
+
 # --- Flathub + Flatpaks from all *.list files (use KINOITE_OSTREE_ONLY=1 to skip) ---
 if [ "${KINOITE_OSTREE_ONLY:-0}" != 1 ] && [ "${KINOITE_SKIP_FLATPAK:-0}" != 1 ] && command -v flatpak &>/dev/null; then
   if ! _flatpak remote-list 2>/dev/null | grep -q flathub; then
@@ -294,6 +366,9 @@ if [ "${KINOITE_OSTREE_ONLY:-0}" != 1 ] && [ "${KINOITE_SKIP_FLATPAK:-0}" != 1 ]
   if ((${#lists[@]} > 0)); then
     for list in "${lists[@]}"; do
       [ ! -f "$list" ] && continue
+      if [[ "$(basename "$list")" == "overrides.list" ]]; then
+        continue
+      fi
       echo "==> Flatpaks from $list"
       while IFS= read -r line || [ -n "$line" ]; do
         id="${line//[$'\r']/}"
@@ -309,6 +384,7 @@ if [ "${KINOITE_OSTREE_ONLY:-0}" != 1 ] && [ "${KINOITE_SKIP_FLATPAK:-0}" != 1 ]
   _flatpak repair 2>/dev/null || true
   echo "==> flatpak update"
   _flatpak update -y 2>/dev/null || true
+  _apply_flatpak_overrides
 elif [ "${KINOITE_OSTREE_ONLY:-0}" = 1 ]; then
   echo "==> KINOITE_OSTREE_ONLY=1: skipped Flatpaks (run this script from a user session without that env to apply lists)."
 elif [ "${KINOITE_SKIP_FLATPAK:-0}" = 1 ]; then

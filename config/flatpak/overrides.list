@@ -1,0 +1,5 @@
+# Optional per-app `flatpak override` lines (user installation).
+# One line per app. First field = Flatpak ref (e.g. com.valvesoftware.Steam); remaining fields = args to `flatpak override --user`.
+# Lines starting with # are ignored. Apply: main provision pass in apply-atomic-provision.sh (after install/update).
+# Security: use least privilege. Example below is commented out — only enable with eyes open.
+# com.valvesoftware.Steam --filesystem=host

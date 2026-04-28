@@ -1,6 +1,26 @@
 # Configuration in this tree
 
-**Flatpaks** — a single file lists Flathub app IDs: [`config/flatpak/kinoite.list`](flatpak/kinoite.list). The apply script also accepts any `*.list` in that folder; we keep one canonical list. [`scripts/apply-atomic-provision.sh`](../scripts/apply-atomic-provision.sh) runs `flatpak install` for each non-comment line, then `flatpak repair` and `update`. Tweak per-app permissions with `com.github.tchx84.Flatseal` (in the list) and Flathub for updates. Avoid untrusted “app store” front-ends for the main workflow.
+## Canonical documentation (where “truth” lives)
+
+User-facing **source** documentation for this project is the Markdown in the **repository root** (`README.md`, `config/`, `docs/`, `scripts/`) and **[`config/wsl2/README.md`](wsl2/README.md)**. The **[`wiki`](https://github.com/bolabaden/kinoite-daily-driver/wiki)** (submodule [`wiki/`](../wiki/)) and **[`wiki-source/`](../wiki-source/)** (Jekyll) exist to publish or mirror the same content; do not treat the wiki or `_docs/` copy alone as a substitute for the main-tree docs when you need **authoritative** wording. Sync: [`scripts/Kinoite-Wiki.ps1`](../scripts/Kinoite-Wiki.ps1) (`-Action GenerateDocs` / `Sync` — see [wiki-source/README.md](../wiki-source/README.md)) and the **GitHub Wiki + Jekyll** paragraph in [README.md](../README.md).
+
+## Declarative surface (versioned in git)
+
+| Surface | Path / mechanism | What stays *outside* (by design) |
+|--------|-------------------|----------------------------------|
+| `rpm-ostree` packages | [`rpm-ostree/layers.list`](rpm-ostree/layers.list) | Bootstrap partition layout, first user creation |
+| Flatpaks (Flathub) | [`flatpak/*.list`](flatpak) — **not** [`overrides.list`](flatpak/overrides.list) | OAuth, store logins, in-app state |
+| Flatpak overrides (optional) | [`flatpak/overrides.list`](flatpak/overrides.list) + [OVERRIDES-README](flatpak/OVERRIDES-README.md) | Fine-grained perms (often easier in Flatseal only) |
+| Boot-time `rpm-ostree` + copy | `scripts/apply-atomic-provision.sh install-service` + [`systemd/kinoite-atomic-ostree.service`](systemd/kinoite-atomic-ostree.service) | Full WSL2 `rpm-ostree` parity is not the same as bare metal; see [docs/kinoite-wsl2.md](../docs/kinoite-wsl2.md) |
+| KDE Night Color (optional) | [`kde/night-color.list`](kde/night-color.list) + [`kde/README.md`](kde/README.md) | — |
+| WSL2 / WSLg | Fenced content in `config/wsl2/README.md` + WSL/Windows helper scripts | Long `PATH` / interop policy choices on the **Windows** host |
+| `host-local/` (repo root) | `locale.env`, `*.nmconnection` templates, optional `linux-map.*` (see [schemas](schemas/)) | **Secrets**; real PSKs, tokens — never in git |
+| `scripts/provision.d/` | `NN-*.sh` hook scripts (executable) | — |
+| Windows inventory *mode* | `KINOITE_INVENTORY_MODE` in [`windows-inventory.ps1`](../scripts/windows-inventory.ps1) | Raw `imports/` **evidence** (gitignored) |
+
+List shape checks (no network): [`validate-provision-lists.sh`](../scripts/validate-provision-lists.sh) and [`.github/workflows/validate-provision-lists.yml`](../.github/workflows/validate-provision-lists.yml).
+
+**Migration ↔ lists traceability (ShareX stack, TSV rows, remaining gaps):** [declarative-parity.md](declarative-parity.md).
 
 **`rpm-ostree`** — [`config/rpm-ostree/layers.list`](rpm-ostree/layers.list).
 

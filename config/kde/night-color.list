@@ -1,0 +1,11 @@
+# KDE Night Color — consumed by: ./scripts/apply-atomic-provision.sh kde-night-light
+# One directive per line:  config_basename|KConfigGroup|Key|Value
+# (config_basename is under $XDG_CONFIG_HOME, usually ~/.config — e.g. kwinrc, knighttimerc)
+# See README in this directory.
+
+kwinrc|NightColor|Active|true
+kwinrc|NightColor|Mode|DarkLight
+kwinrc|NightColor|DayTemperature|6500
+kwinrc|NightColor|NightTemperature|4500
+knighttimerc|General|Source|Location
+knighttimerc|Location|Automatic|true
